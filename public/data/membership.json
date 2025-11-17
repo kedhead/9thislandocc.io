@@ -22,17 +22,6 @@
         "Training resources",
         "Family event discounts"
       ]
-    },
-    {
-      "name": "Student",
-      "price": "$XXX/year",
-      "description": "Discounted rate for students",
-      "benefits": [
-        "All practice sessions",
-        "Race participation",
-        "Training resources",
-        "Must show valid student ID"
-      ]
     }
   ]
 }
