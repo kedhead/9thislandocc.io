@@ -45,7 +45,7 @@ collections:
 
       - label: "Practice Schedule"
         name: "practice"
-        file: "src/content/settings/practice.json"
+        file: "public/data/practice.json"
         fields:
           - label: "Weekday Practices"
             name: "weekday"
@@ -65,7 +65,7 @@ collections:
 
       - label: "Membership Pricing"
         name: "membership"
-        file: "src/content/settings/membership.json"
+        file: "public/data/membership.json"
         fields:
           - label: "Membership Tiers"
             name: "tiers"
