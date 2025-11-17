@@ -1,0 +1,38 @@
+{
+  "hero": {
+    "heading": "9th Island Outrigger Canoe Club",
+    "tagline": "Paddling Together, Building Ohana",
+    "description": "Experience the spirit of Hawaiian outrigger canoe paddling in the heart of Las Vegas. Join our ohana and discover the tradition, fitness, and community of outrigger canoeing.",
+    "primaryButton": {
+      "text": "Join Our Ohana",
+      "link": "/contact"
+    },
+    "secondaryButton": {
+      "text": "Learn More",
+      "link": "/about"
+    }
+  },
+  "whatWeOffer": {
+    "sectionTitle": "What We Offer",
+    "items": [
+      {
+        "title": "Community & Ohana",
+        "description": "Join a welcoming family of paddlers who share a passion for outrigger canoeing and Hawaiian culture."
+      },
+      {
+        "title": "Training & Racing",
+        "description": "Regular practices on beautiful desert lakes and opportunities to compete in regional races."
+      },
+      {
+        "title": "Cultural Connection",
+        "description": "Experience and learn about Hawaiian traditions, values, and the spirit of aloha."
+      }
+    ]
+  },
+  "callToAction": {
+    "heading": "Ready to Paddle?",
+    "description": "Whether you're an experienced paddler or new to the sport, we'd love to have you join us on the water.",
+    "buttonText": "Get in Touch",
+    "buttonLink": "/contact"
+  }
+}

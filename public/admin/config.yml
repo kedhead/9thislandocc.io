@@ -78,3 +78,48 @@ collections:
                 name: "benefits"
                 widget: "list"
                 field: {label: "Benefit", name: "benefit", widget: "string"}
+
+      - label: "Homepage"
+        name: "homepage"
+        file: "public/data/homepage.json"
+        fields:
+          - label: "Hero Section"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Main Heading", name: "heading", widget: "string"}
+              - {label: "Tagline", name: "tagline", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+              - label: "Primary Button"
+                name: "primaryButton"
+                widget: "object"
+                fields:
+                  - {label: "Button Text", name: "text", widget: "string"}
+                  - {label: "Button Link", name: "link", widget: "string"}
+              - label: "Secondary Button"
+                name: "secondaryButton"
+                widget: "object"
+                fields:
+                  - {label: "Button Text", name: "text", widget: "string"}
+                  - {label: "Button Link", name: "link", widget: "string"}
+
+          - label: "What We Offer Section"
+            name: "whatWeOffer"
+            widget: "object"
+            fields:
+              - {label: "Section Title", name: "sectionTitle", widget: "string"}
+              - label: "Items"
+                name: "items"
+                widget: "list"
+                fields:
+                  - {label: "Title", name: "title", widget: "string"}
+                  - {label: "Description", name: "description", widget: "text"}
+
+          - label: "Call to Action"
+            name: "callToAction"
+            widget: "object"
+            fields:
+              - {label: "Heading", name: "heading", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+              - {label: "Button Text", name: "buttonText", widget: "string"}
+              - {label: "Button Link", name: "buttonLink", widget: "string"}

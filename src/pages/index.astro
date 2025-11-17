@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import siteSettings from '../content/settings/site.json';
+import homepageData from '../../public/data/homepage.json';
+
+const { hero, whatWeOffer, callToAction } = homepageData;
 ---
 
 <Layout title={siteSettings.siteName} description={siteSettings.description}>
@@ -13,20 +16,20 @@ import siteSettings from '../content/settings/site.json';
       </div>
 
       <h1 class="text-5xl md:text-6xl font-bold mb-6">
-        {siteSettings.siteName}
+        {hero.heading}
       </h1>
       <p class="text-2xl md:text-3xl mb-8 opacity-90">
-        {siteSettings.tagline}
+        {hero.tagline}
       </p>
       <p class="text-xl mb-10 max-w-3xl mx-auto">
-        {siteSettings.description}
+        {hero.description}
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/contact" class="btn-lava px-8 py-4 rounded-full text-lg font-semibold">
-          Join Our Ohana
+        <a href={hero.primaryButton.link} class="btn-lava px-8 py-4 rounded-full text-lg font-semibold">
+          {hero.primaryButton.text}
         </a>
-        <a href="/about" class="bg-white text-[var(--color-ocean-blue)] px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition">
-          Learn More
+        <a href={hero.secondaryButton.link} class="bg-white text-[var(--color-ocean-blue)] px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition">
+          {hero.secondaryButton.text}
         </a>
       </div>
     </div>
@@ -35,37 +38,21 @@ import siteSettings from '../content/settings/site.json';
   <!-- What We Offer -->
   <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-4xl font-bold text-center mb-16 text-gray-900">What We Offer</h2>
+      <h2 class="text-4xl font-bold text-center mb-16 text-gray-900">{whatWeOffer.sectionTitle}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-        <div class="text-center">
-          <div class="w-20 h-20 bg-[var(--color-ocean-blue)] rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
+        {whatWeOffer.items.map((item, index) => (
+          <div class="text-center">
+            <div class="w-20 h-20 bg-[var(--color-ocean-blue)] rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {index === 0 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />}
+                {index === 1 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />}
+                {index === 2 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />}
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-4">{item.title}</h3>
+            <p class="text-gray-600">{item.description}</p>
           </div>
-          <h3 class="text-2xl font-bold mb-4">Community & Ohana</h3>
-          <p class="text-gray-600">Join a welcoming family of paddlers who share a passion for outrigger canoeing and Hawaiian culture.</p>
-        </div>
-
-        <div class="text-center">
-          <div class="w-20 h-20 bg-[var(--color-ocean-blue)] rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <h3 class="text-2xl font-bold mb-4">Training & Racing</h3>
-          <p class="text-gray-600">Regular practices on beautiful desert lakes and opportunities to compete in regional races.</p>
-        </div>
-
-        <div class="text-center">
-          <div class="w-20 h-20 bg-[var(--color-ocean-blue)] rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-          </div>
-          <h3 class="text-2xl font-bold mb-4">Cultural Connection</h3>
-          <p class="text-gray-600">Experience and learn about Hawaiian traditions, values, and the spirit of aloha.</p>
-        </div>
+        ))}
       </div>
     </div>
   </section>
@@ -73,12 +60,12 @@ import siteSettings from '../content/settings/site.json';
   <!-- Call to Action -->
   <section class="py-20 bg-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-4xl font-bold mb-6 text-gray-900">Ready to Paddle?</h2>
+      <h2 class="text-4xl font-bold mb-6 text-gray-900">{callToAction.heading}</h2>
       <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-        Whether you're an experienced paddler or new to the sport, we'd love to have you join us on the water.
+        {callToAction.description}
       </p>
-      <a href="/contact" class="inline-block btn-lava px-10 py-4 rounded-full text-lg font-semibold">
-        Get in Touch
+      <a href={callToAction.buttonLink} class="inline-block btn-lava px-10 py-4 rounded-full text-lg font-semibold">
+        {callToAction.buttonText}
       </a>
     </div>
   </section>
