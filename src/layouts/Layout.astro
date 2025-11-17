@@ -141,6 +141,11 @@ const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club
             });
           }
         });
+
+        // Redirect to admin if there's an invite or recovery token
+        if (window.location.hash && (window.location.hash.includes('invite_token') || window.location.hash.includes('recovery_token'))) {
+          window.location.href = '/admin/' + window.location.hash;
+        }
       }
     </script>
   </body>
