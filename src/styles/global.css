@@ -1,16 +1,217 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ocean-blue: #0077be;
-  --color-ocean-dark: #005a8c;
+  /* Volcanic Lava Colors */
+  --color-lava-orange: #FF4500;  /* Neon orange - jersey color */
+  --color-lava-red: #DC143C;     /* Molten lava */
+  --color-lava-dark: #8B0000;    /* Dark lava flow */
+
+  /* Lava Rock Colors */
+  --color-rock-black: #1a1a1a;   /* Black lava rock */
+  --color-rock-gray: #2d2d2d;    /* Charcoal lava rock */
+  --color-rock-brown: #4a3933;   /* Weathered lava */
+
+  /* Ocean Colors */
+  --color-ocean-teal: #00CED1;   /* Bright tropical teal */
+  --color-ocean-blue: #008B8B;   /* Deep ocean teal */
+  --color-ocean-dark: #006666;   /* Deep sea */
+  --color-ocean-light: #40E0D0;  /* Turquoise */
+
+  /* Accent Colors */
   --color-sand: #f4e8d0;
-  --color-sunset: #ff6b35;
+  --color-foam: #E0F7FA;         /* Ocean foam */
 }
 
 body {
   font-family: system-ui, -apple-system, sans-serif;
+  background: linear-gradient(to bottom, #fafafa 0%, #f0f0f0 100%);
 }
 
+/* Polynesian-inspired gradient backgrounds */
 .hero-gradient {
-  background: linear-gradient(135deg, var(--color-ocean-dark) 0%, var(--color-ocean-blue) 100%);
+  background: linear-gradient(135deg,
+    var(--color-ocean-dark) 0%,
+    var(--color-ocean-blue) 50%,
+    var(--color-ocean-teal) 100%
+  );
+  position: relative;
+}
+
+.lava-gradient {
+  background: linear-gradient(135deg,
+    var(--color-rock-black) 0%,
+    var(--color-lava-dark) 50%,
+    var(--color-lava-red) 100%
+  );
+}
+
+.volcanic-pattern {
+  background:
+    linear-gradient(135deg, var(--color-rock-black) 25%, transparent 25%),
+    linear-gradient(225deg, var(--color-rock-black) 25%, transparent 25%),
+    linear-gradient(45deg, var(--color-rock-gray) 25%, transparent 25%),
+    linear-gradient(315deg, var(--color-rock-gray) 25%, var(--color-lava-dark) 25%);
+  background-size: 40px 40px;
+  background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+}
+
+/* Polynesian wave pattern */
+.wave-pattern {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(0, 206, 209, 0.1) 10px,
+      rgba(0, 206, 209, 0.1) 20px
+    );
+}
+
+/* Tribal accent borders */
+.tribal-border-top {
+  border-top: 4px solid var(--color-lava-orange);
+  position: relative;
+}
+
+.tribal-border-top::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-ocean-teal) 0px,
+    var(--color-ocean-teal) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+/* Animated lava flow effect */
+@keyframes lava-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.lava-animate {
+  background: linear-gradient(
+    -45deg,
+    var(--color-lava-dark),
+    var(--color-lava-red),
+    var(--color-lava-orange),
+    var(--color-lava-red),
+    var(--color-lava-dark)
+  );
+  background-size: 400% 400%;
+  animation: lava-flow 15s ease infinite;
+}
+
+/* Ocean wave animation */
+@keyframes wave-motion {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.wave-animate {
+  background: linear-gradient(
+    90deg,
+    var(--color-ocean-dark),
+    var(--color-ocean-blue),
+    var(--color-ocean-teal),
+    var(--color-ocean-light),
+    var(--color-ocean-teal),
+    var(--color-ocean-blue),
+    var(--color-ocean-dark)
+  );
+  background-size: 200% 100%;
+  animation: wave-motion 8s linear infinite;
+}
+
+/* Polynesian decorative elements */
+.poly-decoration {
+  position: relative;
+}
+
+.poly-decoration::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-lava-orange),
+    var(--color-ocean-teal),
+    var(--color-lava-orange),
+    transparent
+  );
+}
+
+/* Button styles with volcanic/ocean theme */
+.btn-lava {
+  background: linear-gradient(135deg, var(--color-lava-orange), var(--color-lava-red));
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-lava:hover {
+  background: linear-gradient(135deg, var(--color-lava-red), var(--color-lava-dark));
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 69, 0, 0.3);
+}
+
+.btn-ocean {
+  background: linear-gradient(135deg, var(--color-ocean-teal), var(--color-ocean-blue));
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-ocean:hover {
+  background: linear-gradient(135deg, var(--color-ocean-blue), var(--color-ocean-dark));
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 206, 209, 0.3);
+}
+
+/* Card hover effects */
+.card-volcanic {
+  background: white;
+  border-left: 4px solid var(--color-lava-orange);
+  transition: all 0.3s ease;
+}
+
+.card-volcanic:hover {
+  border-left-width: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  transform: translateX(4px);
+}
+
+/* Texture overlays */
+.lava-texture {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(255, 69, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(220, 20, 60, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(139, 0, 0, 0.1) 0%, transparent 50%);
+}
+
+.ocean-texture {
+  background-image:
+    radial-gradient(circle at 30% 70%, rgba(0, 206, 209, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 70% 30%, rgba(0, 139, 139, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(64, 224, 208, 0.05) 0%, transparent 50%);
 }

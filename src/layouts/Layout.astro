@@ -19,18 +19,24 @@ const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen bg-gray-50">
-    <nav class="bg-white shadow-md sticky top-0 z-50 border-b-4 border-[var(--color-ocean-blue)]">
+  <body class="min-h-screen">
+    <!-- Polynesian tribal pattern border at very top -->
+    <div class="wave-animate h-2"></div>
+
+    <nav class="bg-white shadow-lg sticky top-0 z-50 tribal-border-top">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
           <!-- Logo and Name -->
-          <a href="/" class="flex items-center gap-4 hover:opacity-90 transition">
-            <img src="/logo.jpg" alt="9th Island OCC Logo" class="h-16 w-auto" />
+          <a href="/" class="flex items-center gap-4 hover:opacity-90 transition group">
+            <div class="relative">
+              <img src="/logo.jpg" alt="9th Island OCC Logo" class="h-16 w-auto" />
+              <div class="absolute inset-0 bg-gradient-to-r from-[var(--color-lava-orange)] to-[var(--color-ocean-teal)] opacity-0 group-hover:opacity-20 transition-opacity rounded-lg"></div>
+            </div>
             <div class="hidden sm:block">
-              <div class="text-2xl font-bold text-gray-900 leading-tight" style="font-family: 'Georgia', serif;">
+              <div class="text-2xl font-bold leading-tight" style="font-family: 'Georgia', serif; background: linear-gradient(135deg, var(--color-rock-black), var(--color-lava-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
                 9th Island
               </div>
-              <div class="text-sm text-[var(--color-ocean-blue)] font-semibold tracking-wider">
+              <div class="text-sm font-semibold tracking-wider" style="color: var(--color-ocean-teal);">
                 OUTRIGGER CANOE CLUB
               </div>
             </div>
@@ -38,20 +44,20 @@ const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club
 
           <!-- Desktop Navigation -->
           <div class="hidden lg:flex items-center space-x-6">
-            <a href="/" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium transition">Home</a>
-            <a href="/about" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium transition">About</a>
-            <a href="/membership" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium transition">Membership</a>
-            <a href="/events" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium transition">Events</a>
-            <a href="/gallery" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium transition">Gallery</a>
-            <a href="/contact" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium transition">Contact</a>
-            <a href="/membership" class="bg-[var(--color-sunset)] text-white px-6 py-2.5 rounded-full hover:opacity-90 transition font-semibold">
+            <a href="/" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Home</a>
+            <a href="/about" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">About</a>
+            <a href="/membership" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Membership</a>
+            <a href="/events" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Events</a>
+            <a href="/gallery" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Gallery</a>
+            <a href="/contact" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Contact</a>
+            <a href="/membership" class="btn-lava px-6 py-2.5 rounded-full font-semibold">
               Join Us
             </a>
           </div>
 
           <!-- Mobile menu button -->
           <button id="mobile-menu-button" class="lg:hidden p-2 rounded-lg hover:bg-gray-100">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-6 h-6 text-[var(--color-lava-orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
           </button>
@@ -60,13 +66,13 @@ const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club
         <!-- Mobile Navigation -->
         <div id="mobile-menu" class="hidden lg:hidden pb-4">
           <div class="flex flex-col space-y-3">
-            <a href="/" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium py-2 transition">Home</a>
-            <a href="/about" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium py-2 transition">About</a>
-            <a href="/membership" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium py-2 transition">Membership</a>
-            <a href="/events" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium py-2 transition">Events</a>
-            <a href="/gallery" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium py-2 transition">Gallery</a>
-            <a href="/contact" class="text-gray-700 hover:text-[var(--color-ocean-blue)] font-medium py-2 transition">Contact</a>
-            <a href="/membership" class="bg-[var(--color-sunset)] text-white px-6 py-2.5 rounded-full hover:opacity-90 transition font-semibold text-center">
+            <a href="/" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Home</a>
+            <a href="/about" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">About</a>
+            <a href="/membership" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Membership</a>
+            <a href="/events" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Events</a>
+            <a href="/gallery" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Gallery</a>
+            <a href="/contact" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Contact</a>
+            <a href="/membership" class="btn-lava px-6 py-2.5 rounded-full font-semibold text-center">
               Join Us
             </a>
           </div>
@@ -88,35 +94,38 @@ const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club
       <slot />
     </main>
 
-    <footer class="bg-gray-900 text-white mt-20">
+    <footer class="bg-[var(--color-rock-black)] text-white mt-20 relative">
+      <!-- Decorative tribal pattern border -->
+      <div class="wave-animate h-1"></div>
+
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 class="text-xl font-bold mb-4">9th Island OCC</h3>
-            <p class="text-gray-400">Bringing Hawaiian outrigger canoe culture to Las Vegas</p>
+            <h3 class="text-xl font-bold mb-4" style="color: var(--color-lava-orange);">9th Island OCC</h3>
+            <p class="text-gray-300">Bringing Hawaiian outrigger canoe culture to Las Vegas</p>
           </div>
           <div>
-            <h4 class="font-semibold mb-4">Quick Links</h4>
-            <ul class="space-y-2 text-gray-400">
-              <li><a href="/" class="hover:text-white transition">Home</a></li>
-              <li><a href="/about" class="hover:text-white transition">About</a></li>
-              <li><a href="/events" class="hover:text-white transition">Events</a></li>
-              <li><a href="/contact" class="hover:text-white transition">Contact</a></li>
+            <h4 class="font-semibold mb-4" style="color: var(--color-ocean-teal);">Quick Links</h4>
+            <ul class="space-y-2 text-gray-300">
+              <li><a href="/" class="hover:text-[var(--color-lava-orange)] transition">Home</a></li>
+              <li><a href="/about" class="hover:text-[var(--color-lava-orange)] transition">About</a></li>
+              <li><a href="/events" class="hover:text-[var(--color-lava-orange)] transition">Events</a></li>
+              <li><a href="/contact" class="hover:text-[var(--color-lava-orange)] transition">Contact</a></li>
             </ul>
           </div>
           <div>
-            <h4 class="font-semibold mb-4">Follow Us</h4>
+            <h4 class="font-semibold mb-4" style="color: var(--color-ocean-teal);">Follow Us</h4>
             <div class="flex space-x-4">
-              <a href="https://www.facebook.com/profile.php?id=61555487985276" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">
+              <a href="https://www.facebook.com/profile.php?id=61555487985276" target="_blank" rel="noopener" class="text-gray-300 hover:text-[var(--color-ocean-teal)] transition">
                 Facebook
               </a>
-              <a href="https://www.instagram.com/9thislandocc/" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">
+              <a href="https://www.instagram.com/9thislandocc/" target="_blank" rel="noopener" class="text-gray-300 hover:text-[var(--color-ocean-teal)] transition">
                 Instagram
               </a>
             </div>
           </div>
         </div>
-        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+        <div class="border-t border-[var(--color-rock-gray)] mt-8 pt-8 text-center text-gray-400">
           <p>&copy; {new Date().getFullYear()} 9th Island Outrigger Canoe Club. All rights reserved.</p>
         </div>
       </div>
