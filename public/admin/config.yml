@@ -42,3 +42,39 @@ collections:
           - {label: "Contact Email", name: "contactEmail", widget: "string"}
           - {label: "Facebook URL", name: "facebookUrl", widget: "string"}
           - {label: "Instagram URL", name: "instagramUrl", widget: "string"}
+
+      - label: "Practice Schedule"
+        name: "practice"
+        file: "src/content/settings/practice.json"
+        fields:
+          - label: "Weekday Practices"
+            name: "weekday"
+            widget: "list"
+            fields:
+              - {label: "Day", name: "day", widget: "string"}
+              - {label: "Time", name: "time", widget: "string"}
+          - label: "Weekend Practices"
+            name: "weekend"
+            widget: "list"
+            fields:
+              - {label: "Day", name: "day", widget: "string"}
+              - {label: "Time", name: "time", widget: "string"}
+          - {label: "Location", name: "location", widget: "string"}
+          - {label: "Location Details", name: "locationDetails", widget: "text"}
+          - {label: "Seasonal Note", name: "seasonalNote", widget: "text", required: false}
+
+      - label: "Membership Pricing"
+        name: "membership"
+        file: "src/content/settings/membership.json"
+        fields:
+          - label: "Membership Tiers"
+            name: "tiers"
+            widget: "list"
+            fields:
+              - {label: "Name", name: "name", widget: "string"}
+              - {label: "Price", name: "price", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+              - label: "Benefits"
+                name: "benefits"
+                widget: "list"
+                field: {label: "Benefit", name: "benefit", widget: "string"}

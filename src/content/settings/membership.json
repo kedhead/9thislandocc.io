@@ -1,0 +1,38 @@
+{
+  "tiers": [
+    {
+      "name": "Individual",
+      "price": "$XXX/year",
+      "description": "Perfect for solo paddlers",
+      "benefits": [
+        "All practice sessions",
+        "Race participation",
+        "Training resources",
+        "Club events access"
+      ]
+    },
+    {
+      "name": "Family",
+      "price": "$XXX/year",
+      "description": "Best value for families",
+      "benefits": [
+        "Up to 4 family members",
+        "All practice sessions",
+        "Priority race registration",
+        "Training resources",
+        "Family event discounts"
+      ]
+    },
+    {
+      "name": "Student",
+      "price": "$XXX/year",
+      "description": "Discounted rate for students",
+      "benefits": [
+        "All practice sessions",
+        "Race participation",
+        "Training resources",
+        "Must show valid student ID"
+      ]
+    }
+  ]
+}
