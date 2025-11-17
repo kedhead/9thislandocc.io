@@ -1,0 +1,20 @@
+{
+  "name": "9thislandocc",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "tinacms dev -c \"astro dev --host\"",
+    "dev:no-cms": "astro dev --host",
+    "build": "astro build",
+    "build:cms": "tinacms build && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.17",
+    "@tinacms/cli": "^1.12.3",
+    "astro": "^5.15.8",
+    "tailwindcss": "^4.1.17",
+    "tinacms": "^2.9.4"
+  }
+}

@@ -1,0 +1,130 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Simple Admin - Edit Content">
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold mb-8">Simple Content Editor</h1>
+
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
+      <p class="text-yellow-700">
+        <strong>Quick Edit Guide:</strong> To edit content on your site, you can manually edit these files in your project:
+      </p>
+    </div>
+
+    <div class="space-y-8">
+      <!-- Site Settings -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900">Site Settings</h2>
+        <p class="text-gray-600 mb-4">Edit: <code class="bg-gray-100 px-2 py-1 rounded">src/content/settings/site.json</code></p>
+        <div class="space-y-2 text-sm">
+          <p><strong>Site Name:</strong> 9th Island Outrigger Canoe Club</p>
+          <p><strong>Tagline:</strong> Paddling Together, Building Ohana</p>
+          <p><strong>Facebook:</strong> https://www.facebook.com/profile.php?id=61555487985276</p>
+          <p><strong>Instagram:</strong> https://www.instagram.com/9thislandocc/</p>
+        </div>
+      </div>
+
+      <!-- Blog Posts -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900">Blog Posts & Events</h2>
+        <p class="text-gray-600 mb-4">Location: <code class="bg-gray-100 px-2 py-1 rounded">src/content/posts/</code></p>
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <h3 class="font-bold mb-2">How to Add a New Post:</h3>
+          <ol class="list-decimal list-inside space-y-2 text-sm">
+            <li>Create a new file in <code>src/content/posts/</code> (e.g., <code>my-event.mdx</code>)</li>
+            <li>Copy this template:</li>
+          </ol>
+          <pre class="bg-gray-800 text-white p-4 rounded mt-4 overflow-x-auto"><code>---
+title: Your Event Title Here
+date: 2024-11-17T00:00:00.000Z
+category: event
+image: /uploads/event-photo.jpg
+---
+
+Write your event details here. You can use:
+
+- **Bold text** with double asterisks
+- *Italic text* with single asterisks
+- Lists like this one
+- [Links](https://example.com)
+
+## Headings with ##
+
+And paragraphs separated by blank lines.</code></pre>
+        </div>
+      </div>
+
+      <!-- Pages -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900">Pages (About, etc.)</h2>
+        <p class="text-gray-600 mb-4">Location: <code class="bg-gray-100 px-2 py-1 rounded">src/content/pages/</code></p>
+        <p class="text-sm text-gray-600">Edit <code>about.mdx</code> to change the About page content.</p>
+      </div>
+
+      <!-- Images -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900">Upload Images</h2>
+        <p class="text-gray-600 mb-4">Location: <code class="bg-gray-100 px-2 py-1 rounded">public/uploads/</code></p>
+        <div class="bg-green-50 p-4 rounded-lg">
+          <h3 class="font-bold mb-2">How to Add Images:</h3>
+          <ol class="list-decimal list-inside space-y-2 text-sm">
+            <li>Place your image files in the <code>public/uploads/</code> folder</li>
+            <li>Reference them in posts as: <code>/uploads/your-image.jpg</code></li>
+            <li>Supported formats: JPG, PNG, GIF, WebP</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900">Recommended Editors</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="border rounded-lg p-4">
+            <h3 class="font-bold mb-2">VS Code (Free)</h3>
+            <p class="text-sm text-gray-600 mb-2">Best for technical users</p>
+            <a href="https://code.visualstudio.com/" target="_blank" class="text-blue-600 hover:underline text-sm">
+              Download →
+            </a>
+          </div>
+          <div class="border rounded-lg p-4">
+            <h3 class="font-bold mb-2">Notepad / TextEdit</h3>
+            <p class="text-sm text-gray-600 mb-2">Built into Windows/Mac</p>
+            <p class="text-sm text-gray-500">Already installed on your computer</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Using TinaCMS -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4 text-gray-900">For Advanced Users: TinaCMS</h2>
+        <p class="text-gray-600 mb-4">
+          To use the visual editor (TinaCMS), you'll need to set up a free account at
+          <a href="https://tina.io" target="_blank" class="text-blue-600 hover:underline">tina.io</a>
+        </p>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h3 class="font-bold mb-2">Setup Steps:</h3>
+          <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+            <li>Go to <a href="https://tina.io" target="_blank" class="text-blue-600 hover:underline">tina.io</a> and create account</li>
+            <li>Create a new project and connect to your GitHub</li>
+            <li>Get your Client ID and Token</li>
+            <li>Add them to a <code>.env</code> file in your project root</li>
+            <li>Access the admin at <code>/admin/index.html</code></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 text-center">
+      <a href="/" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+        ← Back to Website
+      </a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  code {
+    font-family: 'Courier New', monospace;
+  }
+</style>

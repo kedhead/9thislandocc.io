@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { readdirSync, readFileSync } from 'fs';
+import { join } from 'path';
+
+const postsDir = join(process.cwd(), 'src/content/posts');
+let posts = [];
+
+try {
+  const files = readdirSync(postsDir);
+  posts = files
+    .filter(file => file.endsWith('.mdx'))
+    .map(file => {
+      const content = readFileSync(join(postsDir, file), 'utf-8');
+      const frontmatterMatch = content.match(/---\n([\s\S]*?)\n---/);
+      if (frontmatterMatch) {
+        const frontmatter = frontmatterMatch[1];
+        const title = frontmatter.match(/title:\s*(.+)/)?.[1] || 'Untitled';
+        const date = frontmatter.match(/date:\s*(.+)/)?.[1] || '';
+        const category = frontmatter.match(/category:\s*(.+)/)?.[1] || 'news';
+        return { title, date, category, slug: file.replace('.mdx', '') };
+      }
+      return null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+} catch (e) {
+  console.error('Error loading posts:', e);
+}
+---
+
+<Layout title="Events & News - 9th Island OCC">
+  <div class="bg-gradient-to-b from-[var(--color-ocean-blue)] to-[var(--color-ocean-dark)] text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-5xl font-bold mb-4">Events & News</h1>
+      <p class="text-xl opacity-90">Stay updated on practices, races, and club happenings</p>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    {posts.length === 0 ? (
+      <div class="text-center py-12">
+        <p class="text-gray-600 text-lg">No events or news posts yet. Check back soon!</p>
+        <p class="text-gray-500 mt-4">Follow us on social media for the latest updates.</p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {posts.map(post => (
+          <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+            <div class="p-6">
+              <div class="flex items-center gap-2 mb-3">
+                <span class={`px-3 py-1 rounded-full text-sm font-semibold ${
+                  post.category === 'race' ? 'bg-red-100 text-red-700' :
+                  post.category === 'practice' ? 'bg-blue-100 text-blue-700' :
+                  post.category === 'event' ? 'bg-green-100 text-green-700' :
+                  'bg-gray-100 text-gray-700'
+                }`}>
+                  {post.category}
+                </span>
+              </div>
+              <h2 class="text-2xl font-bold mb-2 text-gray-900">{post.title}</h2>
+              <p class="text-gray-600 text-sm mb-4">
+                {new Date(post.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-16 text-center bg-gray-50 rounded-lg p-12">
+      <h2 class="text-3xl font-bold mb-4 text-gray-900">Want to Stay Updated?</h2>
+      <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+        Follow us on social media for real-time updates on practices, events, and races.
+      </p>
+      <div class="flex justify-center gap-4">
+        <a href="https://www.facebook.com/profile.php?id=61555487985276" target="_blank" rel="noopener" class="bg-[var(--color-ocean-blue)] text-white px-6 py-3 rounded-lg hover:opacity-90 transition">
+          Facebook
+        </a>
+        <a href="https://www.instagram.com/9thislandocc/" target="_blank" rel="noopener" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg hover:opacity-90 transition">
+          Instagram
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

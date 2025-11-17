@@ -1,0 +1,80 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club - Las Vegas" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-gray-50">
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <a href="/" class="text-2xl font-bold text-[var(--color-ocean-blue)]">
+            9th Island OCC
+          </a>
+          <div class="hidden md:flex space-x-8">
+            <a href="/" class="text-gray-700 hover:text-[var(--color-ocean-blue)] transition">Home</a>
+            <a href="/about" class="text-gray-700 hover:text-[var(--color-ocean-blue)] transition">About</a>
+            <a href="/events" class="text-gray-700 hover:text-[var(--color-ocean-blue)] transition">Events</a>
+            <a href="/contact" class="text-gray-700 hover:text-[var(--color-ocean-blue)] transition">Contact</a>
+          </div>
+          <a href="/contact" class="bg-[var(--color-sunset)] text-white px-6 py-2 rounded-full hover:opacity-90 transition">
+            Join Us
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="bg-gray-900 text-white mt-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4">9th Island OCC</h3>
+            <p class="text-gray-400">Bringing Hawaiian outrigger canoe culture to Las Vegas</p>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Quick Links</h4>
+            <ul class="space-y-2 text-gray-400">
+              <li><a href="/" class="hover:text-white transition">Home</a></li>
+              <li><a href="/about" class="hover:text-white transition">About</a></li>
+              <li><a href="/events" class="hover:text-white transition">Events</a></li>
+              <li><a href="/contact" class="hover:text-white transition">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Follow Us</h4>
+            <div class="flex space-x-4">
+              <a href="https://www.facebook.com/profile.php?id=61555487985276" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">
+                Facebook
+              </a>
+              <a href="https://www.instagram.com/9thislandocc/" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition">
+                Instagram
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+          <p>&copy; {new Date().getFullYear()} 9th Island Outrigger Canoe Club. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

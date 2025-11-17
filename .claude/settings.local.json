@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.facebook.com)",
+      "WebFetch(domain:www.instagram.com)",
+      "Bash(npm create:*)",
+      "Bash(mkdir:*)",
+      "Bash(npx astro add:*)",
+      "Bash(npm install:*)",
+      "Bash(npx @tinacms/cli:*)",
+      "Bash(pkill:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:no-cms:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(npm run dev)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

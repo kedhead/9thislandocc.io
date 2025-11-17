@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ocean-blue: #0077be;
+  --color-ocean-dark: #005a8c;
+  --color-sand: #f4e8d0;
+  --color-sunset: #ff6b35;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, var(--color-ocean-dark) 0%, var(--color-ocean-blue) 100%);
+}
