@@ -15,12 +15,13 @@ try {
     .filter(file => file.endsWith('.md') || file.endsWith('.mdx'))
     .map(file => {
       const content = readFileSync(join(postsDir, file), 'utf-8');
-      const frontmatterMatch = content.match(/---\n([\s\S]*?)\n---/);
+      // Handle both Unix (\n) and Windows (\r\n) line endings
+      const frontmatterMatch = content.match(/---[\r\n]+([\s\S]*?)[\r\n]+---/);
       if (frontmatterMatch) {
         const frontmatter = frontmatterMatch[1];
-        const title = frontmatter.match(/title:\s*(.+)/)?.[1] || 'Untitled';
-        const date = frontmatter.match(/date:\s*(.+)/)?.[1] || '';
-        const category = frontmatter.match(/category:\s*(.+)/)?.[1] || 'news';
+        const title = frontmatter.match(/title:\s*(.+?)[\r\n]/)?.[1]?.trim() || 'Untitled';
+        const date = frontmatter.match(/date:\s*(.+?)[\r\n]/)?.[1]?.trim() || '';
+        const category = frontmatter.match(/category:\s*(.+?)[\r\n]/)?.[1]?.trim() || 'news';
         const slug = file.replace(/\.(md|mdx)$/, '');
         return { title, date, category, slug };
       }
@@ -113,7 +114,7 @@ try {
     ) : (
       <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map(post => (
-          <article class="event-item bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition" data-category={post.category}>
+          <a href={`/events/${post.slug}`} class="event-item bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition block" data-category={post.category}>
             <div class={`h-2 ${
               post.category === 'race' ? 'bg-red-500' :
               post.category === 'practice' ? 'bg-blue-500' :
@@ -142,8 +143,14 @@ try {
                   day: 'numeric'
                 })}
               </div>
+              <div class="flex items-center text-[var(--color-ocean-blue)] font-semibold">
+                Read More
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
             </div>
-          </article>
+          </a>
         ))}
       </div>
     )}
