@@ -106,19 +106,64 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
 
-    <!-- Instructions -->
-    <div class="mt-16 bg-blue-50 rounded-lg p-8 border-2 border-blue-200">
-      <h2 class="text-2xl font-bold mb-4 text-gray-900">How to Add Your Photos</h2>
-      <div class="space-y-4 text-gray-700">
-        <p>
-          <strong>Option 1: Direct Upload</strong> - Place your photos in the <code class="bg-gray-200 px-2 py-1 rounded">public/gallery/</code> folder
-        </p>
-        <p>
-          <strong>Option 2: Instagram Integration</strong> - Your Instagram photos from <a href="https://www.instagram.com/9thislandocc/" target="_blank" class="text-blue-600 hover:underline">@9thislandocc</a> can be automatically displayed here with a simple integration.
-        </p>
-        <p class="text-sm text-gray-600">
-          Need help setting up automatic photo feeds? Contact your web admin or check the documentation.
-        </p>
+    <!-- Instagram Feed Section -->
+    <div class="mt-16">
+      <h2 class="text-3xl font-bold mb-8 text-gray-900 text-center">Latest from Instagram</h2>
+      <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-8 border-2 border-purple-200">
+        <div class="text-center mb-6">
+          <a href="https://www.instagram.com/9thislandocc/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg hover:opacity-90 transition font-semibold">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+            Follow @9thislandocc
+          </a>
+        </div>
+
+        <!-- Instagram Embed Widget Placeholder -->
+        <div id="instagram-feed-widget" class="bg-white rounded-lg p-6">
+          <div class="text-center text-gray-600">
+            <p class="mb-4">To display your Instagram feed here, choose one of these options:</p>
+
+            <div class="space-y-4 text-left max-w-2xl mx-auto">
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-bold text-gray-900 mb-2">Option 1: SnapWidget (Easiest)</h3>
+                <ol class="list-decimal list-inside space-y-2 text-sm">
+                  <li>Go to <a href="https://snapwidget.com/widgets/instagram-feed" target="_blank" class="text-blue-600 hover:underline">snapwidget.com/widgets/instagram-feed</a></li>
+                  <li>Connect your Instagram account</li>
+                  <li>Customize the feed appearance</li>
+                  <li>Copy the embed code</li>
+                  <li>Paste it into this section of gallery.astro</li>
+                </ol>
+              </div>
+
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-bold text-gray-900 mb-2">Option 2: Curator.io</h3>
+                <ol class="list-decimal list-inside space-y-2 text-sm">
+                  <li>Go to <a href="https://curator.io" target="_blank" class="text-blue-600 hover:underline">curator.io</a></li>
+                  <li>Create a free account</li>
+                  <li>Add your Instagram source</li>
+                  <li>Get the embed code</li>
+                  <li>Add it to gallery.astro (line ~124)</li>
+                </ol>
+              </div>
+
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-bold text-gray-900 mb-2">Option 3: Juicer</h3>
+                <ol class="list-decimal list-inside space-y-2 text-sm">
+                  <li>Go to <a href="https://www.juicer.io" target="_blank" class="text-blue-600 hover:underline">juicer.io</a></li>
+                  <li>Sign up for free plan</li>
+                  <li>Connect Instagram (@9thislandocc)</li>
+                  <li>Copy the embed script</li>
+                  <li>Paste it where this text is</li>
+                </ol>
+              </div>
+            </div>
+
+            <p class="mt-6 text-sm text-gray-500">
+              Once you add the embed code, remove this instruction text and the Instagram feed will display automatically.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
