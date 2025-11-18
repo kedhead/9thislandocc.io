@@ -119,50 +119,9 @@ import Layout from '../layouts/Layout.astro';
           </a>
         </div>
 
-        <!-- Instagram Embed Widget Placeholder -->
+        <!-- Instagram Feed via Juicer.io -->
         <div id="instagram-feed-widget" class="bg-white rounded-lg p-6">
-          <div class="text-center text-gray-600">
-            <p class="mb-4">To display your Instagram feed here, choose one of these options:</p>
-
-            <div class="space-y-4 text-left max-w-2xl mx-auto">
-              <div class="bg-gray-50 p-4 rounded-lg">
-                <h3 class="font-bold text-gray-900 mb-2">Option 1: SnapWidget (Easiest)</h3>
-                <ol class="list-decimal list-inside space-y-2 text-sm">
-                  <li>Go to <a href="https://snapwidget.com/widgets/instagram-feed" target="_blank" class="text-blue-600 hover:underline">snapwidget.com/widgets/instagram-feed</a></li>
-                  <li>Connect your Instagram account</li>
-                  <li>Customize the feed appearance</li>
-                  <li>Copy the embed code</li>
-                  <li>Paste it into this section of gallery.astro</li>
-                </ol>
-              </div>
-
-              <div class="bg-gray-50 p-4 rounded-lg">
-                <h3 class="font-bold text-gray-900 mb-2">Option 2: Curator.io</h3>
-                <ol class="list-decimal list-inside space-y-2 text-sm">
-                  <li>Go to <a href="https://curator.io" target="_blank" class="text-blue-600 hover:underline">curator.io</a></li>
-                  <li>Create a free account</li>
-                  <li>Add your Instagram source</li>
-                  <li>Get the embed code</li>
-                  <li>Add it to gallery.astro (line ~124)</li>
-                </ol>
-              </div>
-
-              <div class="bg-gray-50 p-4 rounded-lg">
-                <h3 class="font-bold text-gray-900 mb-2">Option 3: Juicer</h3>
-                <ol class="list-decimal list-inside space-y-2 text-sm">
-                  <li>Go to <a href="https://www.juicer.io" target="_blank" class="text-blue-600 hover:underline">juicer.io</a></li>
-                  <li>Sign up for free plan</li>
-                  <li>Connect Instagram (@9thislandocc)</li>
-                  <li>Copy the embed script</li>
-                  <li>Paste it where this text is</li>
-                </ol>
-              </div>
-            </div>
-
-            <p class="mt-6 text-sm text-gray-500">
-              Once you add the embed code, remove this instruction text and the Instagram feed will display automatically.
-            </p>
-          </div>
+          <ul class="juicer-feed" data-feed-id="9thislandocc"></ul>
         </div>
       </div>
     </div>
@@ -246,3 +205,6 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 </script>
+
+<!-- Juicer.io Instagram Feed Script -->
+<script type="text/javascript" src="https://www.juicer.io/embed/9thislandocc/embed-code.js" async defer></script>
