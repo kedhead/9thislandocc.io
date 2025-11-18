@@ -51,6 +51,19 @@ const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club
             <a href="/events" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Events</a>
             <a href="/gallery" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Gallery</a>
             <a href="/contact" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Contact</a>
+
+            <!-- Dark Mode Toggle -->
+            <button id="dark-mode-toggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
+              <div class="toggle-thumb">
+                <svg class="sun-icon w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+                </svg>
+                <svg class="moon-icon w-4 h-4 text-blue-200 hidden" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                </svg>
+              </div>
+            </button>
+
             <a href="/membership" class="btn-lava px-6 py-2.5 rounded-full font-semibold">
               Join Us
             </a>
@@ -73,6 +86,22 @@ const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club
             <a href="/events" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Events</a>
             <a href="/gallery" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Gallery</a>
             <a href="/contact" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Contact</a>
+
+            <!-- Dark Mode Toggle (Mobile) -->
+            <div class="flex items-center justify-between py-2 pl-2">
+              <span class="text-gray-700 font-medium">Dark Mode</span>
+              <button id="dark-mode-toggle-mobile" class="dark-mode-toggle" aria-label="Toggle dark mode">
+                <div class="toggle-thumb">
+                  <svg class="sun-icon w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+                  </svg>
+                  <svg class="moon-icon w-4 h-4 text-blue-200 hidden" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                  </svg>
+                </div>
+              </button>
+            </div>
+
             <a href="/membership" class="btn-lava px-6 py-2.5 rounded-full font-semibold text-center">
               Join Us
             </a>
@@ -89,6 +118,53 @@ const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club
       mobileMenuButton?.addEventListener('click', () => {
         mobileMenu?.classList.toggle('hidden');
       });
+
+      // Dark mode toggle functionality
+      const darkModeToggle = document.getElementById('dark-mode-toggle');
+      const darkModeToggleMobile = document.getElementById('dark-mode-toggle-mobile');
+      const htmlElement = document.documentElement;
+
+      // Check for saved theme preference or default to light mode
+      const currentTheme = localStorage.getItem('theme') || 'light';
+
+      // Apply the saved theme on page load
+      if (currentTheme === 'dark') {
+        htmlElement.classList.add('dark');
+        updateIcons(true);
+      }
+
+      // Toggle dark mode function
+      function toggleDarkMode() {
+        const isDark = htmlElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateIcons(isDark);
+      }
+
+      // Update sun/moon icons
+      function updateIcons(isDark) {
+        const sunIcons = document.querySelectorAll('.sun-icon');
+        const moonIcons = document.querySelectorAll('.moon-icon');
+
+        sunIcons.forEach(icon => {
+          if (isDark) {
+            icon.classList.add('hidden');
+          } else {
+            icon.classList.remove('hidden');
+          }
+        });
+
+        moonIcons.forEach(icon => {
+          if (isDark) {
+            icon.classList.remove('hidden');
+          } else {
+            icon.classList.add('hidden');
+          }
+        });
+      }
+
+      // Add event listeners to both toggle buttons
+      darkModeToggle?.addEventListener('click', toggleDarkMode);
+      darkModeToggleMobile?.addEventListener('click', toggleDarkMode);
     </script>
 
     <main>
