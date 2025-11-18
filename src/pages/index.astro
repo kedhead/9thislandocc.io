@@ -8,8 +8,25 @@ const { hero, whatWeOffer, callToAction } = homepageData;
 
 <Layout title={siteSettings.siteName} description={siteSettings.description}>
   <!-- Hero Section -->
-  <section class="hero-gradient text-white py-24 md:py-32">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+  <section class="relative text-white py-24 md:py-32 overflow-hidden">
+    {/* Background Image with Overlay */}
+    {hero.backgroundImage && (
+      <>
+        <div class="absolute inset-0 z-0">
+          <img
+            src={hero.backgroundImage}
+            alt="Hero background"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="absolute inset-0 z-0 bg-gradient-to-r from-[var(--color-ocean-blue)]/90 to-[var(--color-ocean-dark)]/90"></div>
+      </>
+    )}
+    {!hero.backgroundImage && (
+      <div class="absolute inset-0 z-0 hero-gradient"></div>
+    )}
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
       <!-- Logo -->
       <div class="mb-8 flex justify-center">
         <img src="/logo.jpg" alt="9th Island OCC Logo" class="h-32 md:h-40 w-auto rounded-lg shadow-2xl ring-4 ring-white/30" />

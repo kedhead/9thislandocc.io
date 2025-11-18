@@ -92,6 +92,7 @@ collections:
               - {label: "Main Heading", name: "heading", widget: "string"}
               - {label: "Tagline", name: "tagline", widget: "string"}
               - {label: "Description", name: "description", widget: "text"}
+              - {label: "Background Image (1920x1080px recommended)", name: "backgroundImage", widget: "image", required: false}
               - label: "Primary Button"
                 name: "primaryButton"
                 widget: "object"
