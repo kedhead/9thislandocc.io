@@ -125,3 +125,65 @@ collections:
               - {label: "Description", name: "description", widget: "text"}
               - {label: "Button Text", name: "buttonText", widget: "string"}
               - {label: "Button Link", name: "buttonLink", widget: "string"}
+
+      - label: "About Page"
+        name: "about"
+        file: "public/data/about.json"
+        fields:
+          - label: "Hero Section"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Heading", name: "heading", widget: "string"}
+              - {label: "Tagline", name: "tagline", widget: "string"}
+
+          - label: "Introduction"
+            name: "introduction"
+            widget: "object"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Content", name: "content", widget: "text"}
+
+          - label: "Mission Section"
+            name: "mission"
+            widget: "object"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "string"}
+              - label: "Mission Items"
+                name: "items"
+                widget: "list"
+                field: {label: "Item", name: "item", widget: "string"}
+
+          - label: "What We Do"
+            name: "activities"
+            widget: "object"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - label: "Activities"
+                name: "items"
+                widget: "list"
+                fields:
+                  - {label: "Activity Name", name: "name", widget: "string"}
+                  - {label: "Description", name: "description", widget: "text"}
+
+          - label: "Coaching Staff"
+            name: "coaches"
+            widget: "object"
+            fields:
+              - {label: "Section Title", name: "title", widget: "string"}
+              - label: "Coaches"
+                name: "staff"
+                widget: "list"
+                fields:
+                  - {label: "Name", name: "name", widget: "string"}
+                  - {label: "Title/Position", name: "title", widget: "string"}
+                  - {label: "Photo", name: "photo", widget: "image", required: false}
+                  - {label: "Bio", name: "bio", widget: "text"}
+
+          - label: "Join Us Section"
+            name: "joinUs"
+            widget: "object"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Content", name: "content", widget: "text"}
