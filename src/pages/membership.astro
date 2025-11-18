@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import membershipData from '../../public/data/membership.json';
+
+const { tiers } = membershipData;
 ---
 
 <Layout title="Membership - 9th Island OCC">
@@ -51,101 +54,33 @@ import Layout from '../layouts/Layout.astro';
     <div class="mb-16">
       <h2 class="text-4xl font-bold text-center mb-12 text-gray-900">Membership Options</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Individual -->
-        <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-[var(--color-ocean-blue)]">
-          <h3 class="text-2xl font-bold mb-4 text-gray-900">Individual</h3>
-          <div class="text-4xl font-bold mb-6 text-[var(--color-ocean-blue)]">
-            $XXX<span class="text-lg font-normal text-gray-600">/year</span>
+        {tiers.map((tier, index) => (
+          <div class={`bg-white rounded-lg shadow-lg p-8 border-t-4 ${index === 1 ? 'border-[var(--color-lava-orange)] relative' : 'border-[var(--color-ocean-blue)]'}`}>
+            {index === 1 && (
+              <div class="absolute top-0 right-0 bg-[var(--color-lava-orange)] text-white px-4 py-1 text-sm font-semibold">
+                Popular
+              </div>
+            )}
+            <h3 class="text-2xl font-bold mb-4 text-gray-900">{tier.name}</h3>
+            <div class={`text-4xl font-bold mb-6 ${index === 1 ? 'text-[var(--color-lava-orange)]' : 'text-[var(--color-ocean-blue)]'}`}>
+              {tier.price}
+            </div>
+            <p class="text-gray-600 mb-4">{tier.description}</p>
+            <ul class="space-y-3 mb-8">
+              {tier.benefits.map((benefit) => (
+                <li class="flex items-start">
+                  <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="text-gray-700">{benefit}</span>
+                </li>
+              ))}
+            </ul>
+            <button class={`membership-select w-full py-3 rounded-lg font-semibold ${index === 1 ? 'btn-lava' : 'btn-ocean'}`} data-type={tier.name}>
+              Select
+            </button>
           </div>
-          <ul class="space-y-3 mb-8">
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-gray-700">All practice sessions</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-gray-700">Race participation</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-gray-700">Club events access</span>
-            </li>
-          </ul>
-          <button class="membership-select w-full btn-ocean py-3 rounded-lg font-semibold" data-type="Individual">
-            Select
-          </button>
-        </div>
-
-        <!-- Family -->
-        <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-[var(--color-lava-orange)] relative">
-          <div class="absolute top-0 right-0 bg-[var(--color-lava-orange)] text-white px-4 py-1 text-sm font-semibold">
-            Popular
-          </div>
-          <h3 class="text-2xl font-bold mb-4 text-gray-900">Family</h3>
-          <div class="text-4xl font-bold mb-6 text-[var(--color-sunset)]">
-            $XXX<span class="text-lg font-normal text-gray-600">/year</span>
-          </div>
-          <ul class="space-y-3 mb-8">
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-gray-700">Up to 4 family members</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-gray-700">All Individual benefits</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-gray-700">Family event discounts</span>
-            </li>
-          </ul>
-          <button class="membership-select w-full btn-lava py-3 rounded-lg font-semibold" data-type="Family">
-            Select
-          </button>
-        </div>
-
-        <!-- Student -->
-        <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-[var(--color-ocean-blue)]">
-          <h3 class="text-2xl font-bold mb-4 text-gray-900">Student</h3>
-          <div class="text-4xl font-bold mb-6 text-[var(--color-ocean-blue)]">
-            $XXX<span class="text-lg font-normal text-gray-600">/year</span>
-          </div>
-          <ul class="space-y-3 mb-8">
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-gray-700">All practice sessions</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-gray-700">Race participation</span>
-            </li>
-            <li class="flex items-start">
-              <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-gray-700">Must show valid student ID</span>
-            </li>
-          </ul>
-          <button class="membership-select w-full btn-ocean py-3 rounded-lg font-semibold" data-type="Student">
-            Select
-          </button>
-        </div>
+        ))}
       </div>
     </div>
 
