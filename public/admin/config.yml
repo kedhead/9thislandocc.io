@@ -127,6 +127,20 @@ collections:
               - {label: "Button Text", name: "buttonText", widget: "string"}
               - {label: "Button Link", name: "buttonLink", widget: "string"}
 
+          - label: "Sponsors & Partners"
+            name: "sponsors"
+            widget: "object"
+            fields:
+              - {label: "Section Title", name: "sectionTitle", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+              - label: "Sponsors"
+                name: "sponsors"
+                widget: "list"
+                fields:
+                  - {label: "Sponsor Name", name: "name", widget: "string"}
+                  - {label: "Logo Image", name: "logo", widget: "image"}
+                  - {label: "Website URL", name: "url", widget: "string", required: false}
+
       - label: "About Page"
         name: "about"
         file: "public/data/about.json"

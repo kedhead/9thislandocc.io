@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import siteSettings from '../content/settings/site.json';
 import homepageData from '../../public/data/homepage.json';
 
-const { hero, whatWeOffer, callToAction } = homepageData;
+const { hero, whatWeOffer, callToAction, sponsors } = homepageData;
 ---
 
 <Layout title={siteSettings.siteName} description={siteSettings.description}>
@@ -117,41 +117,30 @@ const { hero, whatWeOffer, callToAction } = homepageData;
   <!-- Sponsors & Partners Section -->
   <section class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-4xl font-bold text-center mb-4 text-gray-900">Our Sponsors & Partners</h2>
+      <h2 class="text-4xl font-bold text-center mb-4 text-gray-900">{sponsors.sectionTitle}</h2>
       <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-        We're grateful for the support of these amazing organizations who help make our paddling dreams a reality
+        {sponsors.description}
       </p>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
-        <!-- Sponsor placeholders - replace with actual logos -->
-        <div class="bg-white p-8 rounded-lg shadow-md flex items-center justify-center h-32 hover:shadow-lg transition">
-          <div class="text-center">
-            <div class="text-gray-400 font-semibold mb-2">Sponsor Logo</div>
-            <p class="text-xs text-gray-500">Add logo to /public/sponsors/</p>
-          </div>
+      {sponsors.sponsors.length > 0 ? (
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 items-center mb-12">
+          {sponsors.sponsors.map((sponsor) => (
+            sponsor.url ? (
+              <a href={sponsor.url} target="_blank" rel="noopener" class="bg-white p-8 rounded-lg shadow-md flex items-center justify-center h-32 hover:shadow-lg transition">
+                <img src={sponsor.logo} alt={sponsor.name} class="max-h-20 max-w-full object-contain" />
+              </a>
+            ) : (
+              <div class="bg-white p-8 rounded-lg shadow-md flex items-center justify-center h-32 hover:shadow-lg transition">
+                <img src={sponsor.logo} alt={sponsor.name} class="max-h-20 max-w-full object-contain" />
+              </div>
+            )
+          ))}
         </div>
-
-        <div class="bg-white p-8 rounded-lg shadow-md flex items-center justify-center h-32 hover:shadow-lg transition">
-          <div class="text-center">
-            <div class="text-gray-400 font-semibold mb-2">Sponsor Logo</div>
-            <p class="text-xs text-gray-500">Add logo to /public/sponsors/</p>
-          </div>
+      ) : (
+        <div class="text-center py-8 mb-12">
+          <p class="text-gray-500">No sponsors added yet. Add sponsors through the admin panel.</p>
         </div>
-
-        <div class="bg-white p-8 rounded-lg shadow-md flex items-center justify-center h-32 hover:shadow-lg transition">
-          <div class="text-center">
-            <div class="text-gray-400 font-semibold mb-2">Sponsor Logo</div>
-            <p class="text-xs text-gray-500">Add logo to /public/sponsors/</p>
-          </div>
-        </div>
-
-        <div class="bg-white p-8 rounded-lg shadow-md flex items-center justify-center h-32 hover:shadow-lg transition">
-          <div class="text-center">
-            <div class="text-gray-400 font-semibold mb-2">Sponsor Logo</div>
-            <p class="text-xs text-gray-500">Add logo to /public/sponsors/</p>
-          </div>
-        </div>
-      </div>
+      )}
 
       <div class="mt-12 text-center">
         <p class="text-gray-700 mb-4 font-semibold">Interested in becoming a sponsor?</p>
