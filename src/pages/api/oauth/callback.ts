@@ -3,11 +3,7 @@ import { AuthorizationCode } from 'simple-oauth2';
 
 export const GET: APIRoute = async ({ url }) => {
   const code = url.searchParams.get('code');
-  const host = url.host;
-
-  if (!code) {
-    return new Response('Missing code', { status: 400 });
-  }
+  if (!code) return new Response('Missing code', { status: 400 });
 
   const client = new AuthorizationCode({
     client: {
@@ -26,43 +22,52 @@ export const GET: APIRoute = async ({ url }) => {
       code,
       redirect_uri: import.meta.env.OAUTH_REDIRECT_URI,
     });
-
     const token = accessToken.token.access_token;
 
-    // Return a proper HTML page to avoid quirks mode and handle the message passing
-    const html = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Authenticating...</title>
-      </head>
-      <body>
-        <p>Authentication successful. You can close this window.</p>
-        <script>
-          (function() {
-            function receiveMessage(e) {
-              console.log("receiveMessage %o", e);
-              // Optional: security check for e.origin
-              
-              const message = 'authorization:github:success:${JSON.stringify({ token, provider: 'github' })}';
-              window.opener.postMessage(message, e.origin);
-            }
+    // Return a proper HTML page to avoid quirks mode and handle the message passing robustly
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+  <title>Authenticating...</title>
+  <style>body{font-family:sans-serif;text-align:center;padding:20px;}</style>
+</head>
+<body>
+  <p>Authentication successful!</p>
+  <p>Sending credentials to CMS...</p>
+  <p id="status">Connecting...</p>
+  <button onclick="send()" style="padding:10px 20px;margin-top:20px;cursor:pointer;">Retry Login</button>
+  <script>
+    const msg = 'authorization:github:success:${JSON.stringify({ token, provider: 'github' })}';
+    const status = document.getElementById('status');
 
-            window.addEventListener("message", receiveMessage, false);
-            
-            // Send immediately to opener
-            const message = 'authorization:github:success:${JSON.stringify({ token, provider: 'github' })}';
-            window.opener.postMessage(message, '*');
+    function send() {
+      if (!window.opener) {
+        status.innerText = "Error: No main window found (window.opener is null). Please close this and try again. Ensure popups are allowed.";
+        return;
+      }
+      try {
+        window.opener.postMessage(msg, '*');
+        status.innerText = "Message sent. Closing...";
+        console.info("Sent message to opener");
+      } catch (e) {
+        status.innerText = "Error sending message: " + e.message;
+      }
+    }
 
-            // Close the window after a short delay
-            setTimeout(() => {
-              window.close();
-            }, 1000);
-          })();
-        </script>
-      </body>
-      </html>
-    `;
+    // Retrying every 500ms ensures the opener receives the message even if busy/loading
+    const interval = setInterval(send, 500);
+
+    // Initial send
+    send();
+
+    // Close after 2.5 seconds giving enough time for the message to be processed
+    setTimeout(() => {
+      clearInterval(interval);
+      window.close();
+    }, 2500);
+  </script>
+</body>
+</html>`;
 
     return new Response(html, {
       headers: { 'Content-Type': 'text/html' },
@@ -70,6 +75,6 @@ export const GET: APIRoute = async ({ url }) => {
 
   } catch (error) {
     console.error('Access Token Error', (error as Error).message);
-    return new Response('Authentication failed', { status: 500 });
+    return new Response('Authentication failed: ' + (error as Error).message, { status: 500 });
   }
-}
+};
