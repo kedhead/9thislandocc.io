@@ -7,8 +7,8 @@ const { hero, whatWeOffer, callToAction, sponsors } = homepageData;
 ---
 
 <Layout title={siteSettings.siteName} description={siteSettings.description}>
-  <!-- Hero Section -->
-  <section class="relative text-white py-20 md:py-32 overflow-hidden" style="min-height: 500px;">
+  <!-- Hero Section - height scales with viewport for ultrawide support -->
+  <section class="relative text-white py-16 md:py-24 overflow-hidden" style="min-height: max(450px, 45vw); max-height: 700px;">
     {/* Background Image - covers full area */}
     {hero.backgroundImage && (
       <>
