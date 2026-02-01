@@ -65,4 +65,3 @@ export const GET: APIRoute = async ({ url }) => {
         return new Response('Authentication failed', { status: 500 });
     }
 }
-};
