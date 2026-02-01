@@ -22,49 +22,111 @@ export const GET: APIRoute = async ({ url }) => {
       code,
       redirect_uri: import.meta.env.OAUTH_REDIRECT_URI,
     });
-    const token = accessToken.token.access_token;
+    const token = accessToken.token.access_token as string;
 
-    // Return a proper HTML page to avoid quirks mode and handle the message passing robustly
+    // Build message exactly as Decap CMS expects it
+    // Format: authorization:github:success:{"token":"...","provider":"github"}
+    const tokenData = JSON.stringify({ token: token, provider: 'github' });
+    const message = 'authorization:github:success:' + tokenData;
+
     const html = `<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>Authenticating...</title>
-  <style>body{font-family:sans-serif;text-align:center;padding:20px;}</style>
+  <style>
+    body { font-family: system-ui, sans-serif; text-align: center; padding: 40px 20px; }
+    .success { color: green; font-weight: bold; }
+    .error { color: red; }
+    button { padding: 12px 24px; font-size: 16px; cursor: pointer; margin-top: 20px; }
+    pre { background: #f5f5f5; padding: 10px; text-align: left; overflow: auto; font-size: 11px; max-height: 200px; }
+  </style>
 </head>
 <body>
-  <p>Authentication successful!</p>
-  <p>Sending credentials to CMS...</p>
-  <p id="status">Connecting...</p>
-  <button onclick="send()" style="padding:10px 20px;margin-top:20px;cursor:pointer;">Retry Login</button>
-  <script>
-    const msg = 'authorization:github:success:${JSON.stringify({ token, provider: 'github' })}';
-    const status = document.getElementById('status');
+  <h2>GitHub Authentication Successful</h2>
+  <p id="status">Sending credentials to CMS...</p>
+  <button onclick="manualSend()">Click here if CMS doesn't update</button>
+  
+  <h4>Debug Info:</h4>
+  <pre id="debug"></pre>
 
-    function send() {
+  <script>
+    var message = '${message}';
+    var debugEl = document.getElementById('debug');
+    var statusEl = document.getElementById('status');
+    var sendCount = 0;
+    
+    function log(text) {
+      console.log('[CALLBACK] ' + text);
+      debugEl.textContent += text + '\\n';
+    }
+    
+    log('Token received (length: ${token.length})');
+    log('Message format: authorization:github:success:{...}');
+    
+    function sendToOpener() {
+      sendCount++;
+      log('Send attempt #' + sendCount);
+      
       if (!window.opener) {
-        status.innerText = "Error: No main window found (window.opener is null). Please close this and try again. Ensure popups are allowed.";
-        return;
+        statusEl.textContent = 'ERROR: window.opener is null!';
+        statusEl.className = 'error';
+        log('ERROR: window.opener is null - popup may have been blocked or opened incorrectly');
+        return false;
       }
+      
       try {
-        window.opener.postMessage(msg, '*');
-        status.innerText = "Message sent. Closing...";
-        console.info("Sent message to opener");
-      } catch (e) {
-        status.innerText = "Error sending message: " + e.message;
+        // Send to same origin
+        window.opener.postMessage(message, window.location.origin);
+        log('Sent to origin: ' + window.location.origin);
+        
+        // Also try wildcard
+        window.opener.postMessage(message, '*');
+        log('Sent to wildcard (*)');
+        
+        statusEl.textContent = 'Credentials sent! Check your main browser window.';
+        statusEl.className = 'success';
+        return true;
+      } catch (err) {
+        log('ERROR: ' + err.message);
+        statusEl.textContent = 'Error: ' + err.message;
+        statusEl.className = 'error';
+        return false;
       }
     }
-
-    // Retrying every 500ms ensures the opener receives the message even if busy/loading
-    const interval = setInterval(send, 500);
-
-    // Initial send
-    send();
-
-    // Close after 2.5 seconds giving enough time for the message to be processed
-    setTimeout(() => {
-      clearInterval(interval);
-      window.close();
-    }, 2500);
+    
+    function manualSend() {
+      log('Manual send triggered by user');
+      sendToOpener();
+    }
+    
+    // Check opener immediately
+    if (window.opener) {
+      log('window.opener exists');
+      log('Opener location: ' + (window.opener.location ? 'accessible' : 'restricted'));
+    } else {
+      log('WARNING: window.opener is null on page load!');
+    }
+    
+    // Send immediately
+    sendToOpener();
+    
+    // Retry a few times
+    var retryCount = 0;
+    var maxRetries = 6;
+    var retryInterval = setInterval(function() {
+      retryCount++;
+      if (retryCount >= maxRetries) {
+        clearInterval(retryInterval);
+        log('Stopped retrying after ' + maxRetries + ' attempts');
+        log('If CMS still shows login, click the button above');
+        return;
+      }
+      sendToOpener();
+    }, 500);
+    
+    // Don't auto-close - let user see debug info
+    log('Window will NOT auto-close so you can see this debug info');
   </script>
 </body>
 </html>`;
@@ -74,7 +136,21 @@ export const GET: APIRoute = async ({ url }) => {
     });
 
   } catch (error) {
-    console.error('Access Token Error', (error as Error).message);
-    return new Response('Authentication failed: ' + (error as Error).message, { status: 500 });
+    const err = error as Error;
+    console.error('Access Token Error', err.message);
+    return new Response(`
+      <!DOCTYPE html>
+      <html>
+      <head><title>Auth Error</title></head>
+      <body>
+        <h2>Authentication Failed</h2>
+        <p>${err.message}</p>
+        <p>Please close this window and try again.</p>
+      </body>
+      </html>
+    `, {
+      status: 500,
+      headers: { 'Content-Type': 'text/html' }
+    });
   }
 };
