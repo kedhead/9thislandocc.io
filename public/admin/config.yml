@@ -138,6 +138,7 @@ collections:
               - label: "Sponsors"
                 name: "sponsors"
                 widget: "list"
+                required: false
                 fields:
                   - {label: "Sponsor Name", name: "name", widget: "string"}
                   - {label: "Logo Image", name: "logo", widget: "image"}
