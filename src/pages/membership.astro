@@ -199,12 +199,33 @@ const { tiers } = membershipData;
     submitButton.textContent = 'Submitting...';
     submitButton.disabled = true;
 
-    // Simulate submission - replace with actual form handler
-    setTimeout(() => {
-      messageDiv.className = 'p-4 rounded-lg bg-green-100 text-green-800';
-      messageDiv.textContent = `Thank you for your membership registration! We'll contact you at ${data.email} with next steps.`;
+    // Send to FormSubmit.co
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/admin@9thislandoutrigger.com", {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: `New Membership Application: ${data.firstName} ${data.lastName}`,
+          ...data
+        })
+      });
+
+      if (response.ok) {
+        messageDiv.className = 'p-4 rounded-lg bg-green-100 text-green-800';
+        messageDiv.textContent = `Thank you for your membership registration! We'll contact you at ${data.email} with next steps.`;
+        messageDiv.classList.remove('hidden');
+        form.reset();
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      messageDiv.className = 'p-4 rounded-lg bg-red-100 text-red-800';
+      messageDiv.textContent = 'Something went wrong. Please try again later.';
       messageDiv.classList.remove('hidden');
-      form.reset();
+    } finally {
       submitButton.textContent = originalText || 'Submit Registration';
       submitButton.disabled = false;
 
@@ -212,6 +233,6 @@ const { tiers } = membershipData;
         registrationForm?.classList.add('hidden');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 3000);
-    }, 1000);
+    }
   });
 </script>
