@@ -8,8 +8,8 @@ const { hero, whatWeOffer, callToAction, sponsors } = homepageData;
 
 <Layout title={siteSettings.siteName} description={siteSettings.description}>
   <!-- Hero Section -->
-  <section class="relative text-white py-24 md:py-32 overflow-hidden">
-    {/* Background Image with Overlay */}
+  <section class="relative text-white py-24 md:py-32 overflow-hidden min-h-[500px]">
+    {/* Background Image - no overlay for clear image display */}
     {hero.backgroundImage && (
       <>
         <div class="absolute inset-0 z-0">
@@ -19,7 +19,8 @@ const { hero, whatWeOffer, callToAction, sponsors } = homepageData;
             class="w-full h-full object-cover"
           />
         </div>
-        <div class="absolute inset-0 z-0 bg-gradient-to-r from-[var(--color-ocean-blue)]/90 to-[var(--color-ocean-dark)]/90"></div>
+        {/* Light dark overlay for text readability */}
+        <div class="absolute inset-0 z-0 bg-black/30"></div>
       </>
     )}
     {!hero.backgroundImage && (
