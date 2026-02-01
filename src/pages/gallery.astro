@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import InstagramFeed from '../components/InstagramFeed.astro';
 ---
 
 <Layout title="Photo Gallery - 9th Island OCC">
@@ -24,15 +25,12 @@ import Layout from '../layouts/Layout.astro';
           </a>
         </div>
 
-        <!-- Instagram Feed via Juicer.io -->
-        <div id="instagram-feed-widget" class="bg-white rounded-lg p-6">
-          <ul class="juicer-feed" data-feed-id="9thislandocc"></ul>
+        <!-- Instagram Feed (Custom Integration) -->
+        <div class="bg-white rounded-lg p-6">
+          <InstagramFeed />
         </div>
       </div>
     </div>
   </div>
 
 </Layout>
-
-<!-- Juicer.io Instagram Feed Script -->
-<script type="text/javascript" src="https://www.juicer.io/embed/9thislandocc/embed-code.js" async defer></script>
