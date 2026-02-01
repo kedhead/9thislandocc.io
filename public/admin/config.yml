@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: kedhead/9thislandocc.io
+  name: git-gateway
   branch: main
 
 media_folder: "public/uploads"
