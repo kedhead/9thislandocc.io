@@ -2,7 +2,7 @@ backend:
   name: github
   repo: kedhead/9thislandocc.io
   branch: main
-  base_url: https://github-oauth.sveltia.dev
+  base_url: https://9thislandoutrigger.com/api/oauth
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
