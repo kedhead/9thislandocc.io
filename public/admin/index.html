@@ -8,22 +8,12 @@
   <title>Content Manager - 9th Island OCC</title>
   <!-- Explicitly link to the config file -->
   <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url" />
+  <!-- Sveltia CMS: A modern, actively-maintained drop-in replacement for Decap CMS -->
+  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
 </head>
 
 <body>
-  <!-- Debug: Log all incoming messages to help diagnose OAuth issues -->
-  <script>
-    window.addEventListener('message', function (event) {
-      console.log('[ADMIN DEBUG] Message received!');
-      console.log('[ADMIN DEBUG] Origin:', event.origin);
-      console.log('[ADMIN DEBUG] Data:', event.data);
-      console.log('[ADMIN DEBUG] Data type:', typeof event.data);
-    }, false);
-    console.log('[ADMIN DEBUG] Message listener registered. Waiting for OAuth callback...');
-  </script>
-
-  <!-- Include the script that builds the page and powers Decap CMS -->
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <!-- Sveltia CMS UI will be rendered here -->
 </body>
 
 </html>
