@@ -2,7 +2,8 @@ backend:
   name: github
   repo: kedhead/9thislandocc.io
   branch: main
-  base_url: https://9thislandoutrigger.com/api/oauth
+  base_url: https://9thislandoutrigger.com
+  auth_endpoint: /api/oauth/authorize
 
 media_folder: "public/uploads"
 public_folder: "/uploads"

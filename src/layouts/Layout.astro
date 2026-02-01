@@ -18,7 +18,7 @@ const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <!-- Netlify Identity removed - using GitHub OAuth on Vercel -->
   </head>
   <body class="min-h-screen">
     <!-- Polynesian tribal pattern border at very top -->
@@ -208,21 +208,6 @@ const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club
       </div>
     </footer>
 
-    <script is:inline>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", user => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => {
-              document.location.href = "/admin/";
-            });
-          }
-        });
-
-        // Redirect to admin if there's an invite or recovery token
-        if (window.location.hash && (window.location.hash.includes('invite_token') || window.location.hash.includes('recovery_token'))) {
-          window.location.href = '/admin/' + window.location.hash;
-        }
-      }
-    </script>
+    <!-- Netlify Identity redirect script removed - using GitHub OAuth -->
   </body>
 </html>
