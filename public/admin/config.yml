@@ -1,6 +1,8 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: kedhead/9thislandocc.io
   branch: main
+  base_url: https://github-oauth.sveltia.dev
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
