@@ -3,7 +3,7 @@
     {
       "name": "Individual",
       "price": "$225/year",
-      "description": "Perfect for solo paddlers\n\n",
+      "description": "Perfect for solo paddlers",
       "benefits": [
         "All practice sessions",
         "Race participation",
@@ -12,11 +12,10 @@
       ]
     },
     {
-      "name": "Family",
-      "price": "$XXX/year",
-      "description": "Best value for families",
+      "name": "Kids under 18",
+      "price": "$25/year",
+      "description": "Get your kids involved in Outrigger racing for a very reasonable price!",
       "benefits": [
-        "Up to 4 family members",
         "All practice sessions",
         "Priority race registration",
         "Training resources",
