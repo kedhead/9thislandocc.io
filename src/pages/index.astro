@@ -8,19 +8,19 @@ const { hero, whatWeOffer, callToAction, sponsors } = homepageData;
 
 <Layout title={siteSettings.siteName} description={siteSettings.description}>
   <!-- Hero Section -->
-  <section class="relative text-white py-24 md:py-32 overflow-hidden min-h-[500px]">
-    {/* Background Image - no overlay for clear image display */}
+  <section class="relative text-white overflow-hidden" style="min-height: 600px;">
+    {/* Background Image - full display on widescreen */}
     {hero.backgroundImage && (
       <>
-        <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 z-0 flex items-center justify-center bg-[var(--color-ocean-dark)]">
           <img
             src={hero.backgroundImage}
             alt="Hero background"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-contain lg:object-contain md:object-cover"
           />
         </div>
         {/* Light dark overlay for text readability */}
-        <div class="absolute inset-0 z-0 bg-black/30"></div>
+        <div class="absolute inset-0 z-0 bg-black/40"></div>
       </>
     )}
     {!hero.backgroundImage && (
