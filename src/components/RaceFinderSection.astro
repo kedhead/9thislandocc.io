@@ -1,0 +1,71 @@
+---
+import { getRaceEvents, type RaceEvent } from '../lib/google-sheets';
+
+interface Props {
+  spreadsheetId: string;
+  viewLink: string;
+}
+
+const { spreadsheetId, viewLink } = Astro.props;
+
+let races: RaceEvent[] = [];
+let error: string | null = null;
+
+try {
+  races = await getRaceEvents(spreadsheetId);
+} catch (e) {
+  console.log('Could not load races:', (e as Error).message);
+}
+
+const hasRaces = races.length > 0;
+---
+
+<div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 flex flex-col h-[500px]">
+  
+  <!-- Header -->
+  <div class="bg-[var(--color-lava-orange)] px-6 py-4 flex justify-between items-center shrink-0">
+    <h2 class="text-white font-bold text-xl flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+      </svg>
+      Upcoming Races
+    </h2>
+    <a href={viewLink} target="_blank" rel="noopener noreferrer" class="text-white/80 hover:text-white text-sm font-medium underline decoration-white/30 hover:decoration-white transition">
+      View Schedule
+    </a>
+  </div>
+  
+  <!-- Content -->
+  <div class="overflow-y-auto flex-grow custom-scrollbar">
+    {hasRaces ? (
+      <table class="w-full text-sm text-left">
+        <thead class="bg-gray-50 text-gray-600 font-semibold uppercase tracking-wider sticky top-0 z-10 shadow-sm">
+          <tr>
+            <th class="px-4 py-3 border-b bg-gray-50">Month</th>
+            <th class="px-4 py-3 border-b bg-gray-50">Day</th>
+            <th class="px-4 py-3 border-b bg-gray-50">Event</th>
+            <th class="px-4 py-3 border-b bg-gray-50">Location</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {races.map((race) => (
+            <tr class="hover:bg-orange-50 transition">
+              <td class="px-4 py-4 text-gray-500 font-medium">{race.month}</td>
+              <td class="px-4 py-4 text-gray-700">{race.day}</td>
+              <td class="px-4 py-4 text-gray-900 font-semibold">{race.activity}</td>
+              <td class="px-4 py-4 text-gray-700">{race.location}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <div class="flex flex-col items-center justify-center h-full text-gray-400 p-8 text-center">
+        <svg class="w-12 h-12 mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+        <p>No races found in the schedule.</p>
+        <p class="text-xs mt-2">Add "Race" to any activity name to see it here!</p>
+      </div>
+    )}
+  </div>
+</div>

@@ -17,6 +17,15 @@ export interface SignupItem {
     link: string;
 }
 
+export interface RaceEvent {
+    month: string;
+    day: string;
+    time: string;
+    activity: string;
+    location: string;
+    notes?: string;
+}
+
 /**
  * UTILITY: Google Sheets Connector
  * 
@@ -60,6 +69,59 @@ export async function getSheetData(spreadsheetId: string, range: string) {
     }
 }
 
+/**
+ * RACE FINDER: Scans all month tabs for rows containing "race" in Activity column
+ */
+export async function getRaceEvents(spreadsheetId: string): Promise<RaceEvent[]> {
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    const races: RaceEvent[] = [];
+    const serviceAccountEmail = import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+
+    // If no credentials, return mock race data
+    if (!serviceAccountEmail) {
+        return [
+            { month: 'March', day: 'Sat 15', time: '6:00 AM', activity: 'Havasu Heat Race!', location: 'Lake Havasu', notes: 'Big race!' },
+            { month: 'April', day: 'Sun 20', time: '7:00 AM', activity: 'Spring Sprint Race', location: 'Lake Mead', notes: '' },
+            { month: 'May', day: 'Sat 10', time: '6:30 AM', activity: 'Memorial Day Race', location: 'San Diego', notes: 'Travel required' },
+        ];
+    }
+
+    // Scan each month tab
+    for (const month of months) {
+        try {
+            const rows = await getSheetData(spreadsheetId, `${month}!A1:F100`);
+
+            if (rows && rows.length > 1) {
+                // Skip header row (index 0)
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    // Check if Activity column (usually index 2) contains "race" (case-insensitive)
+                    const activity = row[2] || '';
+                    if (activity.toLowerCase().includes('race')) {
+                        races.push({
+                            month,
+                            day: row[0] || '',
+                            time: row[1] || '',
+                            activity,
+                            location: row[3] || '',
+                            notes: row[4] || '',
+                        });
+                    }
+                }
+            }
+        } catch (e) {
+            // Tab might not exist, skip silently
+            console.log(`Could not scan ${month} tab:`, (e as Error).message);
+        }
+    }
+
+    return races;
+}
+
 // --- Mock Data Helpers ---
 
 function getMockData(range: string) {
@@ -91,3 +153,4 @@ function getMockData(range: string) {
     // Default empty
     return [];
 }
+
