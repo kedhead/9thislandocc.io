@@ -64,7 +64,12 @@ export async function getSheetData(spreadsheetId: string, range: string) {
 
 function getMockData(range: string) {
     // Simple heuristic to return different mock data based on requested range name
-    if (range.toLowerCase().includes('schedule')) {
+    const lowerRange = range.toLowerCase();
+
+    // Check for "schedule" OR any month name
+    if (lowerRange.includes('schedule') ||
+        ['january', 'february', 'march', 'april', 'may', 'june',
+            'july', 'august', 'september', 'october', 'november', 'december'].some(m => lowerRange.includes(m))) {
         return [
             ['Day', 'Time', 'Activity', 'Location', 'Notes'], // Header Row
             ['Monday', '5:30 PM', 'Men\'s Technical Practice', 'Lake Mead', 'Bring hydration'],

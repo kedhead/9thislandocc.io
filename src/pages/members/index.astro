@@ -7,13 +7,16 @@ import { getSheetData } from '../../lib/google-sheets';
 // You will replace this ID with your REAL Google Sheet ID later
 const SPREADSHEET_ID = '16RYQ7ssTJJ3K7sBMtfhHnftrDr8NU_ilUc1ES3vHOW8'; 
 
-// Fetch Schedule (Mock data will be returned if creds are missing)
-const scheduleRows = await getSheetData(SPREADSHEET_ID, 'Schedule!A1:E10');
-// Remove header row
+// Determine Current Month for the Tab Name (e.g., "October")
+const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
+
+// Fetch Schedule from the Month Tab (e.g., "October!A1:E20")
+const scheduleRows = await getSheetData(SPREADSHEET_ID, `${currentMonth}!A1:F20`);
 const scheduleHeader = scheduleRows[0] || [];
 const scheduleData = scheduleRows.slice(1);
 
-// Fetch Signups
+// Try to fetch Signups if a specific tab exists, otherwise we might look for it later
+// For now, let's assume there might be a "Signups" or "Events" tab, or we skip it
 const signupRows = await getSheetData(SPREADSHEET_ID, 'Signups!A1:D10');
 const signupHeader = signupRows[0] || [];
 const signupData = signupRows.slice(1);
@@ -43,7 +46,7 @@ const isMock = !import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
         <div class="bg-[var(--color-ocean-blue)] px-6 py-4 flex justify-between items-center">
           <h2 class="text-white font-bold text-xl flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Weekly Schedule
+            {currentMonth} Schedule
           </h2>
           <span class="text-blue-100 text-xs bg-blue-600/30 px-2 py-1 rounded">Live from Sheets</span>
         </div>
