@@ -1,0 +1,122 @@
+
+---
+import MembersLayout from '../../layouts/MembersLayout.astro';
+import { getSheetData } from '../../lib/google-sheets';
+
+// 1. Fetch Data
+// You will replace this ID with your REAL Google Sheet ID later
+const SPREADSHEET_ID = '1_YOUR_GOOGLE_SHEET_ID_HERE'; 
+
+// Fetch Schedule (Mock data will be returned if creds are missing)
+const scheduleRows = await getSheetData(SPREADSHEET_ID, 'Schedule!A1:E10');
+// Remove header row
+const scheduleHeader = scheduleRows[0] || [];
+const scheduleData = scheduleRows.slice(1);
+
+// Fetch Signups
+const signupRows = await getSheetData(SPREADSHEET_ID, 'Signups!A1:D10');
+const signupHeader = signupRows[0] || [];
+const signupData = signupRows.slice(1);
+
+const isMock = !import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+---
+
+<MembersLayout title="Dashboard">
+  
+  {isMock && (
+    <div class="bg-yellow-50 border-b border-yellow-200 p-4 text-center text-yellow-800 text-sm">
+      <strong>Demo Mode:</strong> Displaying example data. To see real data, configure Google Sheets credentials.
+    </div>
+  )}
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <div class="mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-2">Welcome, Ohana! 🤙</h1>
+      <p class="text-gray-600">Here is the latest schedule and club updates.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      
+      <!-- SCHEDULE CARD -->
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+        <div class="bg-[var(--color-ocean-blue)] px-6 py-4 flex justify-between items-center">
+          <h2 class="text-white font-bold text-xl flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Weekly Schedule
+          </h2>
+          <span class="text-blue-100 text-xs bg-blue-600/30 px-2 py-1 rounded">Live from Sheets</span>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-50 text-gray-600 font-semibold uppercase tracking-wider">
+              <tr>
+                {scheduleHeader.map((h: any) => <th class="px-6 py-3 border-b">{h}</th>)}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              {scheduleData.length > 0 ? (
+                scheduleData.map((row: any) => (
+                  <tr class="hover:bg-gray-50 transition">
+                    {row.map((cell: any) => <td class="px-6 py-4 text-gray-700">{cell}</td>)}
+                  </tr>
+                ))
+              ) : (
+                <tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">No schedule found.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SIGNUPS / UPCOMING EVENTS -->
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+        <div class="bg-[var(--color-lava-orange)] px-6 py-4 flex justify-between items-center">
+          <h2 class="text-white font-bold text-xl flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            Race Signups
+          </h2>
+          <span class="text-orange-100 text-xs bg-orange-600/30 px-2 py-1 rounded">Live from Sheets</span>
+        </div>
+
+        <div class="p-0">
+          <ul class="divide-y divide-gray-100">
+            {signupData.map((row: any) => (
+              <li class="p-6 hover:bg-gray-50 transition flex justify-between items-center group">
+                <div>
+                  <div class="text-xs font-bold text-gray-400 uppercase mb-1">{row[0]}</div> <!-- Date -->
+                  <h3 class="font-bold text-gray-900 text-lg">{row[1]}</h3> <!-- Name -->
+                  <span class="inline-block mt-2 px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">
+                    {row[2]} <!-- Status -->
+                  </span>
+                </div>
+                <button class="btn-lava px-4 py-2 rounded text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                  Sign Up
+                </button>
+              </li>
+            ))}
+            {signupData.length === 0 && (
+               <li class="p-8 text-center text-gray-500">No upcoming events listed.</li>
+            )}
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RESOURCES SECTION (Static for now, but could be dynamic) -->
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Club Documents</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {['Safety Waiver', 'Code of Conduct', 'Paddling Technique Guide', 'Race Rules'].map(doc => (
+          <a href="#" class="block p-6 bg-gray-50 rounded-lg hover:bg-gray-100 transition border border-gray-200 text-center group">
+             <svg class="w-8 h-8 mx-auto text-gray-400 group-hover:text-[var(--color-ocean-blue)] mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+             <span class="font-medium text-gray-700">{doc}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</MembersLayout>

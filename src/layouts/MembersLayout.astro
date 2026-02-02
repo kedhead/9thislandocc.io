@@ -1,0 +1,42 @@
+
+---
+import Layout from '../layouts/Layout.astro';
+
+// Authenticate Request
+const isLoggedIn = Astro.cookies.has('members_auth');
+
+if (!isLoggedIn) {
+  return Astro.redirect('/members/login');
+}
+
+const { title = "Members Area" } = Astro.props;
+---
+
+<Layout title={`${title} - 9th Island OCC`}>
+  <!-- Members Header -->
+  <div class="bg-gray-100 border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+      <div class="font-bold text-gray-700 uppercase tracking-wide text-sm">
+        Members Area
+      </div>
+      <div>
+        <button id="logout-btn" class="text-sm text-red-600 hover:text-red-800 font-medium">
+          Log Out
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <slot />
+
+</Layout>
+
+<script>
+  document.getElementById('logout-btn')?.addEventListener('click', async () => {
+    // Basic logout by deleting cookie client-side? 
+    // Wait, httpOnly cookies can't be deleted by JS. We need an API endpoint or just overwrite it.
+    // Actually simpler: Create a logout API route.
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/members/login';
+  });
+</script>
