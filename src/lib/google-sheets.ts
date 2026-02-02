@@ -70,53 +70,79 @@ export async function getSheetData(spreadsheetId: string, range: string) {
 }
 
 /**
- * RACE FINDER: Scans all month tabs for rows containing "race" in Activity column
+ * RACE FINDER: Scans sheet headers (row 1) for columns containing "race"
+ * Designed for column-based layouts where each event is a column header like:
+ * "Havasu Heat Race!" with date on next cell "Sat, March 28 @ 6:00am"
  */
 export async function getRaceEvents(spreadsheetId: string): Promise<RaceEvent[]> {
-    const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-
     const races: RaceEvent[] = [];
     const serviceAccountEmail = import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 
     // If no credentials, return mock race data
     if (!serviceAccountEmail) {
         return [
-            { month: 'March', day: 'Sat 15', time: '6:00 AM', activity: 'Havasu Heat Race!', location: 'Lake Havasu', notes: 'Big race!' },
-            { month: 'April', day: 'Sun 20', time: '7:00 AM', activity: 'Spring Sprint Race', location: 'Lake Mead', notes: '' },
-            { month: 'May', day: 'Sat 10', time: '6:30 AM', activity: 'Memorial Day Race', location: 'San Diego', notes: 'Travel required' },
+            { month: 'March', day: 'Sat 28', time: '6:00 AM', activity: 'Havasu Heat Race!', location: '', notes: '' },
+            { month: 'April', day: 'Sun 20', time: '7:00 AM', activity: 'Spring Sprint Race', location: '', notes: '' },
+            { month: 'May', day: 'Sat 10', time: '6:30 AM', activity: 'Memorial Day Race', location: '', notes: '' },
         ];
     }
 
-    // Scan each month tab
-    for (const month of months) {
-        try {
-            const rows = await getSheetData(spreadsheetId, `${month}!A1:F100`);
+    try {
+        // Fetch the first two rows (headers) across many columns
+        // Row 1 has the event name + date/time, Row 2 may have additional info
+        const rows = await getSheetData(spreadsheetId, `March!A1:Z2`);
 
-            if (rows && rows.length > 1) {
-                // Skip header row (index 0)
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i];
-                    // Check if Activity column (usually index 2) contains "race" (case-insensitive)
-                    const activity = row[2] || '';
-                    if (activity.toLowerCase().includes('race')) {
-                        races.push({
-                            month,
-                            day: row[0] || '',
-                            time: row[1] || '',
-                            activity,
-                            location: row[3] || '',
-                            notes: row[4] || '',
-                        });
+        if (rows && rows.length > 0) {
+            const headerRow = rows[0];
+
+            // Scan each column header for "race"
+            for (let i = 0; i < headerRow.length; i++) {
+                const header = headerRow[i] || '';
+
+                if (header.toLowerCase().includes('race')) {
+                    // Parse the header - format is usually like:
+                    // "Havasu Heat Race!\nSat, March 28 @ 6:00am"
+                    const lines = header.split('\n');
+                    let eventName = header;
+                    let dateInfo = '';
+                    let time = '';
+                    let month = '';
+                    let day = '';
+
+                    if (lines.length >= 2) {
+                        eventName = lines[0].trim();
+                        dateInfo = lines[1].trim();
+                    } else {
+                        // Maybe date/time is in the same line
+                        dateInfo = header;
                     }
+
+                    // Try to parse date info like "Sat, March 28 @ 6:00am"
+                    const dateMatch = dateInfo.match(/(\w+),?\s*(\w+)\s+(\d+)/);
+                    if (dateMatch) {
+                        day = `${dateMatch[1]} ${dateMatch[3]}`;
+                        month = dateMatch[2];
+                    }
+
+                    // Try to parse time like "@ 6:00am" or "@ 8:00am"
+                    const timeMatch = dateInfo.match(/@\s*(\d+:\d+\s*[ap]m)/i);
+                    if (timeMatch) {
+                        time = timeMatch[1].toUpperCase();
+                    }
+
+                    races.push({
+                        month: month || 'TBD',
+                        day: day || 'TBD',
+                        time: time || 'TBD',
+                        activity: eventName,
+                        location: '',
+                        notes: '',
+                    });
                 }
             }
-        } catch (e) {
-            // Tab might not exist, skip silently
-            console.log(`Could not scan ${month} tab:`, (e as Error).message);
         }
+    } catch (e) {
+        console.log('Could not scan for races:', (e as Error).message);
     }
 
     return races;
