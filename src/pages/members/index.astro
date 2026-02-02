@@ -1,7 +1,12 @@
 
----
 import MembersLayout from '../../layouts/MembersLayout.astro';
 import { getSheetData } from '../../lib/google-sheets';
+
+// 0. AUTH CHECK FIRST
+// We must check auth before doing any expensive/risky data fetching
+if (!Astro.cookies.has('members_auth')) {
+  return Astro.redirect('/members/login');
+}
 
 // 1. Fetch Data
 // You will replace this ID with your REAL Google Sheet ID later
