@@ -24,9 +24,9 @@ let dataRows: string[][] = [];
 let error: string | null = null;
 
 try {
-  // Fetch reasonable range (A1 to F100)
-  // We use the tabName provided
-  const rows = await getSheetData(spreadsheetId, `${tabName}!A1:F100`);
+  // Fetch wide range (A1 to Z100) to capture all columns for column-based layouts
+  // Each date is typically a column header in this sheet structure
+  const rows = await getSheetData(spreadsheetId, `${tabName}!A1:Z100`);
   
   if (rows && rows.length > 0) {
     headerRow = rows[0];
