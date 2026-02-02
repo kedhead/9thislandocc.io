@@ -1,0 +1,207 @@
+backend:
+  name: github
+  repo: kedhead/9thislandocc.io
+  branch: main
+  base_url: https://9thislandoutrigger.com
+  auth_endpoint: /api/oauth/authorize
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "posts"
+    label: "Events & News"
+    folder: "src/content/posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Date", name: "date", widget: "datetime"}
+      - {label: "Category", name: "category", widget: "select", options: ["race", "event", "practice", "news"]}
+      - {label: "Featured Image", name: "image", widget: "image", required: false}
+      - {label: "Body", name: "body", widget: "markdown"}
+
+  - name: "pages"
+    label: "Pages"
+    files:
+      - label: "About Page"
+        name: "about"
+        file: "src/content/pages/about.mdx"
+        fields:
+          - {label: "Title", name: "title", widget: "string"}
+          - {label: "Body", name: "body", widget: "markdown"}
+
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - label: "General Settings"
+        name: "site"
+        file: "src/content/settings/site.json"
+        fields:
+          - {label: "Site Name", name: "siteName", widget: "string"}
+          - {label: "Tagline", name: "tagline", widget: "string"}
+          - {label: "Description", name: "description", widget: "text"}
+          - {label: "Contact Email", name: "contactEmail", widget: "string"}
+          - {label: "Facebook URL", name: "facebookUrl", widget: "string"}
+          - {label: "Instagram URL", name: "instagramUrl", widget: "string"}
+
+      - label: "Practice Schedule"
+        name: "practice"
+        file: "public/data/practice.json"
+        fields:
+          - label: "Weekday Practices"
+            name: "weekday"
+            widget: "list"
+            fields:
+              - {label: "Day", name: "day", widget: "string"}
+              - {label: "Time", name: "time", widget: "string"}
+          - label: "Weekend Practices"
+            name: "weekend"
+            widget: "list"
+            fields:
+              - {label: "Day", name: "day", widget: "string"}
+              - {label: "Time", name: "time", widget: "string"}
+          - {label: "Location", name: "location", widget: "string"}
+          - {label: "Location Details", name: "locationDetails", widget: "text"}
+          - {label: "Seasonal Note", name: "seasonalNote", widget: "text", required: false}
+
+      - label: "Membership Pricing"
+        name: "membership"
+        file: "public/data/membership.json"
+        fields:
+          - label: "Membership Tiers"
+            name: "tiers"
+            widget: "list"
+            fields:
+              - {label: "Name", name: "name", widget: "string"}
+              - {label: "Price", name: "price", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+              - label: "Benefits"
+                name: "benefits"
+                widget: "list"
+                field: {label: "Benefit", name: "benefit", widget: "string"}
+
+      - label: "Homepage"
+        name: "homepage"
+        file: "public/data/homepage.json"
+        fields:
+          - label: "Hero Section"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Main Heading", name: "heading", widget: "string"}
+              - {label: "Tagline", name: "tagline", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+              - {label: "Background Image (1920x1080px recommended)", name: "backgroundImage", widget: "image", required: false}
+              - label: "Primary Button"
+                name: "primaryButton"
+                widget: "object"
+                fields:
+                  - {label: "Button Text", name: "text", widget: "string"}
+                  - {label: "Button Link", name: "link", widget: "string"}
+              - label: "Secondary Button"
+                name: "secondaryButton"
+                widget: "object"
+                fields:
+                  - {label: "Button Text", name: "text", widget: "string"}
+                  - {label: "Button Link", name: "link", widget: "string"}
+
+          - label: "What We Offer Section"
+            name: "whatWeOffer"
+            widget: "object"
+            fields:
+              - {label: "Section Title", name: "sectionTitle", widget: "string"}
+              - label: "Items"
+                name: "items"
+                widget: "list"
+                fields:
+                  - {label: "Title", name: "title", widget: "string"}
+                  - {label: "Description", name: "description", widget: "text"}
+
+          - label: "Call to Action"
+            name: "callToAction"
+            widget: "object"
+            fields:
+              - {label: "Heading", name: "heading", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+              - {label: "Button Text", name: "buttonText", widget: "string"}
+              - {label: "Button Link", name: "buttonLink", widget: "string"}
+
+          - label: "Sponsors & Partners"
+            name: "sponsors"
+            widget: "object"
+            fields:
+              - {label: "Section Title", name: "sectionTitle", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+              - label: "Sponsors"
+                name: "sponsors"
+                widget: "list"
+                required: false
+                fields:
+                  - {label: "Sponsor Name", name: "name", widget: "string"}
+                  - {label: "Logo Image", name: "logo", widget: "image"}
+                  - {label: "Website URL", name: "url", widget: "string", required: false}
+
+      - label: "About Page"
+        name: "about"
+        file: "public/data/about.json"
+        fields:
+          - label: "Hero Section"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Heading", name: "heading", widget: "string"}
+              - {label: "Tagline", name: "tagline", widget: "string"}
+
+          - label: "Introduction"
+            name: "introduction"
+            widget: "object"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Content", name: "content", widget: "text"}
+
+          - label: "Mission Section"
+            name: "mission"
+            widget: "object"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "string"}
+              - label: "Mission Items"
+                name: "items"
+                widget: "list"
+                field: {label: "Item", name: "item", widget: "string"}
+
+          - label: "What We Do"
+            name: "activities"
+            widget: "object"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - label: "Activities"
+                name: "items"
+                widget: "list"
+                fields:
+                  - {label: "Activity Name", name: "name", widget: "string"}
+                  - {label: "Description", name: "description", widget: "text"}
+
+          - label: "Coaching Staff"
+            name: "coaches"
+            widget: "object"
+            fields:
+              - {label: "Section Title", name: "title", widget: "string"}
+              - label: "Coaches"
+                name: "staff"
+                widget: "list"
+                fields:
+                  - {label: "Name", name: "name", widget: "string"}
+                  - {label: "Title/Position", name: "title", widget: "string"}
+                  - {label: "Photo", name: "photo", widget: "image", required: false}
+                  - {label: "Bio", name: "bio", widget: "text"}
+
+          - label: "Join Us Section"
+            name: "joinUs"
+            widget: "object"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Content", name: "content", widget: "text"}

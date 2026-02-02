@@ -1,0 +1,26 @@
+{
+  "tiers": [
+    {
+      "name": "Individual",
+      "price": "$225/year",
+      "description": "Perfect for solo paddlers",
+      "benefits": [
+        "All practice sessions",
+        "Race participation",
+        "Training resources",
+        "Club events access"
+      ]
+    },
+    {
+      "name": "Kids under 18",
+      "price": "$25/year",
+      "description": "Get your kids involved in Outrigger racing for a very reasonable price!",
+      "benefits": [
+        "All practice sessions",
+        "Priority race registration",
+        "Training resources",
+        "Family event discounts"
+      ]
+    }
+  ]
+}

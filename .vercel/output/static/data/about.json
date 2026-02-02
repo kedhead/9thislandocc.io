@@ -1,0 +1,63 @@
+{
+  "hero": {
+    "heading": "About Us",
+    "tagline": "Bringing the spirit of aloha to the desert"
+  },
+  "introduction": {
+    "title": "Welcome to 9th Island OCC",
+    "content": "9th Island Outrigger Canoe Club brings the spirit of aloha and Hawaiian outrigger canoe paddling tradition to Las Vegas. We are a community of paddlers dedicated to the sport of outrigger canoe racing and the cultural traditions that come with it."
+  },
+  "mission": {
+    "title": "Our Mission",
+    "description": "We strive to:",
+    "items": [
+      "Promote the sport of outrigger canoe paddling",
+      "Build a strong ohana (family) of paddlers",
+      "Share Hawaiian culture and traditions",
+      "Compete in regional and national races",
+      "Welcome paddlers of all skill levels"
+    ]
+  },
+  "activities": {
+    "title": "What We Do",
+    "items": [
+      {
+        "name": "Practice Sessions",
+        "description": "Regular training on Lake Mead"
+      },
+      {
+        "name": "Racing",
+        "description": "Compete in regional and national outrigger canoe races"
+      },
+      {
+        "name": "Community Events",
+        "description": "Beach cleanups, cultural celebrations, and social gatherings"
+      },
+      {
+        "name": "Beginner Programs",
+        "description": "Introduction to outrigger paddling for new members"
+      }
+    ]
+  },
+  "coaches": {
+    "title": "Our Coaching Staff",
+    "staff": [
+      {
+        "name": "Head Coach",
+        "title": "Coming Soon",
+        "photo": "",
+        "bio": "Contact us to learn more about our experienced coaching team."
+      },
+      {
+        "name": "Assistant Coach",
+        "title": "Coming Soon",
+        "photo": "",
+        "bio": "Our coaches bring years of paddling experience and aloha spirit."
+      }
+    ]
+  },
+  "joinUs": {
+    "title": "Join Us",
+    "content": "Whether you're an experienced paddler or completely new to the sport, we welcome you to our ohana. Contact us to learn more about joining 9th Island OCC."
+  }
+}

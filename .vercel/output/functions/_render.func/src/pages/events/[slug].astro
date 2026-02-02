@@ -1,0 +1,133 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { readdirSync, readFileSync } from 'fs';
+import { join } from 'path';
+
+export function getStaticPaths() {
+  const postsDir = join(process.cwd(), 'src', 'content', 'posts');
+
+  try {
+    if (!readdirSync) {
+      console.error('readdirSync not available');
+      return [];
+    }
+
+    const files = readdirSync(postsDir);
+    console.log('Found files:', files);
+
+    const paths = files
+      .filter(file => file.endsWith('.md') || file.endsWith('.mdx'))
+      .map(file => {
+        try {
+          const content = readFileSync(join(postsDir, file), 'utf-8');
+          // Handle both Unix (\n) and Windows (\r\n) line endings
+          const frontmatterMatch = content.match(/---[\r\n]+([\s\S]*?)[\r\n]+---/);
+          const bodyMatch = content.match(/---[\r\n]+[\s\S]*?[\r\n]+---[\r\n]+([\s\S]*)/);
+
+          if (frontmatterMatch) {
+            const frontmatter = frontmatterMatch[1];
+            const title = frontmatter.match(/title:\s*(.+?)[\r\n]/)?.[1]?.trim() || 'Untitled';
+            const date = frontmatter.match(/date:\s*(.+?)[\r\n]/)?.[1]?.trim() || '';
+            const category = frontmatter.match(/category:\s*(.+?)[\r\n]/)?.[1]?.trim() || 'news';
+            const imageMatch = frontmatter.match(/image:\s*(.+?)(?:[\r\n]|$)/)?.[1]?.trim();
+            const image = imageMatch || '';
+            const body = bodyMatch ? bodyMatch[1].trim() : '';
+            const slug = file.replace(/\.(md|mdx)$/, '');
+
+            console.log('Generated path for:', slug, 'with title:', title);
+
+            return {
+              params: { slug },
+              props: { title, date, category, image, body }
+            };
+          } else {
+            console.log('No frontmatter match for:', file);
+          }
+        } catch (err) {
+          console.error('Error reading file:', file, err);
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    console.log('Total paths generated:', paths.length);
+    return paths;
+  } catch (e) {
+    console.error('Error in getStaticPaths:', e);
+    return [];
+  }
+}
+
+const { slug } = Astro.params;
+const { title, date, category, image, body } = Astro.props;
+---
+
+<Layout title={`${title} - 9th Island OCC`}>
+  <div class="bg-gradient-to-b from-[var(--color-ocean-blue)] to-[var(--color-ocean-dark)] text-white py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <a href="/events" class="inline-flex items-center text-white/80 hover:text-white mb-6 transition">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Events
+      </a>
+
+      <div class="mb-4">
+        <span class={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
+          category === 'race' ? 'bg-red-500' :
+          category === 'practice' ? 'bg-blue-500' :
+          category === 'event' ? 'bg-green-500' :
+          'bg-gray-500'
+        }`}>
+          {category}
+        </span>
+      </div>
+
+      <h1 class="text-5xl font-bold mb-4">{title}</h1>
+
+      <div class="flex items-center text-white/80 text-lg">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        {new Date(date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    {image && (
+      <div class="mb-8 rounded-lg overflow-hidden shadow-lg">
+        <img src={image} alt={title} class="w-full h-auto" />
+      </div>
+    )}
+
+    <article class="prose prose-lg max-w-none">
+      <div class="bg-white rounded-lg shadow-lg p-8">
+        <div set:html={body.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br />')} />
+      </div>
+    </article>
+
+    <div class="mt-12 flex gap-4">
+      <a href="/events" class="btn-ocean px-8 py-3 rounded-lg font-semibold inline-flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to All Events
+      </a>
+      <a href="/contact" class="btn-lava px-8 py-3 rounded-lg font-semibold">
+        Contact Us
+      </a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .prose strong {
+    font-weight: 700;
+    color: var(--color-lava-orange);
+  }
+</style>

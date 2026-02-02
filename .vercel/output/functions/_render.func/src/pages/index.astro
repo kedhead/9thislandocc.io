@@ -1,0 +1,147 @@
+---
+import Layout from '../layouts/Layout.astro';
+import siteSettings from '../content/settings/site.json';
+import homepageData from '../../public/data/homepage.json';
+
+const { hero, whatWeOffer, callToAction, sponsors } = homepageData;
+---
+
+<Layout title={siteSettings.siteName} description={siteSettings.description}>
+  <!-- Hero Section - height scales with viewport for ultrawide support -->
+  <section class="relative text-white py-16 md:py-24 overflow-hidden" style="min-height: max(450px, 45vw); max-height: 700px;">
+    {/* Background Image - covers full area */}
+    {hero.backgroundImage && (
+      <>
+        <div class="absolute inset-0 z-0">
+          <img
+            src={hero.backgroundImage}
+            alt="Hero background"
+            class="w-full h-full object-cover object-center"
+          />
+        </div>
+        {/* Subtle overlay for text readability */}
+        <div class="absolute inset-0 z-0 bg-black/30"></div>
+      </>
+    )}
+    {!hero.backgroundImage && (
+      <div class="absolute inset-0 z-0 bg-gradient-to-b from-[var(--color-ocean-blue)] to-[var(--color-ocean-dark)]"></div>
+    )}
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6">
+        {hero.heading}
+      </h1>
+      <p class="text-2xl md:text-3xl mb-8 opacity-90">
+        {hero.tagline}
+      </p>
+      <p class="text-xl mb-10 max-w-3xl mx-auto">
+        {hero.description}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={hero.primaryButton.link} class="btn-lava px-8 py-4 rounded-full text-lg font-semibold">
+          {hero.primaryButton.text}
+        </a>
+        <a href={hero.secondaryButton.link} class="bg-white text-[var(--color-ocean-blue)] px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition">
+          {hero.secondaryButton.text}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- What We Offer -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-4xl font-bold text-center mb-16 text-gray-900">{whatWeOffer.sectionTitle}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+        {whatWeOffer.items.map((item, index) => (
+          <div class="text-center">
+            <div class="w-20 h-20 bg-[var(--color-ocean-blue)] rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {index === 0 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />}
+                {index === 1 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />}
+                {index === 2 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />}
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-4">{item.title}</h3>
+            <p class="text-gray-600">{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-4xl font-bold mb-6 text-gray-900">{callToAction.heading}</h2>
+      <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        {callToAction.description}
+      </p>
+      <a href={callToAction.buttonLink} class="inline-block btn-lava px-10 py-4 rounded-full text-lg font-semibold">
+        {callToAction.buttonText}
+      </a>
+    </div>
+  </section>
+
+  <!-- Social Media Call to Action -->
+  <section class="py-20 bg-gradient-to-r from-purple-600 to-pink-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-4xl font-bold mb-6 text-white">Follow Our Journey</h2>
+      <p class="text-xl text-white/90 mb-8">
+        See our latest paddling adventures, race results, and team moments on Instagram and Facebook
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={siteSettings.instagramUrl} target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 bg-white text-purple-600 px-8 py-4 rounded-lg hover:bg-gray-100 transition font-semibold text-lg">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+          View on Instagram
+        </a>
+        <a href={siteSettings.facebookUrl} target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 bg-white text-blue-600 px-8 py-4 rounded-lg hover:bg-gray-100 transition font-semibold text-lg">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+          Visit our Facebook
+        </a>
+      </div>
+      <p class="mt-8 text-white/80 text-sm">
+        Or check out our <a href="/gallery" class="underline hover:text-white">photo gallery</a> for more images
+      </p>
+    </div>
+  </section>
+
+  <!-- Sponsors & Partners Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-4xl font-bold text-center mb-4 text-gray-900">{sponsors.sectionTitle}</h2>
+      <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+        {sponsors.description}
+      </p>
+
+      {sponsors.sponsors.length > 0 && (
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 items-center mb-12">
+          {sponsors.sponsors.map((sponsor) => (
+            sponsor.url ? (
+              <a href={sponsor.url} target="_blank" rel="noopener" class="bg-white p-8 rounded-lg shadow-md flex items-center justify-center h-32 hover:shadow-lg transition">
+                <img src={sponsor.logo} alt={sponsor.name} class="max-h-20 max-w-full object-contain" />
+              </a>
+            ) : (
+              <div class="bg-white p-8 rounded-lg shadow-md flex items-center justify-center h-32 hover:shadow-lg transition">
+                <img src={sponsor.logo} alt={sponsor.name} class="max-h-20 max-w-full object-contain" />
+              </div>
+            )
+          ))}
+        </div>
+      )}
+
+      <div class="mt-12 text-center">
+        <p class="text-gray-700 mb-4 font-semibold">Interested in becoming a sponsor?</p>
+        <a href="/contact" class="inline-block btn-ocean px-8 py-3 rounded-full font-semibold">
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+

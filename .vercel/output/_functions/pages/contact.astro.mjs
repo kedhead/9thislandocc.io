@@ -1,0 +1,50 @@
+import { e as createComponent, k as renderComponent, l as renderScript, r as renderTemplate, m as maybeRenderHead, h as addAttribute } from '../chunks/astro/server_DYawapiQ.mjs';
+import { $ as $$Layout } from '../chunks/Layout_BnlNgcIv.mjs';
+import { s as siteSettings } from '../chunks/site_BY_rv-n4.mjs';
+export { renderers } from '../renderers.mjs';
+
+const $$Contact = createComponent(async ($$result, $$props, $$slots) => {
+  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Contact Us - 9th Island OCC" }, { "default": async ($$result2) => renderTemplate` ${maybeRenderHead()}<div class="bg-gradient-to-b from-[var(--color-ocean-blue)] to-[var(--color-ocean-dark)] text-white py-16"> <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"> <h1 class="text-5xl font-bold mb-4">Join Our Ohana</h1> <p class="text-xl opacity-90">Interested in paddling with us? Get in touch!</p> </div> </div> <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16"> <div class="bg-white rounded-lg shadow-lg p-8 md:p-12"> <form id="contact-form" class="space-y-6"> <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> <div> <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+Name *
+</label> <input type="text" id="name" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent" placeholder="Your name"> </div> <div> <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+Email *
+</label> <input type="email" id="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent" placeholder="your@email.com"> </div> </div> <div> <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
+Phone
+</label> <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent" placeholder="(555) 123-4567"> </div> <div> <label for="interest" class="block text-sm font-semibold text-gray-700 mb-2">
+I'm interested in *
+</label> <select id="interest" name="interest" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent"> <option value="">Select an option</option> <option value="joining">Joining the club</option> <option value="tryout">Trying a practice session</option> <option value="information">General information</option> <option value="sponsorship">Sponsorship opportunities</option> <option value="other">Other</option> </select> </div> <div> <label for="experience" class="block text-sm font-semibold text-gray-700 mb-2">
+Paddling Experience
+</label> <select id="experience" name="experience" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent"> <option value="">Select your experience level</option> <option value="none">No experience</option> <option value="beginner">Beginner (less than 1 year)</option> <option value="intermediate">Intermediate (1-3 years)</option> <option value="advanced">Advanced (3+ years)</option> </select> </div> <div> <label for="message" class="block text-sm font-semibold text-gray-700 mb-2">
+Message *
+</label> <textarea id="message" name="message" required rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent" placeholder="Tell us a bit about yourself and why you're interested in joining..."></textarea> </div> <div> <button type="submit" class="w-full btn-lava font-semibold py-4 px-8 rounded-lg text-lg">
+Send Message
+</button> </div> <div id="form-message" class="hidden p-4 rounded-lg"></div> </form> </div> <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8"> <div class="bg-gray-50 rounded-lg p-8"> <h2 class="text-2xl font-bold mb-4 text-gray-900">Other Ways to Connect</h2> <div class="space-y-4"> <div> <h3 class="font-semibold text-gray-700">Email</h3> <a${addAttribute(`mailto:${siteSettings.contactEmail}`, "href")} class="text-[var(--color-ocean-blue)] hover:underline"> ${siteSettings.contactEmail} </a> </div> <div> <h3 class="font-semibold text-gray-700">Social Media</h3> <div class="flex gap-4 mt-2"> <a${addAttribute(siteSettings.facebookUrl, "href")} target="_blank" rel="noopener" class="text-[var(--color-ocean-blue)] hover:underline">
+Facebook
+</a> <a${addAttribute(siteSettings.instagramUrl, "href")} target="_blank" rel="noopener" class="text-[var(--color-ocean-blue)] hover:underline">
+Instagram
+</a> </div> </div> </div> </div> <div class="bg-gray-50 rounded-lg p-8"> <h2 class="text-2xl font-bold mb-4 text-gray-900">Practice Schedule</h2> <p class="text-gray-600 mb-4">
+We typically practice on Lake Las Vegas and Lake Mead. Contact us for current practice times and locations.
+</p> <p class="text-sm text-gray-500">
+Practice schedules vary by season and weather conditions.
+</p> </div> </div> <!-- Location Map --> <div class="mt-12"> <h2 class="text-3xl font-bold mb-6 text-gray-900 text-center">Our Practice Location</h2> <div class="bg-white rounded-lg shadow-lg overflow-hidden"> <!-- Embedded Google Map for Lake Mead --> <div class="aspect-video"> <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3220.8!2d-114.7535!3d36.0125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c92fd8a7c5c5c5%3A0x1234567890abcdef!2s490%20Horsepower%20Cove%2C%20Boulder%20City%2C%20NV%2089005!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Horsepower Cove Practice Location"></iframe> </div> <div class="p-6 bg-gray-50"> <div class="flex items-start gap-4"> <svg class="w-6 h-6 text-[var(--color-ocean-blue)] flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path> </svg> <div> <h3 class="font-bold text-lg text-gray-900 mb-2">Horsepower Cove - Lake Mead</h3> <p class="text-gray-600 mb-2">
+Primary practice location at Lake Mead National Recreation Area
+</p> <p class="text-sm text-gray-500"> <strong>Address:</strong> 490 Horsepower Cove, Boulder City, NV 89005
+</p> <p class="text-sm text-gray-500 mt-2"> <strong>Directions:</strong> From Las Vegas, take US-93 S toward Boulder City, then follow signs to Lake Mead
+</p> <a href="https://www.google.com/maps/dir//490+Horsepower+Cove,+Boulder+City,+NV+89005" target="_blank" rel="noopener" class="inline-block mt-4 btn-ocean px-6 py-2 rounded-lg text-sm font-semibold">
+Get Directions
+</a> </div> </div> </div> </div> </div> </div> ` })} ${renderScript($$result, "K:/AI-Projects/9thisland/src/pages/contact.astro?astro&type=script&index=0&lang.ts")}`;
+}, "K:/AI-Projects/9thisland/src/pages/contact.astro", void 0);
+
+const $$file = "K:/AI-Projects/9thisland/src/pages/contact.astro";
+const $$url = "/contact";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$Contact,
+  file: $$file,
+  url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };

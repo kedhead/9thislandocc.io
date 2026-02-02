@@ -1,0 +1,85 @@
+---
+import Layout from '../layouts/Layout.astro';
+import aboutData from '../../public/data/about.json';
+
+const { hero, introduction, mission, activities, coaches, joinUs } = aboutData;
+---
+
+<Layout title="About Us - 9th Island OCC">
+  <div class="bg-gradient-to-b from-[var(--color-ocean-blue)] to-[var(--color-ocean-dark)] text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-5xl font-bold mb-4">{hero.heading}</h1>
+      <p class="text-xl opacity-90">{hero.tagline}</p>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <article class="prose prose-lg max-w-none">
+      <h2 class="text-4xl font-bold mb-6 text-gray-900">{introduction.title}</h2>
+
+      <p class="text-lg text-gray-700 mb-6">
+        {introduction.content}
+      </p>
+
+      <h3 class="text-3xl font-bold mb-4 mt-12 text-gray-900">{mission.title}</h3>
+
+      <p class="text-gray-700 mb-4">{mission.description}</p>
+
+      <ul class="list-disc list-inside space-y-2 text-gray-700 mb-8 ml-4">
+        {mission.items.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+
+      <h3 class="text-3xl font-bold mb-4 mt-12 text-gray-900">{activities.title}</h3>
+
+      <div class="space-y-4 mb-8">
+        {activities.items.map((activity) => (
+          <div>
+            <p class="text-gray-700">
+              <strong class="text-gray-900">{activity.name}:</strong> {activity.description}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-3xl font-bold mb-6 mt-12 text-gray-900">{coaches.title}</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        {coaches.staff.map((coach) => (
+          <div class="bg-gray-50 rounded-lg p-6">
+            <div class="text-center mb-4">
+              {coach.photo ? (
+                <img src={coach.photo} alt={coach.name} class="w-32 h-32 rounded-full mx-auto mb-4 object-cover" />
+              ) : (
+                <div class="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <span class="text-gray-400 text-sm">Add Photo</span>
+                </div>
+              )}
+              <h4 class="text-xl font-bold text-gray-900">{coach.name}</h4>
+              <p class="text-[var(--color-ocean-blue)] font-semibold">{coach.title}</p>
+            </div>
+            <p class="text-gray-600 text-sm text-center">
+              {coach.bio}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-3xl font-bold mb-4 mt-12 text-gray-900">{joinUs.title}</h3>
+
+      <p class="text-lg text-gray-700 mb-8">
+        {joinUs.content}
+      </p>
+
+      <div class="text-center mt-12">
+        <a href="/membership" class="inline-block btn-lava px-8 py-4 rounded-full text-lg font-semibold mr-4">
+          Become a Member
+        </a>
+        <a href="/contact" class="inline-block btn-ocean px-8 py-4 rounded-full text-lg font-semibold">
+          Get in Touch
+        </a>
+      </div>
+    </article>
+  </div>
+</Layout>
