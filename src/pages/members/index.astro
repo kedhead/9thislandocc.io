@@ -36,7 +36,7 @@ const scheduleData = scheduleRows.slice(1);
 const signupHeader = signupRows[0] || [];
 const signupData = signupRows.slice(1);
 
-const isMock = !import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/16RYQ7ssTJJ3K7sBMtfhHnftrDr8NU_ilUc1ES3vHOW8/edit";
 ---
 
 <MembersLayout title="Dashboard">
@@ -49,28 +49,36 @@ const isMock = !import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     
-    <div class="mb-12">
-      <h1 class="text-4xl font-bold text-gray-900 mb-2">Welcome, Ohana! 🤙</h1>
-      <p class="text-gray-600">Here is the latest schedule and club updates.</p>
+    <div class="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">Welcome, Ohana! 🤙</h1>
+        <p class="text-gray-600">Here is the latest schedule and club updates.</p>
+      </div>
+      <a href={SHEET_URL} target="_blank" rel="noopener noreferrer" class="btn-lava px-6 py-3 rounded-lg font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+        Edit Schedule / Sign Up
+      </a>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
       
       <!-- SCHEDULE CARD -->
-      <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-        <div class="bg-[var(--color-ocean-blue)] px-6 py-4 flex justify-between items-center">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 flex flex-col h-[500px]">
+        <div class="bg-[var(--color-ocean-blue)] px-6 py-4 flex justify-between items-center shrink-0">
           <h2 class="text-white font-bold text-xl flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             {currentMonth} Schedule
           </h2>
-          <span class="text-blue-100 text-xs bg-blue-600/30 px-2 py-1 rounded">Live from Sheets</span>
+          <a href={SHEET_URL} target="_blank" rel="noopener noreferrer" class="text-white/80 hover:text-white text-sm font-medium underline decoration-white/30 hover:decoration-white transition">
+            Open Sheet ↗
+          </a>
         </div>
         
-        <div class="overflow-x-auto">
+        <div class="overflow-y-auto flex-grow custom-scrollbar">
           <table class="w-full text-sm text-left">
-            <thead class="bg-gray-50 text-gray-600 font-semibold uppercase tracking-wider">
+            <thead class="bg-gray-50 text-gray-600 font-semibold uppercase tracking-wider sticky top-0 z-10 shadow-sm">
               <tr>
-                {scheduleHeader.map((h: any) => <th class="px-6 py-3 border-b">{h}</th>)}
+                {scheduleHeader.map((h: any) => <th class="px-6 py-3 border-b bg-gray-50">{h}</th>)}
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -89,16 +97,18 @@ const isMock = !import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
       </div>
 
       <!-- SIGNUPS / UPCOMING EVENTS -->
-      <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-        <div class="bg-[var(--color-lava-orange)] px-6 py-4 flex justify-between items-center">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 flex flex-col h-[500px]">
+        <div class="bg-[var(--color-lava-orange)] px-6 py-4 flex justify-between items-center shrink-0">
           <h2 class="text-white font-bold text-xl flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
             Race Signups
           </h2>
-          <span class="text-orange-100 text-xs bg-orange-600/30 px-2 py-1 rounded">Live from Sheets</span>
+          <a href={SHEET_URL} target="_blank" rel="noopener noreferrer" class="text-white/80 hover:text-white text-sm font-medium underline decoration-white/30 hover:decoration-white transition">
+            Sign Up Now ↗
+          </a>
         </div>
 
-        <div class="p-0">
+        <div class="p-0 overflow-y-auto flex-grow custom-scrollbar">
           <ul class="divide-y divide-gray-100">
             {signupData.map((row: any) => (
               <li class="p-6 hover:bg-gray-50 transition flex justify-between items-center group">
@@ -109,9 +119,9 @@ const isMock = !import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
                     {row[2]} <!-- Status -->
                   </span>
                 </div>
-                <button class="btn-lava px-4 py-2 rounded text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                  Sign Up
-                </button>
+                <a href={SHEET_URL} target="_blank" rel="noopener noreferrer" class="btn-lava px-4 py-2 rounded text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                  Join List
+                </a>
               </li>
             ))}
             {signupData.length === 0 && (
