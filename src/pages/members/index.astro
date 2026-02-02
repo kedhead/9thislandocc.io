@@ -1,40 +1,14 @@
----
 import MembersLayout from '../../layouts/MembersLayout.astro';
-import { getSheetData } from '../../lib/google-sheets';
+import SheetSection from '../../components/SheetSection.astro';
 
 // 0. AUTH CHECK FIRST
-// We must check auth before doing any expensive/risky data fetching
 if (!Astro.cookies.has('members_auth')) {
   return Astro.redirect('/members/login');
 }
 
-// 1. Fetch Data
-// You will replace this ID with your REAL Google Sheet ID later
+// 1. Config
 const SPREADSHEET_ID = '16RYQ7ssTJJ3K7sBMtfhHnftrDr8NU_ilUc1ES3vHOW8'; 
-
-// Determine Current Month for the Tab Name (e.g., "October")
 const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
-
-let scheduleRows = [];
-let signupRows = [];
-let error = null;
-
-try {
-  // Fetch Schedule from the Month Tab (e.g., "October!A1:E20")
-  scheduleRows = await getSheetData(SPREADSHEET_ID, `${currentMonth}!A1:F20`);
-  
-  // Try to fetch Signups
-  signupRows = await getSheetData(SPREADSHEET_ID, 'Signups!A1:D10');
-} catch (e) {
-  console.error("Critical Error fetching sheet data:", e);
-  error = (e as Error).message;
-}
-
-const scheduleHeader = scheduleRows[0] || [];
-const scheduleData = scheduleRows.slice(1);
-
-const signupHeader = signupRows[0] || [];
-const signupData = signupRows.slice(1);
 
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/16RYQ7ssTJJ3K7sBMtfhHnftrDr8NU_ilUc1ES3vHOW8/edit";
 
@@ -65,73 +39,37 @@ const isMock = !import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
       
       <!-- SCHEDULE CARD -->
-      <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 flex flex-col h-[500px]">
-        <div class="bg-[var(--color-ocean-blue)] px-6 py-4 flex justify-between items-center shrink-0">
-          <h2 class="text-white font-bold text-xl flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            {currentMonth} Schedule
-          </h2>
-          <a href={SHEET_URL} target="_blank" rel="noopener noreferrer" class="text-white/80 hover:text-white text-sm font-medium underline decoration-white/30 hover:decoration-white transition">
-            Open Sheet ↗
-          </a>
-        </div>
-        
-        <div class="overflow-y-auto flex-grow custom-scrollbar">
-          <table class="w-full text-sm text-left">
-            <thead class="bg-gray-50 text-gray-600 font-semibold uppercase tracking-wider sticky top-0 z-10 shadow-sm">
-              <tr>
-                {scheduleHeader.map((h: any) => <th class="px-6 py-3 border-b bg-gray-50">{h}</th>)}
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-              {scheduleData.length > 0 ? (
-                scheduleData.map((row: any) => (
-                  <tr class="hover:bg-gray-50 transition">
-                    {row.map((cell: any) => <td class="px-6 py-4 text-gray-700">{cell}</td>)}
-                  </tr>
-                ))
-              ) : (
-                <tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">No schedule found.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <SheetSection
+        spreadsheetId={SPREADSHEET_ID}
+        tabName={currentMonth} 
+        title={`${currentMonth} Schedule`}
+        color="bg-[var(--color-ocean-blue)]"
+        viewLink={SHEET_URL}
+        iconPath="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
 
-      <!-- SIGNUPS / UPCOMING EVENTS -->
-      <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 flex flex-col h-[500px]">
-        <div class="bg-[var(--color-lava-orange)] px-6 py-4 flex justify-between items-center shrink-0">
-          <h2 class="text-white font-bold text-xl flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-            Race Signups
-          </h2>
-          <a href={SHEET_URL} target="_blank" rel="noopener noreferrer" class="text-white/80 hover:text-white text-sm font-medium underline decoration-white/30 hover:decoration-white transition">
-            Sign Up Now ↗
-          </a>
-        </div>
+      <!-- SIGNUPS CARD -->
+      <SheetSection
+        spreadsheetId={SPREADSHEET_ID}
+        tabName="Signups"
+        title="Race Signups"
+        color="bg-[var(--color-lava-orange)]"
+        viewLink={SHEET_URL}
+        iconPath="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+      />
 
-        <div class="p-0 overflow-y-auto flex-grow custom-scrollbar">
-          <ul class="divide-y divide-gray-100">
-            {signupData.map((row: any) => (
-              <li class="p-6 hover:bg-gray-50 transition flex justify-between items-center group">
-                <div>
-                  <div class="text-xs font-bold text-gray-400 uppercase mb-1">{row[0]}</div> <!-- Date -->
-                  <h3 class="font-bold text-gray-900 text-lg">{row[1]}</h3> <!-- Name -->
-                  <span class="inline-block mt-2 px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">
-                    {row[2]} <!-- Status -->
-                  </span>
-                </div>
-                <a href={SHEET_URL} target="_blank" rel="noopener noreferrer" class="btn-lava px-4 py-2 rounded text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                  Join List
-                </a>
-              </li>
-            ))}
-            {signupData.length === 0 && (
-               <li class="p-8 text-center text-gray-500">No upcoming events listed.</li>
-            )}
-          </ul>
-        </div>
-      </div>
+      <!-- EQUIPMENT LIST (New!) -->
+      <SheetSection
+        spreadsheetId={SPREADSHEET_ID}
+        tabName="Equipment"
+        title="Equipment List"
+        color="bg-purple-600"
+        viewLink={SHEET_URL}
+        iconPath="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+      />
+
+      <!-- DOCUMENTS (example placeholder) -->
+      <!-- You can add more SheetSections here easily -->
 
     </div>
 

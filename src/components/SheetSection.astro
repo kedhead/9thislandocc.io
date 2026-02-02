@@ -1,0 +1,86 @@
+---
+import { getSheetData } from '../lib/google-sheets';
+
+interface Props {
+  spreadsheetId: string;
+  tabName: string; // e.g. "Equipment", "February"
+  title: string;
+  color?: string; // Tailwind class, e.g. "bg-blue-600"
+  iconPath?: string; // SVG path data
+  viewLink: string;
+}
+
+const { 
+  spreadsheetId, 
+  tabName, 
+  title, 
+  color = "bg-gray-700", 
+  iconPath = "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
+  viewLink 
+} = Astro.props;
+
+let headerRow: string[] = [];
+let dataRows: string[][] = [];
+let error: string | null = null;
+
+try {
+  // Fetch reasonable range (A1 to F100)
+  // We use the tabName provided
+  const rows = await getSheetData(spreadsheetId, `${tabName}!A1:F100`);
+  
+  if (rows && rows.length > 0) {
+    headerRow = rows[0];
+    dataRows = rows.slice(1);
+  }
+} catch (e) {
+  // If tab doesn't exist or other error, we catch it so page doesn't crash
+  // We'll just show empty state
+  console.log(`Could not load tab ${tabName}:`, (e as Error).message);
+}
+
+const hasData = dataRows.length > 0;
+---
+
+<div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 flex flex-col h-[500px]">
+  
+  <!-- Header -->
+  <div class={`${color} px-6 py-4 flex justify-between items-center shrink-0`}>
+    <h2 class="text-white font-bold text-xl flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={iconPath}></path>
+      </svg>
+      {title}
+    </h2>
+    <a href={viewLink} target="_blank" rel="noopener noreferrer" class="text-white/80 hover:text-white text-sm font-medium underline decoration-white/30 hover:decoration-white transition">
+      Open Sheet ↗
+    </a>
+  </div>
+  
+  <!-- Content -->
+  <div class="overflow-y-auto flex-grow custom-scrollbar">
+    {hasData ? (
+      <table class="w-full text-sm text-left">
+        <thead class="bg-gray-50 text-gray-600 font-semibold uppercase tracking-wider sticky top-0 z-10 shadow-sm">
+          <tr>
+            {headerRow.map((h) => <th class="px-6 py-3 border-b bg-gray-50">{h}</th>)}
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {dataRows.map((row) => (
+            <tr class="hover:bg-gray-50 transition">
+              {row.map((cell) => <td class="px-6 py-4 text-gray-700">{cell}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <div class="flex flex-col items-center justify-center h-full text-gray-400 p-8 text-center">
+        <svg class="w-12 h-12 mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <p>No data found in tab "<strong>{tabName}</strong>".</p>
+        <p class="text-xs mt-2">Check that the tab exists and contains data.</p>
+      </div>
+    )}
+  </div>
+</div>
