@@ -37,6 +37,8 @@ const signupHeader = signupRows[0] || [];
 const signupData = signupRows.slice(1);
 
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/16RYQ7ssTJJ3K7sBMtfhHnftrDr8NU_ilUc1ES3vHOW8/edit";
+
+const isMock = !import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 ---
 
 <MembersLayout title="Dashboard">
