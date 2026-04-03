@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import InstagramFeed from '../components/InstagramFeed.astro';
 ---
 
 <Layout title="Photo Gallery - 9th Island OCC">
@@ -25,9 +24,10 @@ import InstagramFeed from '../components/InstagramFeed.astro';
           </a>
         </div>
 
-        <!-- Instagram Feed (Custom Integration) -->
+        <!-- SociableKit Instagram Feed -->
         <div class="bg-white rounded-lg p-6">
-          <InstagramFeed />
+          <div class="sk-instagram-feed" data-embed-id="25669434"></div>
+          <script src="https://widgets.sociablekit.com/instagram-feed/widget.js" defer></script>
         </div>
       </div>
     </div>
