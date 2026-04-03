@@ -19,8 +19,8 @@ const { hero, whatWeOffer, callToAction, sponsors } = homepageData;
             class="w-full h-full object-cover object-center"
           />
         </div>
-        {/* Subtle overlay for text readability */}
-        <div class="absolute inset-0 z-0 bg-black/30"></div>
+        {/* Overlay - darker on mobile for readability over busy background */}
+        <div class="absolute inset-0 z-0 bg-black/55 md:bg-black/35"></div>
       </>
     )}
     {!hero.backgroundImage && (
@@ -28,13 +28,14 @@ const { hero, whatWeOffer, callToAction, sponsors } = homepageData;
     )}
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-      <h1 class="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 md:mb-4">
+      {/* Club name is already in the nav — hide on mobile to save space */}
+      <h1 class="hidden md:block text-5xl font-bold mb-4">
         {hero.heading}
       </h1>
-      <p class="text-base sm:text-lg md:text-2xl mb-4 md:mb-5 opacity-90">
+      <p class="text-2xl sm:text-3xl md:text-2xl font-bold md:font-normal mb-3 md:mb-5 opacity-95">
         {hero.tagline}
       </p>
-      <p class="hidden sm:block text-base md:text-lg mb-8 max-w-2xl mx-auto opacity-90">
+      <p class="hidden md:block text-lg mb-8 max-w-2xl mx-auto opacity-90">
         {hero.description}
       </p>
       <div class="flex flex-row gap-3 justify-center">
