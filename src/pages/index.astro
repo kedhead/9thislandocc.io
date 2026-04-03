@@ -8,7 +8,7 @@ const { hero, whatWeOffer, callToAction, sponsors } = homepageData;
 
 <Layout title={siteSettings.siteName} description={siteSettings.description}>
   <!-- Hero Section -->
-  <section class="relative text-white py-12 md:py-16 overflow-hidden" style="min-height: max(360px, 32vw); max-height: 560px;">
+  <section class="relative text-white py-8 md:py-16 overflow-hidden min-h-[240px] md:min-h-[max(360px,32vw)] max-h-[380px] md:max-h-[560px]">
     {/* Background Image - covers full area */}
     {hero.backgroundImage && (
       <>
@@ -28,20 +28,20 @@ const { hero, whatWeOffer, callToAction, sponsors } = homepageData;
     )}
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-      <h1 class="text-4xl md:text-5xl font-bold mb-4">
+      <h1 class="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 md:mb-4">
         {hero.heading}
       </h1>
-      <p class="text-xl md:text-2xl mb-5 opacity-90">
+      <p class="text-base sm:text-lg md:text-2xl mb-4 md:mb-5 opacity-90">
         {hero.tagline}
       </p>
-      <p class="text-base md:text-lg mb-8 max-w-2xl mx-auto opacity-90">
+      <p class="hidden sm:block text-base md:text-lg mb-8 max-w-2xl mx-auto opacity-90">
         {hero.description}
       </p>
-      <div class="flex flex-col sm:flex-row gap-3 justify-center">
-        <a href={hero.primaryButton.link} class="btn-lava px-7 py-3 rounded-full text-base font-semibold">
+      <div class="flex flex-row gap-3 justify-center">
+        <a href={hero.primaryButton.link} class="btn-lava px-5 py-2.5 md:px-7 md:py-3 rounded-full text-sm md:text-base font-semibold">
           {hero.primaryButton.text}
         </a>
-        <a href={hero.secondaryButton.link} class="bg-white text-[var(--color-ocean-blue)] px-7 py-3 rounded-full text-base font-semibold hover:bg-gray-100 transition">
+        <a href={hero.secondaryButton.link} class="bg-white text-[var(--color-ocean-blue)] px-5 py-2.5 md:px-7 md:py-3 rounded-full text-sm md:text-base font-semibold hover:bg-gray-100 transition">
           {hero.secondaryButton.text}
         </a>
       </div>
