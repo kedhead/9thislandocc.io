@@ -63,8 +63,10 @@ export async function getSheetData(spreadsheetId: string, range: string) {
 
         return response.data.values || [];
 
-    } catch (error) {
-        console.error("❌ Google Sheets API Error:", error);
+    } catch (error: any) {
+        if (!error?.message?.includes('Unable to parse range')) {
+            console.error("❌ Google Sheets API Error:", error);
+        }
         return getMockData(range); // Fallback to mock on error too
     }
 }
@@ -88,56 +90,60 @@ export async function getRaceEvents(spreadsheetId: string): Promise<RaceEvent[]>
     }
 
     try {
-        // Fetch the first two rows (headers) across many columns
-        // Row 1 has the event name + date/time, Row 2 may have additional info
-        const rows = await getSheetData(spreadsheetId, `March!A1:Z2`);
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        // Fetch the first two rows (headers) across many columns for all months
+        const monthPromises = months.map(month => getSheetData(spreadsheetId, `${month}!A1:Z2`));
+        const monthResults = await Promise.all(monthPromises);
 
-        if (rows && rows.length > 0) {
-            const headerRow = rows[0];
+        for (const rows of monthResults) {
+            if (rows && rows.length > 0) {
+                const headerRow = rows[0];
 
-            // Scan each column header for "race"
-            for (let i = 0; i < headerRow.length; i++) {
-                const header = headerRow[i] || '';
+                // Scan each column header for "race"
+                for (let i = 0; i < headerRow.length; i++) {
+                    const header = headerRow[i] || '';
 
-                if (header.toLowerCase().includes('race')) {
-                    // Parse the header - format is usually like:
-                    // "Havasu Heat Race!\nSat, March 28 @ 6:00am"
-                    const lines = header.split('\n');
-                    let eventName = header;
-                    let dateInfo = '';
-                    let time = '';
-                    let month = '';
-                    let day = '';
+                    if (header.toLowerCase().includes('race')) {
+                        // Parse the header - format is usually like:
+                        // "Havasu Heat Race!\nSat, March 28 @ 6:00am"
+                        const lines = header.split('\n');
+                        let eventName = header;
+                        let dateInfo = '';
+                        let time = '';
+                        let month = '';
+                        let day = '';
 
-                    if (lines.length >= 2) {
-                        eventName = lines[0].trim();
-                        dateInfo = lines[1].trim();
-                    } else {
-                        // Maybe date/time is in the same line
-                        dateInfo = header;
+                        if (lines.length >= 2) {
+                            eventName = lines[0].trim();
+                            dateInfo = lines[1].trim();
+                        } else {
+                            // Maybe date/time is in the same line
+                            dateInfo = header;
+                        }
+
+                        // Try to parse date info like "Sat, March 28 @ 6:00am"
+                        const dateMatch = dateInfo.match(/(\w+),?\s*(\w+)\s+(\d+)/);
+                        if (dateMatch) {
+                            day = `${dateMatch[1]} ${dateMatch[3]}`;
+                            month = dateMatch[2];
+                        }
+
+                        // Try to parse time like "@ 6:00am" or "@ 8:00am"
+                        const timeMatch = dateInfo.match(/@\s*(\d+:\d+\s*[ap]m)/i);
+                        if (timeMatch) {
+                            time = timeMatch[1].toUpperCase();
+                        }
+
+                        races.push({
+                            month: month || 'TBD',
+                            day: day || 'TBD',
+                            time: time || 'TBD',
+                            activity: eventName,
+                            location: '',
+                            notes: '',
+                        });
                     }
-
-                    // Try to parse date info like "Sat, March 28 @ 6:00am"
-                    const dateMatch = dateInfo.match(/(\w+),?\s*(\w+)\s+(\d+)/);
-                    if (dateMatch) {
-                        day = `${dateMatch[1]} ${dateMatch[3]}`;
-                        month = dateMatch[2];
-                    }
-
-                    // Try to parse time like "@ 6:00am" or "@ 8:00am"
-                    const timeMatch = dateInfo.match(/@\s*(\d+:\d+\s*[ap]m)/i);
-                    if (timeMatch) {
-                        time = timeMatch[1].toUpperCase();
-                    }
-
-                    races.push({
-                        month: month || 'TBD',
-                        day: day || 'TBD',
-                        time: time || 'TBD',
-                        activity: eventName,
-                        location: '',
-                        notes: '',
-                    });
                 }
             }
         }
