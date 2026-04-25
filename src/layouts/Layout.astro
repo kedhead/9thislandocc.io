@@ -4,7 +4,7 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
-  active?: 'home' | 'about' | 'events' | 'gallery' | 'membership' | 'contact';
+  active?: 'home' | 'about' | 'events' | 'gallery' | 'membership' | 'members' | 'contact';
 }
 
 const {
@@ -19,6 +19,7 @@ const navLinks: { label: string; href: string; id: NonNullable<Props['active']> 
   { label: 'Events',     href: '/events',     id: 'events' },
   { label: 'Gallery',    href: '/gallery',    id: 'gallery' },
   { label: 'Membership', href: '/membership', id: 'membership' },
+  { label: 'Members',    href: '/members',    id: 'members' },
   { label: 'Contact',    href: '/contact',    id: 'contact' },
 ];
 ---
