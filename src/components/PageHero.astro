@@ -1,0 +1,23 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+}
+
+const { title, subtitle, eyebrow = '9th Island OCC' } = Astro.props;
+---
+
+<div style="background: var(--bg-dark); color: #F5F0EB; padding: 120px 24px 72px; text-align: center;">
+  <div style="font-family: var(--ff-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal-light); margin-bottom: 18px;">
+    {eyebrow}
+  </div>
+  <h1 style="font-family: var(--ff-serif); font-size: clamp(36px, 5.5vw, 68px); font-weight: 700; line-height: 1.08; margin: 0 0 16px;">
+    {title}
+  </h1>
+  {subtitle && (
+    <p style="font-family: var(--ff-sans); font-size: 18px; opacity: 0.72; max-width: 480px; margin: 0 auto; line-height: 1.7;">
+      {subtitle}
+    </p>
+  )}
+</div>

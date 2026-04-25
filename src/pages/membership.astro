@@ -1,238 +1,303 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
 import membershipData from '../../public/data/membership.json';
 
-const { tiers } = membershipData;
+const tierColors = ['var(--lava)', 'var(--teal)'];
+
+const benefits = [
+  { title: 'Training Access',  desc: 'Full access to all weekly practice sessions with coaching.' },
+  { title: 'Race Eligibility', desc: 'Compete in local, regional, and national outrigger races.' },
+  { title: 'Community Events', desc: 'Social gatherings, beach cleanups, and cultural celebrations.' },
+  { title: 'Equipment Use',    desc: 'Access to club canoes and paddling gear during practices.' },
+];
+
+const tiers = membershipData.tiers.map((t, i) => {
+  // Split price like "$250/year" into amount + period
+  const match = t.price.match(/^(\$\d+)(.*)$/);
+  return {
+    ...t,
+    priceAmount: match ? match[1] : t.price,
+    pricePeriod: match ? match[2] : '',
+    color: tierColors[i % tierColors.length],
+  };
+});
 ---
 
-<Layout title="Membership - 9th Island OCC">
-  <div class="bg-gradient-to-b from-[var(--color-ocean-blue)] to-[var(--color-ocean-dark)] text-white py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h1 class="text-5xl font-bold mb-4">Join Our Ohana</h1>
-      <p class="text-xl opacity-90">Become part of the 9th Island family</p>
-    </div>
-  </div>
+<Layout title="Membership — 9th Island OCC" active="membership">
+  <PageHero title="Join Our Ohana" subtitle="Become part of the 9th Island family" />
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <!-- Membership Benefits -->
-    <div class="mb-16">
-      <h2 class="text-4xl font-bold text-center mb-12 text-gray-900">Membership Benefits</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-white rounded-lg shadow-lg p-8 text-center">
-          <div class="w-20 h-20 bg-[var(--color-ocean-blue)] rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-            </svg>
+  <!-- Benefits -->
+  <section style="background: var(--bg-alt); padding: 80px 24px;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 56px;">
+        <div class="eyebrow" style="margin-bottom: 14px;">Why Join</div>
+        <h2 style="font-family: var(--ff-serif); font-size: clamp(26px, 3vw, 38px); font-weight: 700; color: var(--text); margin: 0;">Membership Benefits</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2px;">
+        {benefits.map((b, i) => (
+          <div style={`background: var(--bg); padding: 36px 28px; border-top: 3px solid ${i % 2 === 0 ? 'var(--lava)' : 'var(--teal)'};`}>
+            <h3 style="font-family: var(--ff-serif); font-size: 18px; font-weight: 600; color: var(--text); margin: 0 0 10px;">{b.title}</h3>
+            <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); line-height: 1.75; margin: 0;">{b.desc}</p>
           </div>
-          <h3 class="text-2xl font-bold mb-4 text-gray-900">Training Access</h3>
-          <p class="text-gray-600">Full access to all practice sessions and coaching</p>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-lg p-8 text-center">
-          <div class="w-20 h-20 bg-[var(--color-ocean-blue)] rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-            </svg>
-          </div>
-          <h3 class="text-2xl font-bold mb-4 text-gray-900">Race Eligibility</h3>
-          <p class="text-gray-600">Compete in local, regional, and national races</p>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-lg p-8 text-center">
-          <div class="w-20 h-20 bg-[var(--color-ocean-blue)] rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-          </div>
-          <h3 class="text-2xl font-bold mb-4 text-gray-900">Community Events</h3>
-          <p class="text-gray-600">Join social gatherings and cultural celebrations</p>
-        </div>
+        ))}
       </div>
     </div>
+  </section>
 
-    <!-- Membership Levels -->
-    <div class="mb-16">
-      <h2 class="text-4xl font-bold text-center mb-12 text-gray-900">Membership Options</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        {tiers.map((tier, index) => (
-          <div class={`bg-white rounded-lg shadow-lg p-8 border-t-4 flex flex-col ${index === 1 ? 'border-[var(--color-lava-orange)] relative' : 'border-[var(--color-ocean-blue)]'}`}>
-            {index === 1 && (
-              <div class="absolute top-0 right-0 bg-[var(--color-lava-orange)] text-white px-4 py-1 text-sm font-semibold">
-                Popular
-              </div>
-            )}
-            <h3 class="text-2xl font-bold mb-4 text-gray-900">{tier.name}</h3>
-            <div class={`text-4xl font-bold mb-6 ${index === 1 ? 'text-[var(--color-lava-orange)]' : 'text-[var(--color-ocean-blue)]'}`}>
-              {tier.price}
+  <!-- Tiers -->
+  <section style="background: var(--bg); padding: 80px 24px;">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 52px;">
+        <div class="eyebrow" style="margin-bottom: 14px;">Pricing</div>
+        <h2 style="font-family: var(--ff-serif); font-size: clamp(26px, 3vw, 38px); font-weight: 700; color: var(--text); margin: 0;">Membership Options</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+        {tiers.map((tier, i) => (
+          <div
+            class="tier-card"
+            data-index={i}
+            data-name={tier.name}
+            data-color={tier.color}
+            style={`background: var(--bg-alt); border: 1px solid var(--border); border-top: 4px solid ${tier.color}; padding: 40px 36px; transition: border-color 0.25s;`}
+          >
+            <h3 style="font-family: var(--ff-serif); font-size: 20px; font-weight: 700; color: var(--text); margin: 0 0 8px;">{tier.name}</h3>
+            <div style={`font-family: var(--ff-serif); font-size: 50px; font-weight: 700; color: ${tier.color}; line-height: 1; margin-bottom: 4px;`}>
+              {tier.priceAmount}<span style="font-size: 18px; font-weight: 400; color: var(--text-mid);">{tier.pricePeriod}</span>
             </div>
-            <p class="text-gray-600 mb-4">{tier.description}</p>
-            <ul class="space-y-3 mb-8 flex-grow">
-              {tier.benefits.map((benefit) => (
-                <li class="flex items-start">
-                  <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
-                  <span class="text-gray-700">{benefit}</span>
+            <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); margin: 12px 0 24px;">{tier.description}</p>
+            <ul style="list-style: none; padding: 0; margin: 0 0 32px; display: grid; gap: 10px;">
+              {tier.benefits.map((b) => (
+                <li style="display: flex; align-items: center; gap: 10px; font-family: var(--ff-sans); font-size: 14px; color: var(--text);">
+                  <span style={`color: ${tier.color}; font-weight: 700;`}>✓</span> {b}
                 </li>
               ))}
             </ul>
-            <button class={`membership-select w-full py-3 rounded-lg font-semibold mt-auto ${index === 1 ? 'btn-lava' : 'btn-ocean'}`} data-type={tier.name}>
-              Select
+            <button
+              type="button"
+              class="tier-select"
+              data-index={i}
+              data-name={tier.name}
+              data-color={tier.color}
+              style={`background: transparent; color: ${tier.color}; border: 2px solid ${tier.color}; border-radius: 4px; padding: 12px 24px; font-family: var(--ff-sans); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s;`}
+            >
+              Select This Plan
             </button>
           </div>
         ))}
       </div>
     </div>
+  </section>
 
-    <!-- Registration Form -->
-    <div id="registration-form" class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8 hidden">
-      <h2 class="text-3xl font-bold mb-6 text-gray-900">Membership Registration</h2>
-      <form id="membershipForm" class="space-y-6">
+  <!-- Registration form -->
+  <section id="reg-form" style="display: none; background: var(--bg-alt); padding: 80px 24px; border-top: 1px solid var(--border);">
+    <div style="max-width: 660px; margin: 0 auto;">
+      <div class="eyebrow" style="margin-bottom: 12px;">Registration</div>
+      <h2 id="reg-tier-name" style="font-family: var(--ff-serif); font-size: 32px; font-weight: 700; color: var(--text); margin: 0 0 6px;"></h2>
+      <p id="reg-tier-summary" style="font-family: var(--ff-sans); font-size: 15px; color: var(--text-mid); margin: 0 0 40px;"></p>
+
+      <form id="membershipForm" style="display: grid; gap: 20px;">
         <input type="hidden" id="membershipType" name="membershipType" />
 
-        <!-- Personal Information -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <div>
-            <label for="firstName" class="block text-sm font-semibold text-gray-700 mb-2">First Name *</label>
-            <input type="text" id="firstName" name="firstName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent" />
+            <label class="field-label" for="firstName">First Name *</label>
+            <input class="field-input" type="text" id="firstName" name="firstName" required />
           </div>
-
           <div>
-            <label for="lastName" class="block text-sm font-semibold text-gray-700 mb-2">Last Name *</label>
-            <input type="text" id="lastName" name="lastName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent" />
+            <label class="field-label" for="lastName">Last Name *</label>
+            <input class="field-input" type="text" id="lastName" name="lastName" required />
           </div>
         </div>
 
         <div>
-          <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
-          <input type="email" id="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent" />
+          <label class="field-label" for="email">Email Address *</label>
+          <input class="field-input" type="email" id="email" name="email" required />
         </div>
 
         <div>
-          <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Phone *</label>
-          <input type="tel" id="phone" name="phone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent" />
+          <label class="field-label" for="phone">Phone Number *</label>
+          <input class="field-input" type="tel" id="phone" name="phone" required />
         </div>
 
         <div>
-          <label for="experience" class="block text-sm font-semibold text-gray-700 mb-2">Paddling Experience *</label>
-          <select id="experience" name="experience" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent">
-            <option value="">Select your experience level</option>
+          <label class="field-label" for="experience">Paddling Experience *</label>
+          <select class="field-select" id="experience" name="experience" required>
+            <option value="">Select your level</option>
             <option value="none">No experience</option>
             <option value="beginner">Beginner (less than 1 year)</option>
-            <option value="intermediate">Intermediate (1-3 years)</option>
+            <option value="intermediate">Intermediate (1–3 years)</option>
             <option value="advanced">Advanced (3+ years)</option>
           </select>
         </div>
 
         <div>
-          <label for="emergency" class="block text-sm font-semibold text-gray-700 mb-2">Emergency Contact Name *</label>
-          <input type="text" id="emergency" name="emergency" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent" />
+          <label class="field-label" for="emergency">Emergency Contact Name *</label>
+          <input class="field-input" type="text" id="emergency" name="emergency" required />
         </div>
 
         <div>
-          <label for="emergencyPhone" class="block text-sm font-semibold text-gray-700 mb-2">Emergency Contact Phone *</label>
-          <input type="tel" id="emergencyPhone" name="emergencyPhone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent" />
+          <label class="field-label" for="emergencyPhone">Emergency Contact Phone *</label>
+          <input class="field-input" type="tel" id="emergencyPhone" name="emergencyPhone" required />
         </div>
 
         <div>
-          <label for="comments" class="block text-sm font-semibold text-gray-700 mb-2">Comments / Questions</label>
-          <textarea id="comments" name="comments" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-ocean-blue)] focus:border-transparent"></textarea>
+          <label class="field-label" for="comments">Comments / Questions</label>
+          <textarea class="field-textarea" id="comments" name="comments" rows="4"></textarea>
         </div>
 
-        <div class="flex items-start">
-          <input type="checkbox" id="waiver" name="waiver" required class="mt-1 mr-3" />
-          <label for="waiver" class="text-sm text-gray-700">
+        <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+          <input type="checkbox" id="waiver" name="waiver" required style="margin-top: 3px; accent-color: var(--lava);" />
+          <span style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); line-height: 1.65;">
             I understand and agree to the club's safety guidelines and waiver terms. *
-          </label>
-        </div>
+          </span>
+        </label>
 
-        <div id="form-message" class="hidden p-4 rounded-lg"></div>
+        <div id="form-message" style="display: none; padding: 16px; border-radius: 2px;"></div>
 
-        <div class="flex gap-4">
-          <button type="submit" class="flex-1 btn-lava font-semibold py-4 px-8 rounded-lg text-lg">
-            Submit Registration
+        <div style="display: flex; gap: 12px;">
+          <button id="reg-submit" type="submit" style="flex: 1; background: var(--lava); color: #fff; border: none; border-radius: 4px; padding: 14px 24px; font-family: var(--ff-sans); font-size: 15px; font-weight: 600; cursor: pointer;">
+            Submit Registration →
           </button>
-          <button type="button" id="cancel-form" class="px-8 py-4 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition">
+          <button id="reg-cancel" type="button" style="background: transparent; color: var(--text-mid); border: 1px solid var(--border); border-radius: 4px; padding: 14px 20px; font-family: var(--ff-sans); font-size: 14px; cursor: pointer;">
             Cancel
           </button>
         </div>
       </form>
     </div>
-  </div>
+  </section>
+
+  <section id="reg-thanks" style="display: none; background: var(--bg-alt); padding: 80px 24px; text-align: center; border-top: 1px solid var(--border);">
+    <div style="max-width: 480px; margin: 0 auto;">
+      <div style="font-size: 52px; margin-bottom: 24px;">🌊</div>
+      <h2 style="font-family: var(--ff-serif); font-size: 34px; font-weight: 700; color: var(--text); margin: 0 0 16px;">Mahalo!</h2>
+      <p style="font-family: var(--ff-sans); font-size: 16px; color: var(--text-mid); line-height: 1.75; margin: 0;">
+        Your registration has been submitted. We'll reach out shortly with next steps. Welcome to the ohana!
+      </p>
+    </div>
+  </section>
 </Layout>
 
 <script>
-  // Show registration form when membership type selected
-  const selectButtons = document.querySelectorAll('.membership-select');
-  const registrationForm = document.getElementById('registration-form');
-  const membershipTypeInput = document.getElementById('membershipType') as HTMLInputElement;
-  const cancelButton = document.getElementById('cancel-form');
+  const tierCards = document.querySelectorAll<HTMLElement>('.tier-card');
+  const tierButtons = document.querySelectorAll<HTMLButtonElement>('.tier-select');
+  const regSection = document.getElementById('reg-form') as HTMLElement | null;
+  const thanksSection = document.getElementById('reg-thanks') as HTMLElement | null;
+  const tierNameEl = document.getElementById('reg-tier-name');
+  const tierSummaryEl = document.getElementById('reg-tier-summary');
+  const membershipTypeInput = document.getElementById('membershipType') as HTMLInputElement | null;
+  const submitBtn = document.getElementById('reg-submit') as HTMLButtonElement | null;
+  const cancelBtn = document.getElementById('reg-cancel');
+  const form = document.getElementById('membershipForm') as HTMLFormElement | null;
+  const messageDiv = document.getElementById('form-message') as HTMLDivElement | null;
 
-  selectButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const type = button.getAttribute('data-type');
-      if (membershipTypeInput && type) {
-        membershipTypeInput.value = type;
+  let selectedIndex: number | null = null;
+
+  const updateSelection = (index: number) => {
+    selectedIndex = index;
+    tierCards.forEach((card, i) => {
+      const color = card.dataset.color || 'var(--border)';
+      card.style.borderColor = i === index ? color : 'var(--border)';
+      card.style.borderTopColor = color;
+    });
+    tierButtons.forEach((btn, i) => {
+      const color = btn.dataset.color || 'var(--lava)';
+      if (i === index) {
+        btn.style.background = color;
+        btn.style.color = '#fff';
+        btn.textContent = '✓ Selected';
+      } else {
+        btn.style.background = 'transparent';
+        btn.style.color = color;
+        btn.textContent = 'Select This Plan';
       }
-      registrationForm?.classList.remove('hidden');
-      registrationForm?.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    const card = tierCards[index];
+    const name = card?.dataset.name ?? '';
+    const color = card?.dataset.color ?? 'var(--lava)';
+    const priceEl = card?.querySelector('div[style*="font-size: 50px"]');
+    const descEl = card?.querySelector('p');
+
+    if (tierNameEl) tierNameEl.textContent = name;
+    if (tierSummaryEl) {
+      const priceText = priceEl?.textContent?.trim() ?? '';
+      tierSummaryEl.textContent = `${priceText} — fill in your details and we'll reach out with next steps.`;
+    }
+    if (membershipTypeInput) membershipTypeInput.value = name;
+    if (submitBtn) submitBtn.style.background = color;
+    if (regSection) regSection.style.display = 'block';
+    if (thanksSection) thanksSection.style.display = 'none';
+
+    setTimeout(() => {
+      regSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  };
+
+  tierButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.index || '0', 10);
+      updateSelection(idx);
     });
   });
 
-  cancelButton?.addEventListener('click', () => {
-    registrationForm?.classList.add('hidden');
+  cancelBtn?.addEventListener('click', () => {
+    selectedIndex = null;
+    if (regSection) regSection.style.display = 'none';
+    tierCards.forEach((card) => {
+      card.style.borderColor = 'var(--border)';
+    });
+    tierButtons.forEach((btn) => {
+      const color = btn.dataset.color || 'var(--lava)';
+      btn.style.background = 'transparent';
+      btn.style.color = color;
+      btn.textContent = 'Select This Plan';
+    });
   });
-
-  // Form submission
-  const form = document.getElementById('membershipForm') as HTMLFormElement;
-  const messageDiv = document.getElementById('form-message') as HTMLDivElement;
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!form) return;
 
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    // Show loading state
-    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-    const originalText = submitButton.textContent;
-    submitButton.textContent = 'Submitting...';
-    submitButton.disabled = true;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+    }
+    if (messageDiv) messageDiv.style.display = 'none';
 
-    // Send to FormSubmit.co
     try {
-      const response = await fetch("https://formsubmit.co/ajax/admin@9thislandoutrigger.com", {
-        method: "POST",
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
+      const response = await fetch('https://formsubmit.co/ajax/admin@9thislandoutrigger.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           _subject: `New Membership Application: ${data.firstName} ${data.lastName}`,
-          ...data
-        })
+          ...data,
+        }),
       });
 
-      if (response.ok) {
-        messageDiv.className = 'p-4 rounded-lg bg-green-100 text-green-800';
-        messageDiv.textContent = `Thank you for your membership registration! We'll contact you at ${data.email} with next steps.`;
-        messageDiv.classList.remove('hidden');
-        form.reset();
-      } else {
-        throw new Error('Form submission failed');
-      }
-    } catch (error) {
-      messageDiv.className = 'p-4 rounded-lg bg-red-100 text-red-800';
-      messageDiv.textContent = 'Something went wrong. Please try again later.';
-      messageDiv.classList.remove('hidden');
-    } finally {
-      submitButton.textContent = originalText || 'Submit Registration';
-      submitButton.disabled = false;
+      if (!response.ok) throw new Error('Form submission failed');
 
-      setTimeout(() => {
-        registrationForm?.classList.add('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 3000);
+      form.reset();
+      if (regSection) regSection.style.display = 'none';
+      if (thanksSection) {
+        thanksSection.style.display = 'block';
+        thanksSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } catch (err) {
+      if (messageDiv) {
+        messageDiv.style.display = 'block';
+        messageDiv.style.background = 'rgba(232,56,10,0.1)';
+        messageDiv.style.color = 'var(--lava-dark)';
+        messageDiv.textContent = 'Something went wrong. Please try again later.';
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Registration →';
+      }
     }
   });
 </script>

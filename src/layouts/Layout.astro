@@ -4,208 +4,250 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  active?: 'home' | 'about' | 'events' | 'gallery' | 'membership' | 'contact';
 }
 
-const { title = "9th Island OCC", description = "9th Island Outrigger Canoe Club - Las Vegas" } = Astro.props;
+const {
+  title = '9th Island Outrigger Canoe Club',
+  description = '9th Island Outrigger Canoe Club — Hawaiian outrigger canoe paddling in Las Vegas, Nevada. Join our ohana.',
+  active,
+} = Astro.props;
+
+const navLinks: { label: string; href: string; id: NonNullable<Props['active']> }[] = [
+  { label: 'Home',       href: '/',           id: 'home' },
+  { label: 'About',      href: '/about',      id: 'about' },
+  { label: 'Events',     href: '/events',     id: 'events' },
+  { label: 'Gallery',    href: '/gallery',    id: 'gallery' },
+  { label: 'Membership', href: '/membership', id: 'membership' },
+  { label: 'Contact',    href: '/contact',    id: 'contact' },
+];
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <!-- Netlify Identity removed - using GitHub OAuth on Vercel -->
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script is:inline>
+      // Apply dark mode before paint to avoid flash
+      (function () {
+        try {
+          const saved = localStorage.getItem('9island-dark');
+          if (saved === 'true') document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body class="min-h-screen">
-    <!-- Polynesian tribal pattern border at very top -->
-    <div class="wave-animate h-2"></div>
 
-    <nav class="bg-white shadow-lg sticky top-0 z-50 tribal-border-top">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-20">
-          <!-- Logo and Name -->
-          <a href="/" class="flex items-center gap-4 hover:opacity-90 transition group">
-            <div>
-              <div class="text-2xl font-bold leading-tight" style="font-family: 'Georgia', serif; background: linear-gradient(135deg, var(--color-rock-black), var(--color-lava-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                9th Island
-              </div>
-              <div class="text-sm font-semibold tracking-wider" style="color: var(--color-ocean-teal);">
-                OUTRIGGER CANOE CLUB
-              </div>
-            </div>
-          </a>
+  <body>
+    <nav id="site-nav" data-scrolled="false" style="position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--nav-bg); border-bottom: 1px solid transparent; transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;">
+      <div style="height: 3px; background: var(--lava); opacity: 0.9;"></div>
 
-          <!-- Desktop Navigation -->
-          <div class="hidden lg:flex items-center space-x-6">
-            <a href="/" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Home</a>
-            <a href="/about" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">About</a>
-            <a href="/membership" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Membership</a>
-            <a href="/events" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Events</a>
-            <a href="/gallery" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Gallery</a>
-            <a href="/contact" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Contact</a>
-            <a href="/members" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium transition border-b-2 border-transparent hover:border-[var(--color-lava-orange)]">Members</a>
-
-            <!-- Dark Mode Toggle -->
-            <button id="dark-mode-toggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
-              <div class="toggle-thumb">
-                <svg class="sun-icon w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
-                </svg>
-                <svg class="moon-icon w-4 h-4 text-blue-200 hidden" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                </svg>
-              </div>
-            </button>
-
-            <a href="/membership" class="btn-lava px-6 py-2.5 rounded-full font-semibold">
-              Join Us
-            </a>
+      <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 72px;">
+        <!-- Wordmark -->
+        <a href="/" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+          <img
+            src="/logo.jpg"
+            alt="9th Island OCC logo"
+            style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex-shrink: 0;"
+          />
+          <div style="text-align: left;">
+            <div style="font-family: var(--ff-serif); font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.1;">9th Island</div>
+            <div style="font-family: var(--ff-sans); font-size: 9.5px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--teal);">Outrigger Canoe Club</div>
           </div>
+        </a>
 
-          <!-- Mobile menu button -->
-          <button id="mobile-menu-button" class="lg:hidden p-2 rounded-lg hover:bg-gray-100">
-            <svg class="w-6 h-6 text-[var(--color-lava-orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
+        <!-- Desktop nav -->
+        <div class="desktop-nav" style="display: flex; align-items: center; gap: 2px;">
+          {navLinks.map((link) => (
+            <a
+              href={link.href}
+              style={`background: none; border: none; cursor: pointer; font-family: var(--ff-sans); font-size: 14px; font-weight: ${active === link.id ? 600 : 400}; color: ${active === link.id ? 'var(--lava)' : 'var(--text-mid)'}; padding: 6px 13px; border-radius: 3px; text-decoration: none; border-bottom: ${active === link.id ? '2px solid var(--lava)' : '2px solid transparent'};`}
+            >
+              {link.label}
+            </a>
+          ))}
+
+          <button
+            id="theme-toggle"
+            class="theme-toggle"
+            aria-label="Toggle dark mode"
+            style="margin-left: 10px;"
+          >
+            <span class="theme-toggle-icon-light">🌙</span>
+            <span class="theme-toggle-icon-dark" style="display: none;">☀️</span>
           </button>
+
+          <a
+            href="/membership"
+            style="background: var(--lava); color: #fff; border: none; border-radius: 4px; padding: 9px 22px; font-family: var(--ff-sans); font-size: 14px; font-weight: 600; cursor: pointer; margin-left: 8px; letter-spacing: 0.01em; text-decoration: none;"
+          >
+            Join Us
+          </a>
         </div>
 
-        <!-- Mobile Navigation -->
-        <div id="mobile-menu" class="hidden lg:hidden pb-4">
-          <div class="flex flex-col space-y-3">
-            <a href="/" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Home</a>
-            <a href="/about" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">About</a>
-            <a href="/membership" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Membership</a>
-            <a href="/events" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Events</a>
-            <a href="/gallery" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Gallery</a>
-            <a href="/contact" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Contact</a>
-            <a href="/members" class="text-gray-700 hover:text-[var(--color-ocean-teal)] font-medium py-2 transition border-l-4 border-transparent hover:border-[var(--color-lava-orange)] pl-2">Members</a>
+        <!-- Mobile hamburger -->
+        <button
+          id="mobile-toggle"
+          class="mobile-menu-btn"
+          aria-label="Open menu"
+          style="background: none; border: none; cursor: pointer; padding: 8px; flex-direction: column; gap: 5px;"
+        >
+          <span style="width: 24px; height: 2px; background: var(--text); border-radius: 1px; display: block;"></span>
+          <span style="width: 24px; height: 2px; background: var(--text); border-radius: 1px; display: block;"></span>
+          <span style="width: 16px; height: 2px; background: var(--lava); border-radius: 1px; display: block;"></span>
+        </button>
+      </div>
 
-            <!-- Dark Mode Toggle (Mobile) -->
-            <div class="flex items-center justify-between py-2 pl-2">
-              <span class="text-gray-700 font-medium">Dark Mode</span>
-              <button id="dark-mode-toggle-mobile" class="dark-mode-toggle" aria-label="Toggle dark mode">
-                <div class="toggle-thumb">
-                  <svg class="sun-icon w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
-                  </svg>
-                  <svg class="moon-icon w-4 h-4 text-blue-200 hidden" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                  </svg>
-                </div>
-              </button>
-            </div>
-
-            <a href="/membership" class="btn-lava px-6 py-2.5 rounded-full font-semibold text-center">
-              Join Us
-            </a>
-          </div>
+      <!-- Mobile dropdown -->
+      <div id="mobile-menu" style="display: none; background: var(--bg-alt); border-top: 1px solid var(--border); padding: 12px 24px 24px;">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            style={`display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-family: var(--ff-sans); font-size: 16px; font-weight: ${active === link.id ? 600 : 400}; color: ${active === link.id ? 'var(--lava)' : 'var(--text)'}; padding: 13px 0; border-bottom: 1px solid var(--border); text-decoration: none;`}
+          >
+            {link.label}
+          </a>
+        ))}
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+          <button
+            id="theme-toggle-mobile"
+            class="theme-toggle"
+            aria-label="Toggle dark mode"
+            style="border-radius: 4px;"
+          >
+            <span class="theme-toggle-icon-light">🌙 Dark</span>
+            <span class="theme-toggle-icon-dark" style="display: none;">☀️ Light</span>
+          </button>
+          <a
+            href="/membership"
+            style="flex: 1; background: var(--lava); color: #fff; border: none; border-radius: 4px; padding: 10px 16px; font-family: var(--ff-sans); font-weight: 600; cursor: pointer; font-size: 14px; text-decoration: none; text-align: center;"
+          >
+            Join Us →
+          </a>
         </div>
       </div>
     </nav>
 
-    <script>
-      // Mobile menu toggle
-      const mobileMenuButton = document.getElementById('mobile-menu-button');
-      const mobileMenu = document.getElementById('mobile-menu');
-
-      mobileMenuButton?.addEventListener('click', () => {
-        mobileMenu?.classList.toggle('hidden');
-      });
-
-      // Dark mode toggle functionality
-      const darkModeToggle = document.getElementById('dark-mode-toggle');
-      const darkModeToggleMobile = document.getElementById('dark-mode-toggle-mobile');
-      const htmlElement = document.documentElement;
-
-      // Check for saved theme preference or default to light mode
-      const currentTheme = localStorage.getItem('theme') || 'light';
-
-      // Apply the saved theme on page load
-      if (currentTheme === 'dark') {
-        htmlElement.classList.add('dark');
-        updateIcons(true);
-      }
-
-      // Toggle dark mode function
-      function toggleDarkMode() {
-        const isDark = htmlElement.classList.toggle('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        updateIcons(isDark);
-      }
-
-      // Update sun/moon icons
-      function updateIcons(isDark) {
-        const sunIcons = document.querySelectorAll('.sun-icon');
-        const moonIcons = document.querySelectorAll('.moon-icon');
-
-        sunIcons.forEach(icon => {
-          if (isDark) {
-            icon.classList.add('hidden');
-          } else {
-            icon.classList.remove('hidden');
-          }
-        });
-
-        moonIcons.forEach(icon => {
-          if (isDark) {
-            icon.classList.remove('hidden');
-          } else {
-            icon.classList.add('hidden');
-          }
-        });
-      }
-
-      // Add event listeners to both toggle buttons
-      darkModeToggle?.addEventListener('click', toggleDarkMode);
-      darkModeToggleMobile?.addEventListener('click', toggleDarkMode);
-    </script>
-
-    <main>
+    <main style="padding-top: 75px;">
       <slot />
     </main>
 
-    <footer class="bg-[var(--color-rock-black)] text-white relative">
-      <!-- Decorative tribal pattern border -->
-      <div class="wave-animate h-1"></div>
-
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer style="background: var(--bg-dark); color: #F5F0EB; padding: 64px 24px 32px;">
+      <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 48px; margin-bottom: 56px;">
           <div>
-            <h3 class="text-xl font-bold mb-4" style="color: var(--color-lava-orange);">9th Island OCC</h3>
-            <p class="text-gray-300">Bringing Hawaiian outrigger canoe culture to Las Vegas</p>
-          </div>
-          <div>
-            <h4 class="font-semibold mb-4" style="color: var(--color-ocean-teal);">Quick Links</h4>
-            <ul class="space-y-2 text-gray-300">
-              <li><a href="/" class="hover:text-[var(--color-lava-orange)] transition">Home</a></li>
-              <li><a href="/about" class="hover:text-[var(--color-lava-orange)] transition">About</a></li>
-              <li><a href="/events" class="hover:text-[var(--color-lava-orange)] transition">Events</a></li>
-              <li><a href="/contact" class="hover:text-[var(--color-lava-orange)] transition">Contact</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-semibold mb-4" style="color: var(--color-ocean-teal);">Follow Us</h4>
-            <div class="flex space-x-4">
-              <a href="https://www.facebook.com/profile.php?id=61555487985276" target="_blank" rel="noopener" class="text-gray-300 hover:text-[var(--color-ocean-teal)] transition">
-                Facebook
-              </a>
-              <a href="https://www.instagram.com/9thislandocc/" target="_blank" rel="noopener" class="text-gray-300 hover:text-[var(--color-ocean-teal)] transition">
-                Instagram
-              </a>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+              <img src="/logo.jpg" alt="9th Island OCC" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+              <div>
+                <div style="font-family: var(--ff-serif); font-size: 18px; font-weight: 700;">9th Island OCC</div>
+                <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-light); margin-top: 2px;">Las Vegas, Nevada</div>
+              </div>
+            </div>
+            <p style="font-family: var(--ff-sans); font-size: 14px; color: #9B9590; line-height: 1.75; max-width: 260px;">
+              Bringing the spirit of aloha and Hawaiian outrigger canoe paddling tradition to the desert.
+            </p>
+            <div style="display: flex; gap: 16px; margin-top: 20px;">
+              <a href="https://www.instagram.com/9thislandocc/" target="_blank" rel="noopener" style="font-family: var(--ff-sans); font-size: 13px; color: #9B9590; text-decoration: none; border-bottom: 1px solid #4a4540;">Instagram</a>
+              <a href="https://www.facebook.com/profile.php?id=61555487985276" target="_blank" rel="noopener" style="font-family: var(--ff-sans); font-size: 13px; color: #9B9590; text-decoration: none; border-bottom: 1px solid #4a4540;">Facebook</a>
             </div>
           </div>
+
+          <div>
+            <div style="font-family: var(--ff-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal-light); margin-bottom: 20px;">Navigate</div>
+            {navLinks.map((link) => (
+              <a
+                href={link.href}
+                style="display: block; font-family: var(--ff-sans); font-size: 14px; color: #9B9590; padding: 5px 0; text-decoration: none;"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          <div>
+            <div style="font-family: var(--ff-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal-light); margin-bottom: 20px;">Contact</div>
+            <p style="font-family: var(--ff-sans); font-size: 14px; color: #9B9590; line-height: 1.85;">
+              admin@9thislandoutrigger.com<br />
+              Lake Mead — Practice Location<br />
+              Las Vegas, Nevada
+            </p>
+            <a
+              href="/contact"
+              style="display: inline-block; margin-top: 20px; background: none; border: 1px solid rgba(255,255,255,0.15); border-radius: 3px; padding: 9px 18px; color: #F5F0EB; font-family: var(--ff-sans); font-size: 13px; text-decoration: none;"
+            >
+              Get in Touch →
+            </a>
+          </div>
         </div>
-        <div class="border-t border-[var(--color-rock-gray)] mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} 9th Island Outrigger Canoe Club. All rights reserved.</p>
+
+        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center;">
+          <p style="font-family: var(--ff-sans); font-size: 13px; color: #6B6560;">© {new Date().getFullYear()} 9th Island Outrigger Canoe Club. All rights reserved.</p>
+          <a href="/membership" style="font-family: var(--ff-sans); font-size: 13px; color: var(--lava); letter-spacing: 0.03em; text-decoration: none;">
+            Become a Member →
+          </a>
         </div>
       </div>
     </footer>
 
-    <!-- Netlify Identity redirect script removed - using GitHub OAuth -->
+    <script>
+      const navEl = document.getElementById('site-nav');
+      const onScroll = () => {
+        if (!navEl) return;
+        const scrolled = window.scrollY > 24;
+        if (scrolled) {
+          navEl.style.background = 'var(--nav-bg-scrolled)';
+          navEl.style.backdropFilter = 'blur(14px)';
+          (navEl.style as any).webkitBackdropFilter = 'blur(14px)';
+          navEl.style.borderBottomColor = 'var(--border)';
+        } else {
+          navEl.style.background = 'var(--nav-bg)';
+          navEl.style.backdropFilter = 'none';
+          (navEl.style as any).webkitBackdropFilter = 'none';
+          navEl.style.borderBottomColor = 'transparent';
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      const mobileToggle = document.getElementById('mobile-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileToggle?.addEventListener('click', () => {
+        if (!mobileMenu) return;
+        mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      const html = document.documentElement;
+      const updateThemeIcons = () => {
+        const isDark = html.classList.contains('dark');
+        document.querySelectorAll<HTMLElement>('.theme-toggle-icon-light').forEach((el) => {
+          el.style.display = isDark ? 'none' : 'inline';
+        });
+        document.querySelectorAll<HTMLElement>('.theme-toggle-icon-dark').forEach((el) => {
+          el.style.display = isDark ? 'inline' : 'none';
+        });
+      };
+      const toggleTheme = () => {
+        const isDark = html.classList.toggle('dark');
+        try { localStorage.setItem('9island-dark', String(isDark)); } catch (e) {}
+        updateThemeIcons();
+      };
+      document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+      document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme);
+      updateThemeIcons();
+    </script>
   </body>
 </html>
