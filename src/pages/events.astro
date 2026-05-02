@@ -43,17 +43,18 @@ if (!import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL) {
     } else {
       const enriched = await getEnrichedRaces(sheetRaces);
       const mapped = enriched.map((race) => {
-        const dayNumber    = race.day.replace(/^[A-Za-z]+\s*/, '').trim();
+        const dayNumMatch  = race.day.match(/\d+/);
+        const dayNumber    = dayNumMatch ? dayNumMatch[0] : '';
         const monthAbbrev  = MONTH_ABBREVS[race.month] ?? race.month.slice(0, 3);
         const raceMonthIdx = MONTH_INDEX[race.month] ?? currentMonthIndex;
         return {
-          date:     `${monthAbbrev} ${dayNumber}`,
+          date:     dayNumber ? `${monthAbbrev} ${dayNumber}` : monthAbbrev,
           year:     String(raceMonthIdx < currentMonthIndex ? currentYear + 1 : currentYear),
           name:     race.activity,
           location: race.location?.trim() || 'TBD',
           type:     'Race' as const,
           desc:     race.description || (race.time && race.time !== 'TBD' ? `Race time: ${race.time}` : ''),
-          _sortKey: raceMonthIdx * 100 + parseInt(dayNumber, 10),
+          _sortKey: raceMonthIdx * 100 + (dayNumber ? parseInt(dayNumber, 10) : 0),
         };
       });
       mapped.sort((a, b) => a._sortKey - b._sortKey);

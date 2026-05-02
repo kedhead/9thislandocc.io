@@ -72,15 +72,14 @@ export async function getSheetData(spreadsheetId: string, range: string) {
 }
 
 /**
- * RACE FINDER: Scans sheet headers (row 1) for columns containing "race"
- * Designed for column-based layouts where each event is a column header like:
- * "Havasu Heat Race!" with date on next cell "Sat, March 28 @ 6:00am"
+ * RACE FINDER: Scans all data rows in each month tab for any row where
+ * any cell contains "race". Expects a row-based schedule with a header row
+ * followed by data rows (Day/Date, Time, Activity, Location, Notes).
  */
 export async function getRaceEvents(spreadsheetId: string): Promise<RaceEvent[]> {
     const races: RaceEvent[] = [];
     const serviceAccountEmail = import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 
-    // If no credentials, return mock race data
     if (!serviceAccountEmail) {
         return [
             { month: 'March', day: 'Sat 28', time: '6:00 AM', activity: 'Havasu Heat Race!', location: '', notes: '' },
@@ -91,62 +90,55 @@ export async function getRaceEvents(spreadsheetId: string): Promise<RaceEvent[]>
 
     try {
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        
-        // Fetch the first two rows (headers) across many columns for all months
-        const monthPromises = months.map(month => getSheetData(spreadsheetId, `${month}!A1:Z2`));
+
+        // Fetch all rows (up to 500) for each month tab
+        const monthPromises = months.map(month => getSheetData(spreadsheetId, `${month}!A1:Z500`));
         const monthResults = await Promise.all(monthPromises);
 
-        for (const rows of monthResults) {
-            if (rows && rows.length > 0) {
-                const headerRow = rows[0];
+        months.forEach((month, monthIdx) => {
+            const rows = monthResults[monthIdx];
+            if (!rows || rows.length < 2) return;
 
-                // Scan each column header for "race"
-                for (let i = 0; i < headerRow.length; i++) {
-                    const header = headerRow[i] || '';
+            // Row 0 is the header — map column names to indices
+            const headerRow: string[] = rows[0];
+            const col: Record<string, number> = {};
+            headerRow.forEach((cell, i) => {
+                const h = (cell || '').toLowerCase().trim();
+                if (h.includes('day') || h.includes('date')) col.day = col.day ?? i;
+                if (h.includes('time'))                       col.time = col.time ?? i;
+                if (h.includes('activity') || h.includes('event') || h.includes('name')) col.activity = col.activity ?? i;
+                if (h.includes('location') || h.includes('loc') || h.includes('where')) col.location = col.location ?? i;
+                if (h.includes('note'))                       col.notes = col.notes ?? i;
+            });
 
-                    if (header.toLowerCase().includes('race')) {
-                        // Parse the header - format is usually like:
-                        // "Havasu Heat Race!\nSat, March 28 @ 6:00am"
-                        const lines = header.split('\n');
-                        let eventName = header;
-                        let dateInfo = '';
-                        let time = '';
-                        let month = '';
-                        let day = '';
+            // Scan all data rows for any cell containing "race"
+            for (let i = 1; i < rows.length; i++) {
+                const row: string[] = rows[i];
+                if (!row || row.every(c => !c)) continue;
 
-                        if (lines.length >= 2) {
-                            eventName = lines[0].trim();
-                            dateInfo = lines[1].trim();
-                        } else {
-                            // Maybe date/time is in the same line
-                            dateInfo = header;
-                        }
+                const hasRace = row.some(c => (c || '').toLowerCase().includes('race'));
+                if (!hasRace) continue;
 
-                        // Try to parse date info like "Sat, March 28 @ 6:00am"
-                        const dateMatch = dateInfo.match(/(\w+),?\s*(\w+)\s+(\d+)/);
-                        if (dateMatch) {
-                            day = `${dateMatch[1]} ${dateMatch[3]}`;
-                            month = dateMatch[2];
-                        }
+                // Pull values using the column map; fall back to scanning for the race-named cell
+                const activity = col.activity !== undefined
+                    ? (row[col.activity] || '')
+                    : (row.find(c => (c || '').toLowerCase().includes('race')) || '');
 
-                        // Try to parse time like "@ 6:00am" or "@ 8:00am"
-                        const timeMatch = dateInfo.match(/@\s*(\d+:\d+\s*[ap]m)/i);
-                        if (timeMatch) {
-                            time = timeMatch[1].toUpperCase();
-                        }
+                const rawDay = col.day !== undefined ? (row[col.day] || '') : '';
+                // Extract a numeric day if the cell contains one (e.g. "Sat 19", "April 19", "19")
+                const dayNumMatch = rawDay.match(/\d+/);
+                const day = dayNumMatch ? rawDay : rawDay || 'TBD';
 
-                        races.push({
-                            month: month || 'TBD',
-                            day: day || 'TBD',
-                            time: time || 'TBD',
-                            activity: eventName,
-                            location: '',
-                            notes: '',
-                        });
-                    }
-                }
+                races.push({
+                    month,
+                    day,
+                    time:     col.time     !== undefined ? (row[col.time]     || 'TBD') : 'TBD',
+                    activity: activity     || 'Race',
+                    location: col.location !== undefined ? (row[col.location] || '')    : '',
+                    notes:    col.notes    !== undefined ? (row[col.notes]    || '')    : '',
+                });
             }
-        }
+        });
     } catch (e) {
         console.log('Could not scan for races:', (e as Error).message);
     }
