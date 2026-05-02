@@ -33,17 +33,16 @@ async function searchAndDescribe(race: RaceEvent): Promise<string> {
   try {
     const response = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 80,
+      max_tokens: 150,
       tools: [{ type: 'web_search_20260209', name: 'web_search' }],
       messages: [{
         role: 'user',
-        content: `Search for the outrigger canoe race "${race.activity}"${locationHint} in ${race.month}. Reply with ONLY a single short phrase of 12 words or fewer describing the race — location and what makes it notable. No punctuation at the end. No preamble, no extra sentences.`,
+        content: `Search for the outrigger canoe race "${race.activity}"${locationHint} in ${race.month}. Reply with ONLY a short phrase of 12 words or fewer — where it is held and what makes it notable. No full sentences, no preamble.`,
       }],
     });
 
     const text = response.content.find(b => b.type === 'text');
     const raw = text?.text?.trim() ?? '';
-    // Hard cap at 100 characters as a safety net
     return raw.length > 100 ? raw.slice(0, 97) + '…' : raw;
   } catch (err) {
     console.error('Race enrichment failed for', race.activity, err);
@@ -57,17 +56,22 @@ export async function getEnrichedRaces(races: RaceEvent[]): Promise<EnrichedRace
   return Promise.all(races.map(async (race): Promise<EnrichedRace> => {
     const key = cacheKey(race);
 
-    if (redis) {
-      const cached = await redis.get<string>(key);
-      if (cached) return { ...race, description: cached };
+    // Each race is isolated — a Redis or API failure returns the race without a description
+    try {
+      if (redis) {
+        const cached = await redis.get<string>(key);
+        if (cached) return { ...race, description: cached };
+      }
+
+      const description = await searchAndDescribe(race);
+
+      if (redis && description) {
+        await redis.set(key, description, { ex: CACHE_TTL_SECONDS });
+      }
+
+      return { ...race, description };
+    } catch {
+      return { ...race, description: '' };
     }
-
-    const description = await searchAndDescribe(race);
-
-    if (redis && description) {
-      await redis.set(key, description, { ex: CACHE_TTL_SECONDS });
-    }
-
-    return { ...race, description };
   }));
 }
