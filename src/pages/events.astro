@@ -2,14 +2,68 @@
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import practiceData from '../../public/data/practice.json';
+import { getRaceEvents } from '../lib/google-sheets';
+import { getEnrichedRaces } from '../lib/race-enrichment';
 
-const allEvents = [
-  { date: 'May 17', year: '2025', name: 'Nevada Desert Dash',                location: 'Boulder Beach, Lake Mead, NV', type: 'Race',   desc: 'Annual desert race on our home waters. Sprint and long-distance categories for all levels.' },
-  { date: 'Jun 14', year: '2025', name: 'Southwest Regional Championships',  location: 'Parker, Arizona',              type: 'Race',   desc: 'Regional qualifier drawing clubs from NV, AZ, and CA. A major date on the paddling calendar.' },
-  { date: 'Jul 19', year: '2025', name: 'Lake Havasu Summer Sprints',        location: 'Lake Havasu City, AZ',         type: 'Race',   desc: 'Fast flat-water sprint racing in the summer heat.' },
-  { date: 'Aug 9',  year: '2025', name: 'Members BBQ & Social',              location: 'Boulder Beach, Lake Mead',     type: 'Social', desc: 'Annual summer social — paddling, food, and ohana for members and guests.' },
-  { date: 'Nov 18', year: '2025', name: 'ADR Race',                          location: 'Lake Mead, Nevada',            type: 'Race',   desc: 'Arizona Desert Race — a landmark event on the regional outrigger paddling calendar.' },
+// Shown when Google Sheet credentials aren't configured or the sheet returns nothing.
+const FALLBACK_EVENTS = [
+  { date: 'May 17', year: '2025', name: 'Nevada Desert Dash',               location: 'Boulder Beach, Lake Mead, NV', type: 'Race'   as const, desc: 'Annual desert race on our home waters. Sprint and long-distance categories for all levels.' },
+  { date: 'Jun 14', year: '2025', name: 'Southwest Regional Championships', location: 'Parker, Arizona',              type: 'Race'   as const, desc: 'Regional qualifier drawing clubs from NV, AZ, and CA. A major date on the paddling calendar.' },
+  { date: 'Jul 19', year: '2025', name: 'Lake Havasu Summer Sprints',       location: 'Lake Havasu City, AZ',         type: 'Race'   as const, desc: 'Fast flat-water sprint racing in the summer heat.' },
+  { date: 'Aug 9',  year: '2025', name: 'Members BBQ & Social',             location: 'Boulder Beach, Lake Mead',     type: 'Social' as const, desc: 'Annual summer social — paddling, food, and ohana for members and guests.' },
+  { date: 'Nov 18', year: '2025', name: 'ADR Race',                         location: 'Lake Mead, Nevada',            type: 'Race'   as const, desc: 'Arizona Desert Race — a landmark event on the regional outrigger paddling calendar.' },
 ];
+
+const MONTH_ABBREVS: Record<string, string> = {
+  January: 'Jan', February: 'Feb', March: 'Mar',  April: 'Apr',
+  May: 'May',     June: 'Jun',     July: 'Jul',    August: 'Aug',
+  September: 'Sep', October: 'Oct', November: 'Nov', December: 'Dec',
+};
+const MONTH_INDEX: Record<string, number> = {
+  January: 0,  February: 1,  March: 2,   April: 3,
+  May: 4,      June: 5,      July: 6,    August: 7,
+  September: 8, October: 9, November: 10, December: 11,
+};
+
+const now = new Date();
+const currentYear = now.getFullYear();
+const currentMonthIndex = now.getMonth();
+
+const SHEET_ID = '16RYQ7ssTJJ3K7sBMtfhHnftrDr8NU_ilUc1ES3vHOW8';
+type EventItem = typeof FALLBACK_EVENTS[number];
+let allEvents: EventItem[];
+
+if (!import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL) {
+  allEvents = FALLBACK_EVENTS;
+} else {
+  try {
+    const sheetRaces = await getRaceEvents(SHEET_ID);
+    if (sheetRaces.length === 0) {
+      allEvents = FALLBACK_EVENTS;
+    } else {
+      const enriched = await getEnrichedRaces(sheetRaces);
+      const mapped = enriched.map((race) => {
+        const dayNumMatch  = race.day.match(/\d+/);
+        const dayNumber    = dayNumMatch ? dayNumMatch[0] : '';
+        const monthAbbrev  = MONTH_ABBREVS[race.month] ?? race.month.slice(0, 3);
+        const raceMonthIdx = MONTH_INDEX[race.month] ?? currentMonthIndex;
+        return {
+          date:     dayNumber ? `${monthAbbrev} ${dayNumber}` : monthAbbrev,
+          year:     String(raceMonthIdx < currentMonthIndex ? currentYear + 1 : currentYear),
+          name:     race.activity,
+          location: race.location?.trim() || 'TBD',
+          type:     'Race' as const,
+          desc:     race.description || (race.time && race.time !== 'TBD' ? `Race time: ${race.time}` : ''),
+          _sortKey: raceMonthIdx * 100 + (dayNumber ? parseInt(dayNumber, 10) : 0),
+        };
+      });
+      mapped.sort((a, b) => a._sortKey - b._sortKey);
+      allEvents = mapped as EventItem[];
+    }
+  } catch {
+    allEvents = FALLBACK_EVENTS;
+  }
+}
 
 const practiceSummary = (() => {
   const days = [...practiceData.weekday, ...practiceData.weekend].map((p) => `${p.day}s`);
@@ -34,7 +88,7 @@ const practiceSummary = (() => {
   <section style="background: var(--bg-alt); padding: 80px 24px;">
     <div style="max-width: 900px; margin: 0 auto;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-wrap: wrap; gap: 16px;">
-        <h2 style="font-family: var(--ff-serif); font-size: 34px; font-weight: 700; color: var(--text); margin: 0;">2025 Season</h2>
+        <h2 style="font-family: var(--ff-serif); font-size: 34px; font-weight: 700; color: var(--text); margin: 0;">{currentYear} Season</h2>
         <div id="event-filters" style="display: flex; gap: 6px;">
           <button type="button" class="event-filter is-active" data-filter="All"   style="background: var(--text); color: var(--bg); border: 1px solid var(--border); border-radius: 2px; padding: 6px 16px; font-family: var(--ff-sans); font-size: 13px; cursor: pointer; transition: all 0.2s;">All</button>
           <button type="button" class="event-filter"           data-filter="Race"  style="background: transparent; color: var(--text-mid); border: 1px solid var(--border); border-radius: 2px; padding: 6px 16px; font-family: var(--ff-sans); font-size: 13px; cursor: pointer; transition: all 0.2s;">Race</button>

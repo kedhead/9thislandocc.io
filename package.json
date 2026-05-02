@@ -11,9 +11,11 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.92.0",
     "@astrojs/vercel": "^9.0.4",
     "@tailwindcss/vite": "^4.1.17",
     "@tinacms/cli": "^1.12.3",
+    "@upstash/redis": "^1.37.0",
     "astro": "^5.15.8",
     "googleapis": "^171.0.0",
     "simple-oauth2": "^5.1.0",
