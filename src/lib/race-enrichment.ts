@@ -8,7 +8,7 @@ export interface EnrichedRace extends RaceEvent {
 const CACHE_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
 
 function cacheKey(race: RaceEvent): string {
-  return `race:v2:${race.activity.toLowerCase().replace(/\W+/g, '_')}:${race.month}_${race.day.replace(/\s+/g, '_')}`;
+  return `race:v3:${race.activity.toLowerCase().replace(/\W+/g, '_')}:${race.month}_${race.day.replace(/\s+/g, '_')}`;
 }
 
 async function getRedis() {
@@ -33,17 +33,17 @@ async function searchAndDescribe(race: RaceEvent): Promise<string> {
   try {
     const response = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 150,
+      max_tokens: 400,
       tools: [{ type: 'web_search_20260209', name: 'web_search' }],
       messages: [{
         role: 'user',
-        content: `Search for the outrigger canoe race "${race.activity}"${locationHint} in ${race.month}. Reply with ONLY a short phrase of 12 words or fewer — where it is held and what makes it notable. No full sentences, no preamble.`,
+        content: `Search for the outrigger canoe race "${race.activity}"${locationHint} in ${race.month}. Write 2 sentences max (under 200 characters total) for a public race calendar: where it takes place, who it's for, and what makes it worth attending. Be specific and factual. Return only the description, no preamble.`,
       }],
     });
 
     const text = response.content.find(b => b.type === 'text');
     const raw = text?.text?.trim() ?? '';
-    return raw.length > 100 ? raw.slice(0, 97) + '…' : raw;
+    return raw.length > 220 ? raw.slice(0, 217) + '…' : raw;
   } catch (err) {
     console.error('Race enrichment failed for', race.activity, err);
     return '';
