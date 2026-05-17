@@ -1,0 +1,664 @@
+---
+import MembersLayout from '../../layouts/MembersLayout.astro';
+if (!Astro.cookies.has('members_auth')) {
+  return Astro.redirect('/members/login');
+}
+---
+
+<MembersLayout title="Club Schedule">
+  <div style="max-width: 920px; margin: 0 auto; padding: 40px 24px 80px;">
+
+    <!-- Top Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h1 style="font-family: var(--ff-serif); font-size: 36px; font-weight: 700; color: var(--text); margin: 0 0 6px;">Club Schedule</h1>
+        <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); margin: 0;">Create and manage practices, races, and club events</p>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button id="sub-cal-btn" style="padding: 10px 18px; font-family: var(--ff-sans); font-size: 14px; font-weight: 500; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer; transition: border-color 0.2s;">📅 Subscribe to Calendar</button>
+        <button id="create-btn" style="padding: 10px 20px; font-family: var(--ff-sans); font-size: 14px; font-weight: 600; background: var(--lava); color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: opacity 0.2s;">+ New Event</button>
+      </div>
+    </div>
+
+    <!-- Create / Edit Form Panel -->
+    <div id="form-panel" style="display: none; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 28px; margin-bottom: 36px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 id="form-heading" style="font-family: var(--ff-serif); font-size: 24px; font-weight: 700; color: var(--text); margin: 0;">Create Event</h2>
+        <button id="form-close-btn" style="background: none; border: none; font-size: 22px; color: var(--text-mid); cursor: pointer; padding: 2px 8px; line-height: 1;">×</button>
+      </div>
+      <form id="event-form">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div style="grid-column: 1 / -1;">
+            <label class="field-label">Event Title *</label>
+            <input id="f-title" class="field-input" type="text" placeholder="e.g. Saturday Morning Practice" required />
+          </div>
+          <div>
+            <label class="field-label">Type *</label>
+            <select id="f-type" class="field-input" style="appearance: auto;" required>
+              <option value="practice">Practice</option>
+              <option value="race">Race</option>
+              <option value="social">Social</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Date *</label>
+            <input id="f-date" class="field-input" type="date" required />
+          </div>
+          <div>
+            <label class="field-label">Start Time *</label>
+            <input id="f-start" class="field-input" type="time" required />
+          </div>
+          <div>
+            <label class="field-label">End Time (optional)</label>
+            <input id="f-end" class="field-input" type="time" />
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label class="field-label">Location *</label>
+            <input id="f-location" class="field-input" type="text" placeholder="e.g. Lake Mead – Horsepower Cove" required />
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label class="field-label">Public Description</label>
+            <textarea id="f-desc" class="field-input" style="resize: vertical;" rows="3" placeholder="Visible to all visitors on the public events page…"></textarea>
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label class="field-label">Members-Only Notes</label>
+            <textarea id="f-notes" class="field-input" style="resize: vertical;" rows="2" placeholder="Internal notes visible only to logged-in members…"></textarea>
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label class="field-label">Sign-Up / Registration URL (members only)</label>
+            <input id="f-signup" class="field-input" type="url" placeholder="https://…" />
+          </div>
+        </div>
+        <div id="form-error" style="display: none; font-family: var(--ff-sans); font-size: 13px; color: var(--lava); margin-top: 14px;"></div>
+        <div style="display: flex; gap: 12px; margin-top: 22px; justify-content: flex-end;">
+          <button type="button" id="form-cancel-btn" style="padding: 10px 24px; font-family: var(--ff-sans); font-size: 14px; font-weight: 500; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer;">Cancel</button>
+          <button type="submit" id="form-save-btn" style="padding: 10px 28px; font-family: var(--ff-sans); font-size: 14px; font-weight: 600; background: var(--lava); color: #fff; border: none; border-radius: 4px; cursor: pointer;">Save Event</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Events Container -->
+    <div id="events-container">
+      <div style="text-align: center; padding: 60px 0; font-family: var(--ff-sans); color: var(--text-mid);">Loading schedule…</div>
+    </div>
+
+  </div>
+</MembersLayout>
+
+<script>
+  // ─── State ────────────────────────────────────────────────────────────────
+  let events = [];
+  let editingId = null;
+
+  // ─── Boot ─────────────────────────────────────────────────────────────────
+  loadEvents();
+
+  document.getElementById('create-btn')?.addEventListener('click', () => openForm());
+  document.getElementById('form-close-btn')?.addEventListener('click', closeForm);
+  document.getElementById('form-cancel-btn')?.addEventListener('click', closeForm);
+  document.getElementById('sub-cal-btn')?.addEventListener('click', copyCalUrl);
+
+  document.getElementById('event-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById('form-save-btn');
+    saveBtn.textContent = 'Saving…';
+    saveBtn.disabled = true;
+
+    const data = {
+      title: document.getElementById('f-title').value.trim(),
+      type: document.getElementById('f-type').value,
+      date: document.getElementById('f-date').value,
+      startTime: document.getElementById('f-start').value,
+      endTime: document.getElementById('f-end').value || undefined,
+      location: document.getElementById('f-location').value.trim(),
+      description: document.getElementById('f-desc').value.trim() || undefined,
+      notes: document.getElementById('f-notes').value.trim() || undefined,
+      signupUrl: document.getElementById('f-signup').value.trim() || undefined,
+    };
+
+    const url = editingId ? `/api/events/${editingId}` : '/api/events';
+    const method = editingId ? 'PUT' : 'POST';
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        const saved = await res.json();
+        if (editingId) {
+          const idx = events.findIndex(e => e.id === editingId);
+          if (idx >= 0) events[idx] = saved;
+        } else {
+          events.push(saved);
+          events.sort((a, b) => a.date.localeCompare(b.date));
+        }
+        closeForm();
+        renderAll();
+      } else {
+        const err = await res.json().catch(() => ({ error: 'Unknown error' }));
+        showFormError(err.error || 'Failed to save event.');
+      }
+    } catch {
+      showFormError('Network error — please try again.');
+    }
+
+    saveBtn.textContent = 'Save Event';
+    saveBtn.disabled = false;
+  });
+
+  // ─── Data ─────────────────────────────────────────────────────────────────
+  async function loadEvents() {
+    try {
+      const res = await fetch('/api/events');
+      events = await res.json();
+      renderAll();
+    } catch {
+      document.getElementById('events-container').innerHTML =
+        '<p style="text-align:center;padding:60px 0;font-family:var(--ff-sans);color:var(--text-mid);">Failed to load events. Please refresh.</p>';
+    }
+  }
+
+  // ─── Render ───────────────────────────────────────────────────────────────
+  function renderAll() {
+    const container = document.getElementById('events-container');
+    if (!container) return;
+
+    const today = new Date().toISOString().slice(0, 10);
+    const upcoming = events.filter(e => e.date >= today);
+    const past = events.filter(e => e.date < today).slice().reverse();
+
+    if (events.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center;padding:80px 24px;border:2px dashed var(--border);border-radius:8px;">
+          <p style="font-family:var(--ff-serif);font-size:22px;color:var(--text-mid);margin:0 0 8px;">No events scheduled yet</p>
+          <p style="font-family:var(--ff-sans);font-size:14px;color:var(--text-light);margin:0;">Click <strong>+ New Event</strong> above to add the first practice or event.</p>
+        </div>`;
+      return;
+    }
+
+    let html = '';
+
+    if (upcoming.length === 0 && past.length > 0) {
+      html += `<div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;padding:28px 32px;margin-bottom:24px;text-align:center;">
+        <p style="font-family:var(--ff-serif);font-size:20px;color:var(--text-mid);margin:0 0 6px;">No upcoming events</p>
+        <p style="font-family:var(--ff-sans);font-size:13px;color:var(--text-light);margin:0;">Click <strong>+ New Event</strong> to schedule the next session.</p>
+      </div>`;
+    }
+
+    if (upcoming.length > 0) {
+      html += `<p style="font-family:var(--ff-sans);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-light);margin:0 0 14px;">Upcoming</p>`;
+      html += upcoming.map(ev => eventCard(ev)).join('');
+    }
+
+    if (past.length > 0) {
+      html += `
+        <details style="margin-top:40px;">
+          <summary style="font-family:var(--ff-sans);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-light);cursor:pointer;list-style:none;margin-bottom:14px;">
+            Past Events (${past.length})
+          </summary>
+          <div style="margin-top:14px;opacity:0.75;">
+            ${past.map(ev => eventCard(ev)).join('')}
+          </div>
+        </details>`;
+    }
+
+    container.innerHTML = html;
+  }
+
+  function eventCard(ev) {
+    const badge = typeBadge(ev.type);
+    const timeStr = fmtTime(ev.startTime) + (ev.endTime ? ` – ${fmtTime(ev.endTime)}` : '');
+    const rsvpCount = ev.rsvps?.length ?? 0;
+    const noteCount = ev.memberNotes?.length ?? 0;
+    const crews = ev.crews ?? [];
+    const filledSeats = crews.reduce((s, c) => s + c.seats.filter(x => x.member).length, 0);
+    const totalSeats = crews.reduce((s, c) => s + c.seats.length, 0);
+
+    return `
+      <div data-event-id="${ev.id}" style="background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:14px;">
+
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <span style="font-family:var(--ff-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:${badge.color};background:${badge.bg};padding:4px 10px;border-radius:3px;">${ev.type}</span>
+            <h3 style="font-family:var(--ff-sans);font-size:17px;font-weight:600;color:var(--text);margin:0;">${esc(ev.title)}</h3>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <span style="font-family:var(--ff-sans);font-size:13px;color:var(--text-mid);white-space:nowrap;">${fmtDate(ev.date)}</span>
+            <button data-action="edit-event" style="padding:5px 12px;font-family:var(--ff-sans);font-size:12px;font-weight:600;color:var(--teal);background:rgba(0,122,122,0.08);border:1px solid rgba(0,122,122,0.25);border-radius:3px;cursor:pointer;">Edit</button>
+            <button data-action="delete-event" style="padding:5px 12px;font-family:var(--ff-sans);font-size:12px;font-weight:600;color:var(--lava);background:rgba(232,56,10,0.07);border:1px solid rgba(232,56,10,0.25);border-radius:3px;cursor:pointer;">Delete</button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;font-family:var(--ff-sans);font-size:13px;color:var(--text-mid);margin-bottom:14px;">
+          <span>📍 ${esc(ev.location)}</span>
+          <span>⏰ ${timeStr}</span>
+          <a href="/api/events/calendar.ics?id=${ev.id}" style="color:var(--teal);text-decoration:none;font-weight:500;">📅 Add to Calendar</a>
+        </div>
+
+        ${ev.description ? `<p style="font-family:var(--ff-sans);font-size:14px;color:var(--text-mid);line-height:1.65;margin:0 0 14px;">${esc(ev.description)}</p>` : ''}
+
+        ${ev.notes ? `<div style="background:rgba(0,122,122,0.06);border-left:3px solid var(--teal);border-radius:0 4px 4px 0;padding:10px 14px;margin-bottom:14px;font-family:var(--ff-sans);font-size:13px;color:var(--text-mid);"><span style="font-weight:700;color:var(--teal);font-size:10px;text-transform:uppercase;letter-spacing:0.08em;">Members Notes:</span> ${esc(ev.notes)}</div>` : ''}
+
+        ${ev.signupUrl ? `<div style="margin-bottom:14px;"><a href="${esc(ev.signupUrl)}" target="_blank" rel="noopener noreferrer" style="font-family:var(--ff-sans);font-size:14px;color:var(--lava);font-weight:600;text-decoration:none;">🔗 Sign Up / Register →</a></div>` : ''}
+
+        <!-- RSVP -->
+        <details style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
+          <summary data-rsvp-summary style="font-family:var(--ff-sans);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;padding:4px 0;user-select:none;">
+            <span style="color:var(--teal);font-size:10px;">▶</span> RSVP · <strong>${rsvpCount}</strong> attending
+          </summary>
+          <div data-rsvp-section style="padding-top:14px;">${rsvpContent(ev)}</div>
+        </details>
+
+        ${(ev.type === 'practice' || ev.type === 'race') ? `
+          <details style="border-top:1px solid var(--border);padding-top:14px;margin-top:8px;">
+            <summary style="font-family:var(--ff-sans);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;padding:4px 0;user-select:none;">
+              <span style="color:var(--teal);font-size:10px;">▶</span> Crew Assignments
+              ${totalSeats > 0 ? `<span style="font-size:11px;color:var(--text-light);font-weight:400;">(${filledSeats}/${totalSeats} seats filled)</span>` : ''}
+            </summary>
+            <div data-crew-section style="padding-top:14px;">${crewContent(ev)}</div>
+          </details>
+        ` : ''}
+
+        ${ev.type === 'social' ? `
+          <details style="border-top:1px solid var(--border);padding-top:14px;margin-top:8px;">
+            <summary data-notes-summary style="font-family:var(--ff-sans);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;padding:4px 0;user-select:none;">
+              <span style="color:var(--teal);font-size:10px;">▶</span> What We're Bringing · <strong>${noteCount}</strong> items
+            </summary>
+            <div data-notes-section style="padding-top:14px;">${notesContent(ev)}</div>
+          </details>
+        ` : ''}
+
+      </div>`;
+  }
+
+  function rsvpContent(ev) {
+    const names = ev.rsvps ?? [];
+    return `
+      ${names.length > 0 ? `
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+          ${names.map(n => `
+            <span style="display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-family:var(--ff-sans);font-size:13px;color:var(--text);">
+              ${esc(n)}
+              <button data-action="rsvp-remove" data-name="${esc(n)}" style="background:none;border:none;color:var(--text-light);cursor:pointer;font-size:14px;padding:0;line-height:1;" title="Remove">×</button>
+            </span>`).join('')}
+        </div>` : `<p style="font-family:var(--ff-sans);font-size:13px;color:var(--text-light);margin:0 0 12px;">No RSVPs yet — be the first!</p>`}
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input class="rsvp-name-input field-input" type="text" placeholder="Your name" style="max-width:200px;" />
+        <button data-action="rsvp-add" style="padding:10px 18px;font-family:var(--ff-sans);font-size:13px;font-weight:600;background:var(--teal);color:#fff;border:none;border-radius:4px;cursor:pointer;white-space:nowrap;">I'm In 🤙</button>
+      </div>`;
+  }
+
+  function crewContent(ev) {
+    const crews = ev.crews ?? [];
+    return `
+      <div class="crew-grid-container">
+        ${crews.map((crew, ci) => crewBlockHTML(crew, ci)).join('')}
+        <div data-crew-buttons style="display:flex;gap:10px;flex-wrap:wrap;margin-top:${crews.length > 0 ? '16px' : '0'};">
+          ${crews.length === 0 ? `<button data-action="init-crew" style="padding:9px 18px;font-family:var(--ff-sans);font-size:13px;font-weight:600;background:var(--teal);color:#fff;border:none;border-radius:4px;cursor:pointer;">Initialize OC6 Crew (6 Seats + Steersman)</button>` : ''}
+          <button data-action="add-crew" style="padding:9px 18px;font-family:var(--ff-sans);font-size:13px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text);border-radius:4px;cursor:pointer;">+ Add Crew</button>
+          ${crews.length > 0 ? `<button data-action="save-crew" style="padding:9px 20px;font-family:var(--ff-sans);font-size:13px;font-weight:600;background:var(--teal);color:#fff;border:none;border-radius:4px;cursor:pointer;">💾 Save Crew Assignments</button>` : ''}
+        </div>
+      </div>`;
+  }
+
+  function crewBlockHTML(crew, ci) {
+    return `
+      <div class="crew-block" data-crew-idx="${ci}" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <input class="crew-name-input field-input" value="${esc(crew.name)}" placeholder="Crew name" style="font-weight:600;max-width:180px;padding:8px 10px;font-size:14px;" />
+          <button data-action="remove-crew" data-crew-idx="${ci}" style="padding:6px 12px;font-family:var(--ff-sans);font-size:12px;font-weight:600;color:var(--lava);background:rgba(232,56,10,0.07);border:1px solid rgba(232,56,10,0.2);border-radius:3px;cursor:pointer;white-space:nowrap;">Remove Crew</button>
+        </div>
+        <div style="display:grid;grid-template-columns:140px 1fr 34px;gap:4px 8px;margin-bottom:6px;">
+          <span style="font-family:var(--ff-sans);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);">Position</span>
+          <span style="font-family:var(--ff-sans);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);">Member</span>
+          <span></span>
+        </div>
+        <div class="seats-list">
+          ${crew.seats.map((seat, si) => seatRowHTML(seat, ci, si)).join('')}
+        </div>
+        <button data-action="add-seat" data-crew-idx="${ci}" style="margin-top:6px;padding:6px 12px;font-family:var(--ff-sans);font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text-mid);border-radius:3px;cursor:pointer;">+ Add Seat</button>
+      </div>`;
+  }
+
+  function seatRowHTML(seat, crewIdx, seatIdx) {
+    return `
+      <div class="seat-row" data-seat-idx="${seatIdx}" style="display:grid;grid-template-columns:140px 1fr 34px;gap:4px 8px;margin-bottom:5px;">
+        <input class="seat-pos field-input" value="${esc(seat.position)}" placeholder="Position" style="padding:7px 10px;font-size:13px;" />
+        <input class="seat-member field-input" value="${esc(seat.member ?? '')}" placeholder="Member name" style="padding:7px 10px;font-size:13px;" />
+        <button data-action="remove-seat" data-crew-idx="${crewIdx}" style="background:none;border:1px solid var(--border);border-radius:3px;color:var(--text-mid);cursor:pointer;font-size:15px;padding:0 7px;">×</button>
+      </div>`;
+  }
+
+  function notesContent(ev) {
+    const notes = ev.memberNotes ?? [];
+    return `
+      ${notes.length > 0 ? `
+        <div style="margin-bottom:14px;">
+          ${notes.map(n => `
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:4px;margin-bottom:6px;font-family:var(--ff-sans);font-size:13px;">
+              <span><strong style="color:var(--text);">${esc(n.name)}</strong><span style="color:var(--text-mid);"> — ${esc(n.note)}</span></span>
+              <button data-action="remove-note" data-name="${esc(n.name)}" data-timestamp="${esc(n.timestamp)}" style="background:none;border:none;color:var(--text-light);cursor:pointer;font-size:15px;padding:0;flex-shrink:0;" title="Remove">×</button>
+            </div>`).join('')}
+        </div>` : `<p style="font-family:var(--ff-sans);font-size:13px;color:var(--text-light);margin:0 0 14px;">Nothing added yet — let everyone know what you're bringing!</p>`}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input class="note-name-input field-input" type="text" placeholder="Your name" style="flex:1;min-width:100px;max-width:160px;" />
+        <input class="note-text-input field-input" type="text" placeholder="What you're bringing…" style="flex:2;min-width:160px;" />
+        <button data-action="add-note" style="padding:10px 18px;font-family:var(--ff-sans);font-size:13px;font-weight:600;background:var(--lava);color:#fff;border:none;border-radius:4px;cursor:pointer;white-space:nowrap;">Add</button>
+      </div>`;
+  }
+
+  // ─── Partial DOM Updates ──────────────────────────────────────────────────
+  function updateRsvpSection(eventId, rsvps) {
+    const ev = events.find(e => e.id === eventId);
+    if (!ev) return;
+    ev.rsvps = rsvps;
+    const section = document.querySelector(`[data-event-id="${eventId}"] [data-rsvp-section]`);
+    if (section) section.innerHTML = rsvpContent(ev);
+    const summary = document.querySelector(`[data-event-id="${eventId}"] [data-rsvp-summary]`);
+    if (summary) summary.innerHTML = `<span style="color:var(--teal);font-size:10px;">▶</span> RSVP · <strong>${rsvps.length}</strong> attending`;
+  }
+
+  function updateNotesSection(eventId, memberNotes) {
+    const ev = events.find(e => e.id === eventId);
+    if (!ev) return;
+    ev.memberNotes = memberNotes;
+    const section = document.querySelector(`[data-event-id="${eventId}"] [data-notes-section]`);
+    if (section) section.innerHTML = notesContent(ev);
+    const summary = document.querySelector(`[data-event-id="${eventId}"] [data-notes-summary]`);
+    if (summary) summary.innerHTML = `<span style="color:var(--teal);font-size:10px;">▶</span> What We're Bringing · <strong>${memberNotes.length}</strong> items`;
+  }
+
+  // ─── Event Delegation ─────────────────────────────────────────────────────
+  document.getElementById('events-container')?.addEventListener('click', async (e) => {
+    const btn = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null;
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+    const card = btn.closest('[data-event-id]') as HTMLElement | null;
+    const eventId = card?.dataset.eventId ?? '';
+
+    switch (action) {
+
+      case 'edit-event': {
+        const ev = events.find(e => e.id === eventId);
+        if (ev) openForm(ev);
+        break;
+      }
+
+      case 'delete-event': {
+        if (!confirm('Delete this event? This cannot be undone.')) break;
+        btn.disabled = true;
+        const res = await fetch(`/api/events/${eventId}`, { method: 'DELETE' });
+        if (res.ok) {
+          events = events.filter(e => e.id !== eventId);
+          renderAll();
+        } else {
+          btn.disabled = false;
+        }
+        break;
+      }
+
+      case 'rsvp-add': {
+        const input = card?.querySelector('.rsvp-name-input') as HTMLInputElement | null;
+        const name = input?.value?.trim();
+        if (!name) { input?.focus(); break; }
+        input.disabled = true;
+        btn.disabled = true;
+        const res = await fetch(`/api/events/${eventId}/rsvp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          updateRsvpSection(eventId, data.rsvps);
+        }
+        input.disabled = false;
+        btn.disabled = false;
+        break;
+      }
+
+      case 'rsvp-remove': {
+        const name = btn.dataset.name ?? '';
+        const res = await fetch(`/api/events/${eventId}/rsvp`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          updateRsvpSection(eventId, data.rsvps);
+        }
+        break;
+      }
+
+      case 'init-crew': {
+        btn.textContent = 'Setting up…';
+        btn.disabled = true;
+        const defaultCrew = {
+          name: 'Crew',
+          seats: [
+            { position: 'Seat 1', member: '' },
+            { position: 'Seat 2', member: '' },
+            { position: 'Seat 3', member: '' },
+            { position: 'Seat 4', member: '' },
+            { position: 'Seat 5', member: '' },
+            { position: 'Seat 6', member: '' },
+            { position: 'Steersman', member: '' },
+          ],
+        };
+        const res = await fetch(`/api/events/${eventId}/crew`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ crews: [defaultCrew] }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const ev = events.find(e => e.id === eventId);
+          if (ev) {
+            ev.crews = data.crews;
+            const crewSection = card?.querySelector('[data-crew-section]');
+            if (crewSection) crewSection.innerHTML = crewContent(ev);
+          }
+        } else {
+          btn.textContent = 'Initialize OC6 Crew';
+          btn.disabled = false;
+        }
+        break;
+      }
+
+      case 'add-crew': {
+        const container = card?.querySelector('.crew-grid-container');
+        if (!container) break;
+        const existingCount = container.querySelectorAll('.crew-block').length;
+        const newCrew = { name: `Crew ${existingCount + 1}`, seats: [{ position: 'Seat 1', member: '' }] };
+        const buttonsDiv = container.querySelector('[data-crew-buttons]');
+        if (buttonsDiv) {
+          buttonsDiv.insertAdjacentHTML('beforebegin', crewBlockHTML(newCrew, existingCount));
+          // Ensure save button is visible
+          if (!container.querySelector('[data-action="save-crew"]')) {
+            buttonsDiv.insertAdjacentHTML('beforeend',
+              `<button data-action="save-crew" style="padding:9px 20px;font-family:var(--ff-sans);font-size:13px;font-weight:600;background:var(--teal);color:#fff;border:none;border-radius:4px;cursor:pointer;">💾 Save Crew Assignments</button>`
+            );
+          }
+        }
+        break;
+      }
+
+      case 'add-seat': {
+        const crewIdx = btn.dataset.crewIdx ?? '0';
+        const crewBlock = card?.querySelector(`[data-crew-idx="${crewIdx}"]`);
+        const seatsList = crewBlock?.querySelector('.seats-list');
+        if (!seatsList) break;
+        const seatCount = seatsList.querySelectorAll('.seat-row').length;
+        seatsList.insertAdjacentHTML('beforeend',
+          seatRowHTML({ position: `Seat ${seatCount + 1}`, member: '' }, parseInt(crewIdx), seatCount)
+        );
+        break;
+      }
+
+      case 'remove-seat': {
+        btn.closest('.seat-row')?.remove();
+        break;
+      }
+
+      case 'remove-crew': {
+        btn.closest('.crew-block')?.remove();
+        break;
+      }
+
+      case 'save-crew': {
+        const container = card?.querySelector('.crew-grid-container');
+        if (!container) break;
+        const crews = readCrewsFromDOM(container);
+        const origText = btn.textContent;
+        btn.textContent = 'Saving…';
+        btn.disabled = true;
+        const res = await fetch(`/api/events/${eventId}/crew`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ crews }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const ev = events.find(e => e.id === eventId);
+          if (ev) ev.crews = data.crews;
+          btn.textContent = '✓ Saved!';
+          setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2200);
+        } else {
+          btn.textContent = 'Error — try again';
+          btn.disabled = false;
+        }
+        break;
+      }
+
+      case 'add-note': {
+        const nameInput = card?.querySelector('.note-name-input') as HTMLInputElement | null;
+        const textInput = card?.querySelector('.note-text-input') as HTMLInputElement | null;
+        const name = nameInput?.value?.trim();
+        const note = textInput?.value?.trim();
+        if (!name) { nameInput?.focus(); break; }
+        if (!note) { textInput?.focus(); break; }
+        btn.disabled = true;
+        const res = await fetch(`/api/events/${eventId}/note`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, note }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          updateNotesSection(eventId, data.memberNotes);
+          if (textInput) textInput.value = '';
+        }
+        btn.disabled = false;
+        break;
+      }
+
+      case 'remove-note': {
+        const name = btn.dataset.name ?? '';
+        const timestamp = btn.dataset.timestamp ?? '';
+        const res = await fetch(`/api/events/${eventId}/note`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, timestamp }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          updateNotesSection(eventId, data.memberNotes);
+        }
+        break;
+      }
+    }
+  });
+
+  // ─── Form ─────────────────────────────────────────────────────────────────
+  function openForm(ev = null) {
+    editingId = ev?.id ?? null;
+    (document.getElementById('form-heading') as HTMLElement).textContent = ev ? 'Edit Event' : 'Create Event';
+    (document.getElementById('f-title') as HTMLInputElement).value = ev?.title ?? '';
+    (document.getElementById('f-type') as HTMLSelectElement).value = ev?.type ?? 'practice';
+    (document.getElementById('f-date') as HTMLInputElement).value = ev?.date ?? '';
+    (document.getElementById('f-start') as HTMLInputElement).value = ev?.startTime ?? '';
+    (document.getElementById('f-end') as HTMLInputElement).value = ev?.endTime ?? '';
+    (document.getElementById('f-location') as HTMLInputElement).value = ev?.location ?? '';
+    (document.getElementById('f-desc') as HTMLTextAreaElement).value = ev?.description ?? '';
+    (document.getElementById('f-notes') as HTMLTextAreaElement).value = ev?.notes ?? '';
+    (document.getElementById('f-signup') as HTMLInputElement).value = ev?.signupUrl ?? '';
+    (document.getElementById('form-error') as HTMLElement).style.display = 'none';
+    (document.getElementById('form-panel') as HTMLElement).style.display = '';
+    (document.getElementById('f-title') as HTMLElement).focus();
+    document.getElementById('form-panel')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function closeForm() {
+    editingId = null;
+    (document.getElementById('form-panel') as HTMLElement).style.display = 'none';
+  }
+
+  function showFormError(msg: string) {
+    const el = document.getElementById('form-error') as HTMLElement;
+    el.textContent = msg;
+    el.style.display = '';
+  }
+
+  // ─── Calendar Subscribe ───────────────────────────────────────────────────
+  async function copyCalUrl() {
+    const calUrl = `${window.location.origin}/api/events/calendar.ics`;
+    const btn = document.getElementById('sub-cal-btn') as HTMLButtonElement;
+    const orig = btn.textContent;
+    try {
+      await navigator.clipboard.writeText(calUrl);
+      btn.textContent = '✓ URL Copied!';
+    } catch {
+      prompt('Copy this calendar subscribe URL:', calUrl);
+      return;
+    }
+    setTimeout(() => { btn.textContent = orig; }, 2200);
+  }
+
+  // ─── DOM Helpers ──────────────────────────────────────────────────────────
+  function readCrewsFromDOM(container: Element) {
+    return Array.from(container.querySelectorAll('.crew-block')).map(block => ({
+      name: (block.querySelector('.crew-name-input') as HTMLInputElement)?.value || 'Crew',
+      seats: Array.from(block.querySelectorAll('.seat-row')).map(row => ({
+        position: (row.querySelector('.seat-pos') as HTMLInputElement)?.value || '',
+        member: (row.querySelector('.seat-member') as HTMLInputElement)?.value || '',
+      })),
+    }));
+  }
+
+  // ─── Utils ────────────────────────────────────────────────────────────────
+  function esc(s: unknown): string {
+    return String(s ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function fmtDate(d: string): string {
+    return new Date(d + 'T12:00:00').toLocaleDateString('en-US', {
+      weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
+    });
+  }
+
+  function fmtTime(t: string): string {
+    if (!t) return '';
+    const [h, m] = t.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${ampm}`;
+  }
+
+  function typeBadge(type: string) {
+    const map: Record<string, { bg: string; color: string }> = {
+      practice: { bg: 'rgba(0,122,122,0.10)', color: 'var(--teal)' },
+      race:     { bg: 'rgba(232,56,10,0.09)', color: 'var(--lava)' },
+      social:   { bg: 'rgba(107,65,158,0.09)', color: '#6B419E' },
+      other:    { bg: 'rgba(107,101,96,0.10)', color: 'var(--text-mid)' },
+    };
+    return map[type] ?? map.other;
+  }
+</script>
