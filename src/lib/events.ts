@@ -99,6 +99,25 @@ export async function updateEvent(
   return events.find(e => e.id === id) ?? null;
 }
 
+export async function createEvents(
+  fields: Array<Omit<ClubEvent, 'id' | 'createdAt' | 'rsvps'>>
+): Promise<ClubEvent[]> {
+  const redis = await getRedis();
+  if (!redis) throw new Error('Redis not configured');
+
+  const existing = await getEvents();
+  const newEvents: ClubEvent[] = fields.map(f => ({
+    ...f,
+    id: crypto.randomUUID(),
+    rsvps: [],
+    createdAt: new Date().toISOString(),
+  }));
+
+  const all = [...existing, ...newEvents].sort((a, b) => a.date.localeCompare(b.date));
+  await redis.set(EVENTS_KEY, all);
+  return newEvents;
+}
+
 export async function deleteEvent(id: string): Promise<boolean> {
   const redis = await getRedis();
   if (!redis) throw new Error('Redis not configured');

@@ -16,6 +16,7 @@ if (!Astro.cookies.has('members_auth')) {
       </div>
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <button id="sub-cal-btn" style="padding: 10px 18px; font-family: var(--ff-sans); font-size: 14px; font-weight: 500; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer; transition: border-color 0.2s;">📅 Subscribe to Calendar</button>
+        <button id="bulk-btn" style="padding: 10px 18px; font-family: var(--ff-sans); font-size: 14px; font-weight: 600; background: var(--teal); color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: opacity 0.2s;">⚡ Bulk Practices</button>
         <button id="create-btn" style="padding: 10px 20px; font-family: var(--ff-sans); font-size: 14px; font-weight: 600; background: var(--lava); color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: opacity 0.2s;">+ New Event</button>
       </div>
     </div>
@@ -74,6 +75,93 @@ if (!Astro.cookies.has('members_auth')) {
         <div style="display: flex; gap: 12px; margin-top: 22px; justify-content: flex-end;">
           <button type="button" id="form-cancel-btn" style="padding: 10px 24px; font-family: var(--ff-sans); font-size: 14px; font-weight: 500; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer;">Cancel</button>
           <button type="submit" id="form-save-btn" style="padding: 10px 28px; font-family: var(--ff-sans); font-size: 14px; font-weight: 600; background: var(--lava); color: #fff; border: none; border-radius: 4px; cursor: pointer;">Save Event</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Bulk Create Panel -->
+    <div id="bulk-panel" style="display: none; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 28px; margin-bottom: 36px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+        <div>
+          <h2 style="font-family: var(--ff-serif); font-size: 24px; font-weight: 700; color: var(--text); margin: 0 0 4px;">Bulk Create Practices</h2>
+          <p style="font-family: var(--ff-sans); font-size: 13px; color: var(--text-mid); margin: 0;">Pick which days of the week to repeat, set a date range, and create them all at once.</p>
+        </div>
+        <button id="bulk-close-btn" style="background: none; border: none; font-size: 22px; color: var(--text-mid); cursor: pointer; padding: 2px 8px; line-height: 1; flex-shrink: 0;">×</button>
+      </div>
+
+      <form id="bulk-form" style="margin-top: 22px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+          <div style="grid-column: 1 / -1;">
+            <label class="field-label">Practice Title</label>
+            <input id="bulk-title" class="field-input" type="text" value="Practice" placeholder="Practice" />
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label class="field-label">Days of Week *</label>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+              <button type="button" class="day-btn" data-day="1" style="padding: 8px 14px; font-family: var(--ff-sans); font-size: 13px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer; transition: all 0.15s;">Mon</button>
+              <button type="button" class="day-btn" data-day="2" style="padding: 8px 14px; font-family: var(--ff-sans); font-size: 13px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer; transition: all 0.15s;">Tue</button>
+              <button type="button" class="day-btn" data-day="3" style="padding: 8px 14px; font-family: var(--ff-sans); font-size: 13px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer; transition: all 0.15s;">Wed</button>
+              <button type="button" class="day-btn" data-day="4" style="padding: 8px 14px; font-family: var(--ff-sans); font-size: 13px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer; transition: all 0.15s;">Thu</button>
+              <button type="button" class="day-btn" data-day="5" style="padding: 8px 14px; font-family: var(--ff-sans); font-size: 13px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer; transition: all 0.15s;">Fri</button>
+              <button type="button" class="day-btn" data-day="6" style="padding: 8px 14px; font-family: var(--ff-sans); font-size: 13px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer; transition: all 0.15s;">Sat</button>
+              <button type="button" class="day-btn" data-day="0" style="padding: 8px 14px; font-family: var(--ff-sans); font-size: 13px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer; transition: all 0.15s;">Sun</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="field-label">From *</label>
+            <input id="bulk-from" class="field-input" type="date" required />
+          </div>
+          <div>
+            <label class="field-label">To *</label>
+            <input id="bulk-to" class="field-input" type="date" required />
+          </div>
+          <div>
+            <label class="field-label">Start Time *</label>
+            <input id="bulk-start" class="field-input" type="time" required />
+          </div>
+          <div>
+            <label class="field-label">End Time (optional)</label>
+            <input id="bulk-end" class="field-input" type="time" />
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label class="field-label">Location *</label>
+            <input id="bulk-location" class="field-input" type="text" placeholder="e.g. Lake Mead – Horsepower Cove" required />
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <details>
+              <summary style="font-family: var(--ff-sans); font-size: 13px; font-weight: 600; color: var(--text-mid); cursor: pointer; list-style: none; padding: 6px 0; user-select: none;">Optional: Description / Notes / Sign-up URL</summary>
+              <div style="display: grid; gap: 14px; margin-top: 14px;">
+                <div>
+                  <label class="field-label">Public Description</label>
+                  <textarea id="bulk-desc" class="field-input" style="resize: vertical;" rows="2" placeholder="Visible to all visitors on the public events page…"></textarea>
+                </div>
+                <div>
+                  <label class="field-label">Members-Only Notes</label>
+                  <textarea id="bulk-notes" class="field-input" style="resize: vertical;" rows="2" placeholder="Internal notes visible only to logged-in members…"></textarea>
+                </div>
+                <div>
+                  <label class="field-label">Sign-Up / Registration URL (members only)</label>
+                  <input id="bulk-signup" class="field-input" type="url" placeholder="https://…" />
+                </div>
+              </div>
+            </details>
+          </div>
+
+        </div>
+
+        <!-- Live Preview -->
+        <div id="bulk-preview" style="display: none; margin-top: 20px; padding: 16px 18px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;"></div>
+
+        <div id="bulk-error" style="display: none; font-family: var(--ff-sans); font-size: 13px; color: var(--lava); margin-top: 14px;"></div>
+
+        <div style="display: flex; gap: 12px; margin-top: 22px; justify-content: flex-end;">
+          <button type="button" id="bulk-cancel-btn" style="padding: 10px 24px; font-family: var(--ff-sans); font-size: 14px; font-weight: 500; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; cursor: pointer;">Cancel</button>
+          <button type="submit" id="bulk-create-btn" disabled style="padding: 10px 24px; font-family: var(--ff-sans); font-size: 14px; font-weight: 600; background: var(--teal); color: #fff; border: none; border-radius: 4px; cursor: pointer; opacity: 0.5;">Create Practices</button>
         </div>
       </form>
     </div>
@@ -661,4 +749,164 @@ if (!Astro.cookies.has('members_auth')) {
     };
     return map[type] ?? map.other;
   }
+
+  // ─── Bulk Create ──────────────────────────────────────────────────────────
+  const bulkSelectedDays = new Set<number>();
+
+  document.getElementById('bulk-btn')?.addEventListener('click', () => {
+    (document.getElementById('bulk-panel') as HTMLElement).style.display = '';
+    document.getElementById('bulk-panel')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  function closeBulkPanel() {
+    (document.getElementById('bulk-panel') as HTMLElement).style.display = 'none';
+    bulkSelectedDays.clear();
+    document.querySelectorAll<HTMLButtonElement>('.day-btn').forEach(btn => {
+      btn.style.background = 'transparent';
+      btn.style.color = 'var(--text)';
+      btn.style.borderColor = 'var(--border)';
+    });
+    (document.getElementById('bulk-preview') as HTMLElement).style.display = 'none';
+    (document.getElementById('bulk-error') as HTMLElement).style.display = 'none';
+    const createBtn = document.getElementById('bulk-create-btn') as HTMLButtonElement;
+    createBtn.textContent = 'Create Practices';
+    createBtn.disabled = true;
+    createBtn.style.opacity = '0.5';
+  }
+
+  document.getElementById('bulk-close-btn')?.addEventListener('click', closeBulkPanel);
+  document.getElementById('bulk-cancel-btn')?.addEventListener('click', closeBulkPanel);
+
+  document.querySelectorAll<HTMLButtonElement>('.day-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const day = parseInt(btn.dataset.day ?? '0');
+      if (bulkSelectedDays.has(day)) {
+        bulkSelectedDays.delete(day);
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--text)';
+        btn.style.borderColor = 'var(--border)';
+      } else {
+        bulkSelectedDays.add(day);
+        btn.style.background = 'var(--teal)';
+        btn.style.color = '#fff';
+        btn.style.borderColor = 'var(--teal)';
+      }
+      updateBulkPreview();
+    });
+  });
+
+  ['bulk-from', 'bulk-to'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', updateBulkPreview);
+  });
+
+  function generateBulkDates(): string[] {
+    const fromVal = (document.getElementById('bulk-from') as HTMLInputElement)?.value;
+    const toVal   = (document.getElementById('bulk-to')   as HTMLInputElement)?.value;
+    if (!fromVal || !toVal || bulkSelectedDays.size === 0) return [];
+
+    const current = new Date(fromVal + 'T12:00:00');
+    const end     = new Date(toVal   + 'T12:00:00');
+    if (current > end) return [];
+
+    const dates: string[] = [];
+    while (current <= end) {
+      if (bulkSelectedDays.has(current.getDay())) {
+        dates.push(current.toISOString().slice(0, 10));
+      }
+      current.setDate(current.getDate() + 1);
+    }
+    return dates;
+  }
+
+  function updateBulkPreview() {
+    const dates     = generateBulkDates();
+    const preview   = document.getElementById('bulk-preview')   as HTMLElement;
+    const createBtn = document.getElementById('bulk-create-btn') as HTMLButtonElement;
+
+    if (dates.length === 0) {
+      preview.style.display = 'none';
+      createBtn.textContent = 'Create Practices';
+      createBtn.disabled    = true;
+      createBtn.style.opacity = '0.5';
+      return;
+    }
+
+    createBtn.textContent   = `Create ${dates.length} Practice${dates.length === 1 ? '' : 's'}`;
+    createBtn.disabled      = false;
+    createBtn.style.opacity = '';
+    preview.style.display   = '';
+
+    const shown     = dates.slice(0, 24);
+    const remainder = dates.length - shown.length;
+    const listItems = shown.map(d =>
+      `<div style="font-family:var(--ff-sans);font-size:13px;color:var(--text-mid);padding:5px 0;border-bottom:1px solid var(--border);">${fmtDate(d)}</div>`
+    ).join('');
+    const extra = remainder > 0
+      ? `<div style="font-family:var(--ff-sans);font-size:13px;color:var(--text-light);padding:8px 0;">…and ${remainder} more</div>`
+      : '';
+
+    preview.innerHTML = `
+      <div style="font-family:var(--ff-sans);font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;">
+        ${dates.length} practice${dates.length === 1 ? '' : 's'} will be created
+      </div>
+      <div style="max-height:180px;overflow-y:auto;">${listItems}${extra}</div>`;
+  }
+
+  document.getElementById('bulk-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const dates     = generateBulkDates();
+    if (dates.length === 0) return;
+
+    const title       = (document.getElementById('bulk-title')    as HTMLInputElement).value.trim()    || 'Practice';
+    const startTime   = (document.getElementById('bulk-start')    as HTMLInputElement).value;
+    const endTime     = (document.getElementById('bulk-end')      as HTMLInputElement).value;
+    const location    = (document.getElementById('bulk-location') as HTMLInputElement).value.trim();
+    const description = (document.getElementById('bulk-desc')     as HTMLTextAreaElement).value.trim();
+    const notes       = (document.getElementById('bulk-notes')    as HTMLTextAreaElement).value.trim();
+    const signupUrl   = (document.getElementById('bulk-signup')   as HTMLInputElement).value.trim();
+
+    const errEl     = document.getElementById('bulk-error')      as HTMLElement;
+    const createBtn = document.getElementById('bulk-create-btn') as HTMLButtonElement;
+    errEl.style.display = 'none';
+    createBtn.textContent = `Creating ${dates.length} practices…`;
+    createBtn.disabled    = true;
+
+    const payload = dates.map(date => ({
+      title,
+      type: 'practice',
+      date,
+      startTime,
+      endTime:     endTime     || undefined,
+      location,
+      description: description || undefined,
+      notes:       notes       || undefined,
+      signupUrl:   signupUrl   || undefined,
+    }));
+
+    try {
+      const res = await fetch('/api/events/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ events: payload }),
+      });
+      if (res.ok) {
+        closeBulkPanel();
+        await loadEvents();
+      } else {
+        const err = await res.json().catch(() => ({ error: 'Failed to create practices' }));
+        errEl.textContent   = err.error || 'Failed to create practices.';
+        errEl.style.display = '';
+        createBtn.textContent   = `Create ${dates.length} Practice${dates.length === 1 ? '' : 's'}`;
+        createBtn.disabled      = false;
+        createBtn.style.opacity = '';
+      }
+    } catch {
+      errEl.textContent   = 'Network error — please try again.';
+      errEl.style.display = '';
+      createBtn.textContent   = `Create ${dates.length} Practice${dates.length === 1 ? '' : 's'}`;
+      createBtn.disabled      = false;
+      createBtn.style.opacity = '';
+    }
+  });
 </script>
