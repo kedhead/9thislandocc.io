@@ -567,7 +567,17 @@ if (!Astro.cookies.has('members_auth')) {
         const container = card?.querySelector('.crew-grid-container');
         if (!container) break;
         const existingCount = container.querySelectorAll('.crew-block').length;
-        const newCrew = { name: `Crew ${existingCount + 1}`, seats: [{ position: 'Seat 1', member: '' }] };
+        const newCrew = {
+          name: `Crew ${existingCount + 1}`,
+          seats: [
+            { position: 'Seat 1', member: '' },
+            { position: 'Seat 2', member: '' },
+            { position: 'Seat 3', member: '' },
+            { position: 'Seat 4', member: '' },
+            { position: 'Seat 5', member: '' },
+            { position: 'Steersman', member: '' },
+          ],
+        };
         const buttonsDiv = container.querySelector('[data-crew-buttons]');
         const listId = card?.querySelector('datalist')?.id ?? '';
         if (buttonsDiv) {
