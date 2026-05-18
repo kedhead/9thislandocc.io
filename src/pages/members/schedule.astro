@@ -380,19 +380,25 @@ if (!Astro.cookies.has('members_auth')) {
   }
 
   function crewContent(ev) {
-    const crews = ev.crews ?? [];
+    const crews  = ev.crews ?? [];
+    const rsvps  = ev.rsvps ?? [];
+    const listId = `rsvp-list-${ev.id}`;
     return `
+      <datalist id="${listId}">
+        ${rsvps.map(n => `<option value="${esc(n)}">`).join('')}
+      </datalist>
+      ${rsvps.length > 0 ? `<p style="font-family:var(--ff-sans);font-size:12px;color:var(--teal);margin:0 0 12px;">💡 RSVP names appear as suggestions — click or type to select</p>` : ''}
       <div class="crew-grid-container">
-        ${crews.map((crew, ci) => crewBlockHTML(crew, ci)).join('')}
+        ${crews.map((crew, ci) => crewBlockHTML(crew, ci, listId)).join('')}
         <div data-crew-buttons style="display:flex;gap:10px;flex-wrap:wrap;margin-top:${crews.length > 0 ? '16px' : '0'};">
-          ${crews.length === 0 ? `<button data-action="init-crew" style="padding:9px 18px;font-family:var(--ff-sans);font-size:13px;font-weight:600;background:var(--teal);color:#fff;border:none;border-radius:4px;cursor:pointer;">Initialize OC6 Crew (6 Seats + Steersman)</button>` : ''}
+          ${crews.length === 0 ? `<button data-action="init-crew" style="padding:9px 18px;font-family:var(--ff-sans);font-size:13px;font-weight:600;background:var(--teal);color:#fff;border:none;border-radius:4px;cursor:pointer;">Initialize OC6 Crew (5 Seats + Steersman)</button>` : ''}
           <button data-action="add-crew" style="padding:9px 18px;font-family:var(--ff-sans);font-size:13px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text);border-radius:4px;cursor:pointer;">+ Add Crew</button>
           ${crews.length > 0 ? `<button data-action="save-crew" style="padding:9px 20px;font-family:var(--ff-sans);font-size:13px;font-weight:600;background:var(--teal);color:#fff;border:none;border-radius:4px;cursor:pointer;">💾 Save Crew Assignments</button>` : ''}
         </div>
       </div>`;
   }
 
-  function crewBlockHTML(crew, ci) {
+  function crewBlockHTML(crew, ci, listId = '') {
     return `
       <div class="crew-block" data-crew-idx="${ci}" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-bottom:12px;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
@@ -405,17 +411,17 @@ if (!Astro.cookies.has('members_auth')) {
           <span></span>
         </div>
         <div class="seats-list">
-          ${crew.seats.map((seat, si) => seatRowHTML(seat, ci, si)).join('')}
+          ${crew.seats.map((seat, si) => seatRowHTML(seat, ci, si, listId)).join('')}
         </div>
         <button data-action="add-seat" data-crew-idx="${ci}" style="margin-top:6px;padding:6px 12px;font-family:var(--ff-sans);font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text-mid);border-radius:3px;cursor:pointer;">+ Add Seat</button>
       </div>`;
   }
 
-  function seatRowHTML(seat, crewIdx, seatIdx) {
+  function seatRowHTML(seat, crewIdx, seatIdx, listId = '') {
     return `
       <div class="seat-row" data-seat-idx="${seatIdx}" style="display:grid;grid-template-columns:140px 1fr 34px;gap:4px 8px;margin-bottom:5px;">
         <input class="seat-pos field-input" value="${esc(seat.position)}" placeholder="Position" style="padding:7px 10px;font-size:13px;" />
-        <input class="seat-member field-input" value="${esc(seat.member ?? '')}" placeholder="Member name" style="padding:7px 10px;font-size:13px;" />
+        <input class="seat-member field-input" ${listId ? `list="${listId}"` : ''} value="${esc(seat.member ?? '')}" placeholder="Member name" style="padding:7px 10px;font-size:13px;" />
         <button data-action="remove-seat" data-crew-idx="${crewIdx}" style="background:none;border:1px solid var(--border);border-radius:3px;color:var(--text-mid);cursor:pointer;font-size:15px;padding:0 7px;">×</button>
       </div>`;
   }
@@ -534,7 +540,6 @@ if (!Astro.cookies.has('members_auth')) {
             { position: 'Seat 3', member: '' },
             { position: 'Seat 4', member: '' },
             { position: 'Seat 5', member: '' },
-            { position: 'Seat 6', member: '' },
             { position: 'Steersman', member: '' },
           ],
         };
@@ -564,8 +569,9 @@ if (!Astro.cookies.has('members_auth')) {
         const existingCount = container.querySelectorAll('.crew-block').length;
         const newCrew = { name: `Crew ${existingCount + 1}`, seats: [{ position: 'Seat 1', member: '' }] };
         const buttonsDiv = container.querySelector('[data-crew-buttons]');
+        const listId = card?.querySelector('datalist')?.id ?? '';
         if (buttonsDiv) {
-          buttonsDiv.insertAdjacentHTML('beforebegin', crewBlockHTML(newCrew, existingCount));
+          buttonsDiv.insertAdjacentHTML('beforebegin', crewBlockHTML(newCrew, existingCount, listId));
           // Ensure save button is visible
           if (!container.querySelector('[data-action="save-crew"]')) {
             buttonsDiv.insertAdjacentHTML('beforeend',
@@ -582,8 +588,9 @@ if (!Astro.cookies.has('members_auth')) {
         const seatsList = crewBlock?.querySelector('.seats-list');
         if (!seatsList) break;
         const seatCount = seatsList.querySelectorAll('.seat-row').length;
+        const listId = card?.querySelector('datalist')?.id ?? '';
         seatsList.insertAdjacentHTML('beforeend',
-          seatRowHTML({ position: `Seat ${seatCount + 1}`, member: '' }, parseInt(crewIdx), seatCount)
+          seatRowHTML({ position: `Seat ${seatCount + 1}`, member: '' }, parseInt(crewIdx), seatCount, listId)
         );
         break;
       }
