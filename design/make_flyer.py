@@ -174,7 +174,7 @@ assert W - M - intro_w > headline_right + 24, "intro column crowds the headline"
 intro = (
     "Your support puts canoes on the water — equipment, race entries, and travel "
     "for a Las Vegas crew paddling in the Hawaiian tradition. In return, your name "
-    "rides with us: on our shirts, and at every event we paddle."
+    "rides with us: on our shirts, on our website, and at every event we paddle."
 )
 intro_lines = wrap(intro, "Sans", 9.2, intro_w)
 intro_bottom = draw_lines(
