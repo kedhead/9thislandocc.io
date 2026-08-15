@@ -59,5 +59,60 @@
   "joinUs": {
     "title": "Join Us",
     "content": "Whether you're an experienced paddler or completely new to the sport, we welcome you to our ohana. Contact us to learn more about joining 9th Island OCC."
+  },
+  "sponsorship": {
+    "eyebrow": "For Businesses",
+    "title": "Help Our Team — Become a Sponsor",
+    "intro": "Partner with 9th Island OCC to reach a passionate, active community. Your support pays for canoes, equipment, race entries, and travel — and puts your brand on our shirts, our canoes, and at our events alongside the Hawaiian and paddling communities of Las Vegas.",
+    "tiersHeading": "Sponsorship Levels",
+    "tiers": [
+      {
+        "name": "Gold Sponsor",
+        "amount": "$2,500",
+        "featured": true,
+        "benefits": [
+          "Logo on team shirts",
+          "Logo on team website and banner",
+          "Multiple social media shout-outs",
+          "Recognition at team events",
+          "Booth or banner at team events",
+          "Team photo and plaque of appreciation"
+        ]
+      },
+      {
+        "name": "Silver Sponsor",
+        "amount": "$1,000",
+        "featured": false,
+        "benefits": [
+          "Logo on team website and banner",
+          "Multiple social media shout-outs",
+          "Recognition at team events",
+          "Certificate of appreciation"
+        ]
+      },
+      {
+        "name": "Bronze Sponsor",
+        "amount": "$500",
+        "featured": false,
+        "benefits": [
+          "Name or small logo on website",
+          "One or two social media acknowledgments",
+          "Recognition in team newsletter or event program"
+        ]
+      },
+      {
+        "name": "Community Supporter",
+        "amount": "$100–$250",
+        "featured": false,
+        "benefits": [
+          "Name listed on the team's website or sponsor board",
+          "Thank-you post on social media",
+          "Certificate of appreciation"
+        ]
+      }
+    ],
+    "footnote": "In-kind donations — food, gear, printing, raffle items, or services — are welcome too, and are recognized at the level that matches their value.",
+    "ctaText": "Sponsor Our Team",
+    "ctaLink": "/contact"
   }
 }

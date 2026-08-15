@@ -3,9 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import aboutData from '../../public/data/about.json';
 
-const { hero, introduction, mission, activities, coaches } = aboutData;
+const { hero, introduction, mission, activities, coaches, sponsorship } = aboutData;
 
 const activityIcons = ['🚣', '🏆', '🤝', '🌊'];
+
+const tierAccents = ['#C9A227', '#9AA3A8', '#A9714B', 'var(--teal)'];
 ---
 
 <Layout title="About — 9th Island OCC" active="about">
@@ -85,17 +87,50 @@ const activityIcons = ['🚣', '🏆', '🤝', '🌊'];
   </section>
 
   <!-- Sponsor prospectus -->
-  <section style="background: var(--bg-alt); padding: 80px 24px; border-top: 1px solid var(--border);">
-    <div style="max-width: 900px; margin: 0 auto;">
+  <section id="sponsor" style="background: var(--bg-alt); padding: 80px 24px; border-top: 1px solid var(--border); scroll-margin-top: 80px;">
+    <div style="max-width: 1000px; margin: 0 auto;">
       <div class="sponsor-block" style="background: var(--bg-dark); color: #F5F0EB; padding: 48px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;">
         <div>
-          <div style="font-family: var(--ff-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal-light); margin-bottom: 14px;">For Businesses</div>
-          <h2 style="font-family: var(--ff-serif); font-size: 28px; font-weight: 700; margin: 0 0 16px;">Become a Club Sponsor</h2>
-          <p style="font-family: var(--ff-sans); font-size: 15px; color: #9B9590; line-height: 1.75; max-width: 440px; margin: 0;">
-            Partner with 9th Island OCC to reach a passionate, active community. Your brand on our jerseys, canoes, and events — connecting with the Hawaiian and paddling communities in Las Vegas.
+          <div style="font-family: var(--ff-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal-light); margin-bottom: 14px;">{sponsorship.eyebrow}</div>
+          <h2 style="font-family: var(--ff-serif); font-size: 28px; font-weight: 700; margin: 0 0 16px;">{sponsorship.title}</h2>
+          <p style="font-family: var(--ff-sans); font-size: 15px; color: #9B9590; line-height: 1.75; max-width: 460px; margin: 0;">
+            {sponsorship.intro}
           </p>
         </div>
-        <a href="/contact" style="background: var(--lava); color: #fff; border: none; border-radius: 4px; padding: 14px 28px; font-family: var(--ff-sans); font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; text-decoration: none;">Get in Touch →</a>
+        <a href={sponsorship.ctaLink} style="background: var(--lava); color: #fff; border: none; border-radius: 4px; padding: 14px 28px; font-family: var(--ff-sans); font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; text-decoration: none;">{sponsorship.ctaText} →</a>
+      </div>
+
+      <!-- Sponsorship levels -->
+      <div style="margin-top: 48px;">
+        <h3 style="font-family: var(--ff-serif); font-size: 22px; font-weight: 700; color: var(--text); text-align: center; margin: 0 0 32px;">{sponsorship.tiersHeading}</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2px;">
+          {sponsorship.tiers.map((tier, i) => (
+            <div style={`background: var(--bg); padding: 32px 28px; border-top: 4px solid ${tierAccents[i % tierAccents.length]}; display: flex; flex-direction: column;`}>
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 6px;">
+                <h4 style="font-family: var(--ff-serif); font-size: 18px; font-weight: 600; color: var(--text); margin: 0;">{tier.name}</h4>
+                {tier.featured && (
+                  <span style="font-family: var(--ff-sans); font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--lava); background: rgba(190,62,34,0.09); padding: 3px 8px; border-radius: 2px;">Top Tier</span>
+                )}
+              </div>
+              <div style={`font-family: var(--ff-serif); font-size: 30px; font-weight: 700; color: ${tierAccents[i % tierAccents.length]}; line-height: 1.1; margin-bottom: 20px;`}>{tier.amount}</div>
+              <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 10px;">
+                {tier.benefits.map((b) => (
+                  <li style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); line-height: 1.6; padding-left: 18px; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--teal);">✓</span>{b}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        {sponsorship.footnote && (
+          <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); line-height: 1.75; text-align: center; max-width: 640px; margin: 28px auto 0;">
+            {sponsorship.footnote}
+          </p>
+        )}
+        <div style="text-align: center; margin-top: 28px;">
+          <a href={sponsorship.ctaLink} class="btn-primary">{sponsorship.ctaText}</a>
+        </div>
       </div>
     </div>
   </section>

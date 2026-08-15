@@ -205,3 +205,26 @@ collections:
             fields:
               - {label: "Title", name: "title", widget: "string"}
               - {label: "Content", name: "content", widget: "text"}
+
+          - label: "Sponsorship Section"
+            name: "sponsorship"
+            widget: "object"
+            fields:
+              - {label: "Eyebrow", name: "eyebrow", widget: "string"}
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Intro", name: "intro", widget: "text"}
+              - {label: "Levels Heading", name: "tiersHeading", widget: "string"}
+              - label: "Sponsorship Levels"
+                name: "tiers"
+                widget: "list"
+                fields:
+                  - {label: "Level Name", name: "name", widget: "string"}
+                  - {label: "Amount", name: "amount", widget: "string"}
+                  - {label: "Highlight as Top Tier", name: "featured", widget: "boolean", required: false, default: false}
+                  - label: "Benefits"
+                    name: "benefits"
+                    widget: "list"
+                    field: {label: "Benefit", name: "benefit", widget: "string"}
+              - {label: "Footnote", name: "footnote", widget: "text", required: false}
+              - {label: "Button Text", name: "ctaText", widget: "string"}
+              - {label: "Button Link", name: "ctaLink", widget: "string"}
