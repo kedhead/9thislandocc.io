@@ -1,0 +1,543 @@
+---
+/**
+ * Live club schedule, pulled from the ImuaTrak public calendar feed.
+ *
+ * The feed is fetched in the browser (CORS is open, responses are cached ~5 min
+ * upstream) so the schedule stays current without a rebuild. Events are
+ * read-only here — they're edited in the ImuaTrak app.
+ */
+interface Props {
+  /** JSON feed URL. */
+  feedUrl?: string;
+  /** Same endpoint without `format=json` — an ICS feed calendar apps can subscribe to. */
+  icsUrl?: string;
+  eyebrow?: string;
+  heading?: string;
+  /** Cap the number of upcoming events shown (0 = no cap). */
+  limit?: number;
+  /** Type filter buttons — worth it on the full schedule, noise on the homepage. */
+  showFilters?: boolean;
+  /** Offer a "past events" disclosure (the feed carries the last 60 days). */
+  showPast?: boolean;
+  /** Link shown under the list, e.g. to the full events page. */
+  moreHref?: string;
+  moreLabel?: string;
+  background?: string;
+}
+
+const CLUB_FEED =
+  'https://us-central1-imuatrak.cloudfunctions.net/clubCalendar?club=Tfdc1aX0u0eYc1xHnvrU';
+
+const {
+  feedUrl = `${CLUB_FEED}&format=json`,
+  icsUrl = CLUB_FEED,
+  eyebrow = 'On the Water',
+  heading = 'Schedule',
+  limit = 0,
+  showFilters = true,
+  showPast = true,
+  moreHref,
+  moreLabel = 'Full Schedule →',
+  background = 'var(--bg-alt)',
+} = Astro.props;
+---
+
+<section class="schedule-section" style={`background: ${background}; padding: 96px 24px;`}>
+  <div
+    class="schedule"
+    data-schedule
+    data-feed={feedUrl}
+    data-limit={String(limit)}
+    data-filters={showFilters ? '1' : '0'}
+    data-past={showPast ? '1' : '0'}
+    style="max-width: 1100px; margin: 0 auto;"
+  >
+    <div class="schedule-head">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 14px;">{eyebrow}</div>
+        <h2 class="schedule-title">{heading}</h2>
+        <p class="schedule-tz" data-schedule-tz hidden></p>
+      </div>
+      <div class="schedule-head-links">
+        {moreHref && <a href={moreHref} class="schedule-more">{moreLabel}</a>}
+        <a href={icsUrl} class="schedule-subscribe" title="Add this calendar to your phone or computer">
+          Subscribe to Calendar
+        </a>
+      </div>
+    </div>
+
+    {showFilters && (
+      <div class="schedule-filters" data-schedule-filters hidden>
+        <button type="button" class="schedule-filter is-active" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="schedule-filter" data-filter="practice" aria-pressed="false">Practice</button>
+        <button type="button" class="schedule-filter" data-filter="race" aria-pressed="false">Race</button>
+        <button type="button" class="schedule-filter" data-filter="social" aria-pressed="false">Social</button>
+      </div>
+    )}
+
+    <!-- Loading -->
+    <div class="schedule-rows" data-schedule-loading aria-hidden="true">
+      <div class="schedule-skeleton"></div>
+      <div class="schedule-skeleton"></div>
+      <div class="schedule-skeleton"></div>
+    </div>
+
+    <!-- Upcoming -->
+    <div class="schedule-rows" data-schedule-list role="list" hidden></div>
+
+    <!-- Nothing scheduled -->
+    <div class="schedule-note" data-schedule-empty hidden>
+      <p class="schedule-note-title">No upcoming events on the calendar yet.</p>
+      <p class="schedule-note-sub">New practices and races appear here as soon as they're scheduled.</p>
+    </div>
+
+    <!-- Feed unreachable -->
+    <div class="schedule-note" data-schedule-error hidden>
+      <p class="schedule-note-title">The schedule didn't load.</p>
+      <p class="schedule-note-sub">
+        Check your connection and refresh, or
+        <a data-schedule-error-link href={icsUrl}>open the calendar feed directly</a>.
+      </p>
+    </div>
+
+    <!-- Past events (feed carries the last 60 days) -->
+    {showPast && (
+      <div class="schedule-past" data-schedule-past hidden>
+        <button type="button" class="schedule-past-toggle" data-schedule-past-toggle aria-expanded="false">
+          <span data-schedule-past-label>Show recent past events</span>
+        </button>
+        <div class="schedule-rows" data-schedule-past-list role="list" hidden></div>
+      </div>
+    )}
+  </div>
+</section>
+
+<!--
+  Global rather than scoped: rows are created in JS, so they never receive
+  Astro's scope attribute. Every selector is namespaced under `schedule-`.
+-->
+<style is:global>
+  .schedule-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  .schedule-title {
+    font-family: var(--ff-serif);
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+  }
+  .schedule-tz {
+    font-family: var(--ff-sans);
+    font-size: 12px;
+    color: var(--text-light);
+    margin: 10px 0 0;
+  }
+  .schedule-head-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .schedule-more,
+  .schedule-subscribe {
+    font-family: var(--ff-sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+  .schedule-more { color: var(--lava); }
+  .schedule-subscribe { color: var(--teal); }
+  .schedule-more:hover,
+  .schedule-subscribe:hover { text-decoration: underline; }
+
+  .schedule-filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .schedule-filter {
+    background: transparent;
+    color: var(--text-mid);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 6px 14px;
+    font-family: var(--ff-sans);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+  }
+  .schedule-filter:hover { border-color: var(--text-light); color: var(--text); }
+  .schedule-filter.is-active {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
+  }
+
+  .schedule-rows { display: grid; gap: 1px; }
+
+  .schedule-row {
+    background: var(--bg);
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 92px 1fr auto;
+    gap: 24px;
+    align-items: start;
+    border-left: 3px solid var(--row-accent, var(--border));
+  }
+  .schedule-row.is-past { opacity: 0.62; }
+
+  .schedule-date {
+    font-family: var(--ff-serif);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--row-accent, var(--lava));
+    line-height: 1.1;
+  }
+  .schedule-weekday {
+    font-family: var(--ff-sans);
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .schedule-name {
+    font-family: var(--ff-sans);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 5px;
+  }
+  .schedule-meta {
+    font-family: var(--ff-sans);
+    font-size: 13px;
+    color: var(--text-mid);
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+  }
+  .schedule-meta .schedule-place { color: var(--teal); font-weight: 500; }
+  .schedule-desc {
+    font-family: var(--ff-sans);
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.65;
+    margin: 8px 0 0;
+  }
+  .schedule-badge {
+    font-family: var(--ff-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--row-accent, var(--text-mid));
+    background: var(--row-accent-soft, rgba(107,101,96,0.09));
+    padding: 5px 11px;
+    border-radius: 2px;
+  }
+
+  .schedule-note {
+    background: var(--bg);
+    padding: 56px 32px;
+    text-align: center;
+  }
+  .schedule-note-title {
+    font-family: var(--ff-serif);
+    font-size: 20px;
+    color: var(--text-mid);
+    margin: 0;
+  }
+  .schedule-note-sub {
+    font-family: var(--ff-sans);
+    font-size: 14px;
+    color: var(--text-light);
+    margin: 12px 0 0;
+  }
+  .schedule-note-sub a { color: var(--teal); }
+
+  .schedule-past { margin-top: 28px; }
+  .schedule-past-toggle {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0 0 4px;
+    font-family: var(--ff-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-mid);
+    cursor: pointer;
+  }
+  .schedule-past-toggle:hover { color: var(--text); border-color: var(--text-light); }
+  .schedule-past-list-spacer { height: 20px; }
+
+  .schedule-skeleton {
+    background: var(--bg);
+    height: 92px;
+    position: relative;
+    overflow: hidden;
+  }
+  .schedule-skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, var(--bg-alt), transparent);
+    transform: translateX(-100%);
+    animation: schedule-shimmer 1.4s infinite;
+  }
+  @keyframes schedule-shimmer {
+    100% { transform: translateX(100%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .schedule-skeleton::after { animation: none; }
+  }
+
+  @media (max-width: 640px) {
+    .schedule-row {
+      grid-template-columns: 86px 1fr;
+      padding: 20px 18px;
+      gap: 16px;
+    }
+    .schedule-date { font-size: 21px; }
+    .schedule-badge { grid-column: 2; justify-self: start; }
+  }
+</style>
+
+<script>
+  type FeedEvent = {
+    id?: string | null;
+    title?: string | null;
+    type?: string | null;
+    startAt?: string | null;
+    endAt?: string | null;
+    location?: string | null;
+    meetTime?: string | null;
+    description?: string | null;
+  };
+
+  type ClubEvent = {
+    id: string;
+    title: string;
+    type: 'practice' | 'race' | 'social' | 'other';
+    start: Date;
+    end: Date | null;
+    location: string;
+    meetTime: string;
+    description: string;
+  };
+
+  const ACCENTS: Record<ClubEvent['type'], { color: string; soft: string; label: string }> = {
+    practice: { color: '#2E6FA8', soft: 'rgba(46,111,168,0.10)', label: 'Practice' },
+    race:     { color: 'var(--lava)', soft: 'rgba(232,56,10,0.09)', label: 'Race' },
+    social:   { color: 'var(--teal)', soft: 'rgba(0,122,122,0.10)', label: 'Social' },
+    other:    { color: 'var(--text-mid)', soft: 'rgba(107,101,96,0.09)', label: 'Event' },
+  };
+
+  const dayFmt     = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+  const weekdayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short' });
+  const timeFmt    = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
+  const yearFmt    = new Intl.DateTimeFormat(undefined, { year: 'numeric' });
+
+  const text = (tag: string, className: string, value: string) => {
+    const el = document.createElement(tag);
+    el.className = className;
+    el.textContent = value; // feed content is never injected as HTML
+    return el;
+  };
+
+  function normalizeType(raw: unknown): ClubEvent['type'] {
+    const t = typeof raw === 'string' ? raw.trim().toLowerCase() : '';
+    return t === 'practice' || t === 'race' || t === 'social' ? t : 'other';
+  }
+
+  function normalize(raw: FeedEvent, index: number): ClubEvent | null {
+    const start = raw?.startAt ? new Date(raw.startAt) : null;
+    if (!start || Number.isNaN(start.getTime())) return null; // undated events can't be placed
+    const end = raw?.endAt ? new Date(raw.endAt) : null;
+    const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+    return {
+      id: str(raw?.id) || `event-${index}`,
+      title: str(raw?.title) || 'Club Event',
+      type: normalizeType(raw?.type),
+      start,
+      end: end && !Number.isNaN(end.getTime()) ? end : null,
+      location: str(raw?.location),
+      meetTime: str(raw?.meetTime),
+      description: str(raw?.description),
+    };
+  }
+
+  function buildRow(ev: ClubEvent, isPast: boolean): HTMLElement {
+    const accent = ACCENTS[ev.type];
+    const row = document.createElement('article');
+    row.className = 'schedule-row' + (isPast ? ' is-past' : '');
+    row.setAttribute('role', 'listitem');
+    row.dataset.type = ev.type;
+    row.style.setProperty('--row-accent', accent.color);
+    row.style.setProperty('--row-accent-soft', accent.soft);
+
+    // Date
+    const dateCol = document.createElement('div');
+    const day = document.createElement('time');
+    day.className = 'schedule-date';
+    day.dateTime = ev.start.toISOString();
+    day.textContent = dayFmt.format(ev.start);
+    dateCol.appendChild(day);
+    const sameYear = yearFmt.format(ev.start) === yearFmt.format(new Date());
+    dateCol.appendChild(
+      text('div', 'schedule-weekday',
+        sameYear
+          ? weekdayFmt.format(ev.start)
+          : `${weekdayFmt.format(ev.start)} · ${yearFmt.format(ev.start)}`),
+    );
+
+    // Body
+    const body = document.createElement('div');
+    body.appendChild(text('h3', 'schedule-name', ev.title));
+
+    const meta = document.createElement('p');
+    meta.className = 'schedule-meta';
+    const when = ev.end
+      ? `${timeFmt.format(ev.start)} – ${timeFmt.format(ev.end)}`
+      : timeFmt.format(ev.start);
+    meta.appendChild(text('span', 'schedule-time', when));
+    if (ev.location) meta.appendChild(text('span', 'schedule-place', ev.location));
+    if (ev.meetTime) meta.appendChild(text('span', 'schedule-meet', `Meet ${ev.meetTime}`));
+    body.appendChild(meta);
+
+    if (ev.description) body.appendChild(text('p', 'schedule-desc', ev.description));
+
+    row.append(dateCol, body, text('span', 'schedule-badge', accent.label));
+    return row;
+  }
+
+  function initSchedule(root: HTMLElement) {
+    const feed = root.dataset.feed;
+    if (!feed) return;
+    const limit = Number(root.dataset.limit || '0');
+    const wantsPast = root.dataset.past === '1';
+
+    const q = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel);
+    const loadingEl = q('[data-schedule-loading]');
+    const listEl    = q('[data-schedule-list]');
+    const emptyEl   = q('[data-schedule-empty]');
+    const errorEl   = q('[data-schedule-error]');
+    const tzEl      = q('[data-schedule-tz]');
+    const filtersEl = q('[data-schedule-filters]');
+    const pastEl    = q('[data-schedule-past]');
+    const pastList  = q('[data-schedule-past-list]');
+    const pastToggle = q<HTMLButtonElement>('[data-schedule-past-toggle]');
+    const pastLabel = q('[data-schedule-past-label]');
+    if (!listEl) return;
+
+    const show = (el: Element | null | undefined, visible: boolean) => {
+      if (el) (el as HTMLElement).hidden = !visible;
+    };
+
+    const render = (events: ClubEvent[]) => {
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+
+      const upcoming = events
+        .filter((e) => e.start >= startOfToday)
+        .sort((a, b) => a.start.getTime() - b.start.getTime());
+      const past = events
+        .filter((e) => e.start < startOfToday)
+        .sort((a, b) => b.start.getTime() - a.start.getTime());
+
+      const shown = limit > 0 ? upcoming.slice(0, limit) : upcoming;
+
+      listEl.replaceChildren(...shown.map((ev) => buildRow(ev, false)));
+      show(listEl, shown.length > 0);
+      show(emptyEl, shown.length === 0);
+
+      if (tzEl) {
+        const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        tzEl.textContent = zone
+          ? `Times shown in your local timezone (${zone.replace(/_/g, ' ')}).`
+          : 'Times shown in your local timezone.';
+        show(tzEl, shown.length > 0 || past.length > 0);
+      }
+
+      // Only offer filters for types actually on the calendar.
+      if (filtersEl) {
+        const present = new Set(shown.map((e) => e.type));
+        let offered = 0;
+        filtersEl.querySelectorAll<HTMLButtonElement>('.schedule-filter').forEach((btn) => {
+          const f = btn.dataset.filter || 'all';
+          const keep = f === 'all' || present.has(f as ClubEvent['type']);
+          btn.hidden = !keep;
+          if (keep && f !== 'all') offered++;
+        });
+        show(filtersEl, offered > 1);
+      }
+
+      if (wantsPast && pastEl && pastList) {
+        pastList.replaceChildren(...past.map((ev) => buildRow(ev, true)));
+        show(pastEl, past.length > 0);
+        if (pastLabel) {
+          pastLabel.textContent = `Show ${past.length} recent past event${past.length === 1 ? '' : 's'}`;
+        }
+      }
+    };
+
+    filtersEl?.addEventListener('click', (event) => {
+      const btn = (event.target as HTMLElement).closest<HTMLButtonElement>('.schedule-filter');
+      if (!btn) return;
+      const filter = btn.dataset.filter || 'all';
+      filtersEl.querySelectorAll<HTMLButtonElement>('.schedule-filter').forEach((b) => {
+        const active = b === btn;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-pressed', String(active));
+      });
+      root.querySelectorAll<HTMLElement>('.schedule-row').forEach((row) => {
+        row.style.display = filter === 'all' || row.dataset.type === filter ? '' : 'none';
+      });
+    });
+
+    pastToggle?.addEventListener('click', () => {
+      if (!pastList || !pastLabel) return;
+      const open = pastList.hidden;
+      pastList.hidden = !open;
+      pastToggle.setAttribute('aria-expanded', String(open));
+      const count = pastList.childElementCount;
+      pastLabel.textContent = open
+        ? 'Hide past events'
+        : `Show ${count} recent past event${count === 1 ? '' : 's'}`;
+    });
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+
+    fetch(feed, { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Feed responded ${res.status}`);
+        return res.json();
+      })
+      .then((data: { events?: FeedEvent[] }) => {
+        const raw = Array.isArray(data?.events) ? data.events : [];
+        const events = raw
+          .map(normalize)
+          .filter((e): e is ClubEvent => e !== null);
+        show(loadingEl, false);
+        render(events);
+      })
+      .catch((err) => {
+        console.error('Club schedule failed to load:', err);
+        show(loadingEl, false);
+        show(errorEl, true);
+      })
+      .finally(() => clearTimeout(timeout));
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-schedule]').forEach(initSchedule);
+</script>

@@ -2,14 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import siteSettings from '../content/settings/site.json';
 import homepageData from '../../public/data/homepage.json';
+import ScheduleSection from '../components/ScheduleSection.astro';
 
 const { whatWeOffer, sponsors } = homepageData;
 
-const upcomingEvents = [
-  { date: 'May 17', year: '2025', name: 'Nevada Desert Dash', location: 'Boulder Beach, Lake Mead', type: 'Race' },
-  { date: 'Jun 14', year: '2025', name: 'Southwest Regional Championships', location: 'Parker, Arizona', type: 'Race' },
-  { date: 'Nov 18', year: '2025', name: 'ADR Race', location: 'Lake Mead, Nevada', type: 'Race' },
-];
 
 const offerAccents = ['var(--lava)', 'var(--teal)', 'var(--lava)'];
 
@@ -112,35 +108,15 @@ const tiers = [
     </div>
   </section>
 
-  <!-- Upcoming Events -->
-  <section style="background: var(--bg-alt); padding: 96px 24px;">
-    <div style="max-width: 1100px; margin: 0 auto;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; flex-wrap: wrap; gap: 16px;">
-        <div>
-          <div class="eyebrow" style="margin-bottom: 14px;">On the Water</div>
-          <h2 style="font-family: var(--ff-serif); font-size: clamp(28px, 3.5vw, 44px); font-weight: 700; color: var(--text); margin: 0;">Upcoming Events</h2>
-        </div>
-        <a href="/events" style="font-family: var(--ff-sans); font-size: 14px; font-weight: 600; color: var(--lava); letter-spacing: 0.02em; text-decoration: none;">
-          Full Schedule →
-        </a>
-      </div>
-      <div style="display: grid; gap: 1px;">
-        {upcomingEvents.map((evt) => (
-          <div style="background: var(--bg); padding: 24px 28px; display: grid; grid-template-columns: 88px 1fr auto; align-items: center; gap: 24px;">
-            <div>
-              <div style="font-family: var(--ff-serif); font-size: 24px; font-weight: 700; color: var(--lava); line-height: 1.1;">{evt.date}</div>
-              <div style="font-family: var(--ff-sans); font-size: 11px; color: var(--text-light); margin-top: 2px;">{evt.year}</div>
-            </div>
-            <div>
-              <div style="font-family: var(--ff-sans); font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 4px;">{evt.name}</div>
-              <div style="font-family: var(--ff-sans); font-size: 13px; color: var(--text-mid);">{evt.location}</div>
-            </div>
-            <span style="font-family: var(--ff-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); background: rgba(0,122,122,0.09); padding: 4px 11px; border-radius: 2px;">{evt.type}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <!-- Upcoming Events — live from the ImuaTrak club calendar -->
+  <ScheduleSection
+    heading="Upcoming Events"
+    limit={3}
+    showFilters={false}
+    showPast={false}
+    moreHref="/events"
+    moreLabel="Full Schedule →"
+  />
 
   <!-- Membership CTA -->
   <section style="background: var(--bg-dark); padding: 96px 24px;">

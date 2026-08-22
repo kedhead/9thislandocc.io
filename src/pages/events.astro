@@ -5,6 +5,7 @@ import practiceData from '../../public/data/practice.json';
 import { getRaceEvents } from '../lib/google-sheets';
 import { getEnrichedRaces } from '../lib/race-enrichment';
 import { getEvents } from '../lib/events';
+import ScheduleSection from '../components/ScheduleSection.astro';
 
 const MONTH_ABBREVS: Record<string, string> = {
   January: 'Jan', February: 'Feb', March: 'Mar',  April: 'Apr',
@@ -115,6 +116,13 @@ function typeBadgeStyle(type: EventItem['type']) {
       <a href="mailto:admin@9thislandoutrigger.com" style="margin-left: auto; font-family: var(--ff-sans); font-size: 13px; color: #fff; font-weight: 600; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.45);">Get Practice Info →</a>
     </div>
   </div>
+
+  <!-- Live club calendar, pulled from ImuaTrak -->
+  <ScheduleSection
+    eyebrow="Live from ImuaTrak"
+    heading="Club Calendar"
+    background="var(--bg)"
+  />
 
   <!-- Events list -->
   <section style="background: var(--bg-alt); padding: 80px 24px;">
