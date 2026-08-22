@@ -2,66 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import practiceData from '../../public/data/practice.json';
-import { getEvents } from '../lib/events';
 import ScheduleSection from '../components/ScheduleSection.astro';
-
-const now = new Date();
-const currentYear = now.getFullYear();
-const today = now.toISOString().slice(0, 10);
-
-type EventItem = {
-  date: string; year: string; name: string;
-  location: string;
-  type: 'Race' | 'Social' | 'Practice' | 'Other';
-  desc: string;
-  calLink?: string;
-  _sortKey: number;
-};
-
-const allEvents: EventItem[] = [];
-
-// ── Club events (from the members-area scheduler) ────────────────────────
-try {
-  const clubEvts = await getEvents();
-  const typeLabel: Record<string, EventItem['type']> = {
-    practice: 'Practice', race: 'Race', social: 'Social', other: 'Other',
-  };
-  for (const ev of clubEvts) {
-    if (ev.date < today) continue; // skip past events on public page
-    const d = new Date(ev.date + 'T12:00:00');
-    const month = d.getMonth();
-    const day   = d.getDate();
-    const year  = d.getFullYear();
-    const abbr  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][month];
-    allEvents.push({
-      date:     `${abbr} ${day}`,
-      year:     String(year),
-      name:     ev.title,
-      location: ev.location,
-      type:     typeLabel[ev.type] ?? 'Other',
-      desc:     ev.description ?? '',
-      calLink:  `/api/events/calendar.ics?id=${ev.id}`,
-      _sortKey: month * 100 + day,
-    });
-  }
-} catch {
-  // Event store unavailable — the live club calendar above still renders
-}
-
-allEvents.sort((a, b) => a._sortKey - b._sortKey);
 
 const practiceSummary = (() => {
   const days = [...practiceData.weekday, ...practiceData.weekend].map((p) => `${p.day}s`);
   if (days.length === 0) return 'Contact us for current schedule';
   return `${days.join(' & ')} at ${practiceData.location}`;
 })();
-
-function typeBadgeStyle(type: EventItem['type']) {
-  if (type === 'Race')     return { color: 'var(--lava)',     bg: 'rgba(232,56,10,0.08)' };
-  if (type === 'Practice') return { color: 'var(--teal)',     bg: 'rgba(0,122,122,0.09)' };
-  if (type === 'Social')   return { color: '#6B419E',         bg: 'rgba(107,65,158,0.08)' };
-  return                          { color: 'var(--text-mid)', bg: 'rgba(107,101,96,0.09)' };
-}
 ---
 
 <Layout title="Events & Schedule — 9th Island OCC" active="events">
@@ -82,85 +29,4 @@ function typeBadgeStyle(type: EventItem['type']) {
     heading="Club Calendar"
     background="var(--bg)"
   />
-
-  <!-- Club events from the members-area scheduler (hidden when empty) -->
-  {allEvents.length > 0 && (
-  <section style="background: var(--bg-alt); padding: 80px 24px;">
-    <div style="max-width: 900px; margin: 0 auto;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-wrap: wrap; gap: 16px;">
-        <div style="display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;">
-          <h2 style="font-family: var(--ff-serif); font-size: 34px; font-weight: 700; color: var(--text); margin: 0;">{currentYear} Season</h2>
-          {allEvents.length > 0 && (
-            <a href="/api/events/calendar.ics" style="font-family: var(--ff-sans); font-size: 13px; color: var(--teal); font-weight: 500; text-decoration: none;" title="Subscribe to full calendar">📅 Subscribe to Calendar</a>
-          )}
-        </div>
-        {allEvents.length > 0 && (
-          <div id="event-filters" style="display: flex; gap: 6px; flex-wrap: wrap;">
-            <button type="button" class="event-filter is-active" data-filter="All"      style="background: var(--text); color: var(--bg); border: 1px solid var(--border); border-radius: 2px; padding: 6px 14px; font-family: var(--ff-sans); font-size: 13px; cursor: pointer; transition: all 0.2s;">All</button>
-            <button type="button" class="event-filter"           data-filter="Practice" style="background: transparent; color: var(--text-mid); border: 1px solid var(--border); border-radius: 2px; padding: 6px 14px; font-family: var(--ff-sans); font-size: 13px; cursor: pointer; transition: all 0.2s;">Practice</button>
-            <button type="button" class="event-filter"           data-filter="Race"     style="background: transparent; color: var(--text-mid); border: 1px solid var(--border); border-radius: 2px; padding: 6px 14px; font-family: var(--ff-sans); font-size: 13px; cursor: pointer; transition: all 0.2s;">Race</button>
-            <button type="button" class="event-filter"           data-filter="Social"   style="background: transparent; color: var(--text-mid); border: 1px solid var(--border); border-radius: 2px; padding: 6px 14px; font-family: var(--ff-sans); font-size: 13px; cursor: pointer; transition: all 0.2s;">Social</button>
-          </div>
-        )}
-      </div>
-
-      <div id="event-list" style="display: grid; gap: 1px;">
-        {allEvents.length > 0 ? allEvents.map((evt) => {
-          const badge = typeBadgeStyle(evt.type);
-          return (
-            <div
-              class="event-row"
-              data-type={evt.type}
-              style="background: var(--bg); padding: 28px 32px; display: grid; grid-template-columns: 100px 1fr auto; gap: 24px; align-items: start;"
-            >
-              <div>
-                <div style="font-family: var(--ff-serif); font-size: 26px; font-weight: 700; color: var(--lava); line-height: 1.1;">{evt.date}</div>
-                <div style="font-family: var(--ff-sans); font-size: 11px; color: var(--text-light); margin-top: 3px;">{evt.year}</div>
-              </div>
-              <div>
-                <h3 style="font-family: var(--ff-sans); font-size: 17px; font-weight: 600; color: var(--text); margin: 0 0 5px;">{evt.name}</h3>
-                {evt.location && <p style="font-family: var(--ff-sans); font-size: 13px; color: var(--teal); margin: 0 0 8px; font-weight: 500;">{evt.location}</p>}
-                {evt.desc && <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); line-height: 1.65; margin: 0;">{evt.desc}</p>}
-                {evt.calLink && (
-                  <a href={evt.calLink} style="display: inline-block; margin-top: 10px; font-family: var(--ff-sans); font-size: 12px; color: var(--teal); font-weight: 500; text-decoration: none;">📅 Add to Calendar</a>
-                )}
-              </div>
-              <span style={`font-family: var(--ff-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; color: ${badge.color}; background: ${badge.bg}; padding: 5px 11px; border-radius: 2px;`}>{evt.type}</span>
-            </div>
-          );
-        }) : (
-          <div style="background: var(--bg); padding: 60px 32px; text-align: center;">
-            <p style="font-family: var(--ff-serif); font-size: 20px; color: var(--text-mid); margin: 0;">No upcoming events scheduled yet.</p>
-            <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-light); margin: 12px 0 0;">Check back soon or contact us for details.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  </section>
-  )}
 </Layout>
-
-<script>
-  const filterButtons = document.querySelectorAll<HTMLButtonElement>('.event-filter');
-  const rows = document.querySelectorAll<HTMLElement>('.event-row');
-
-  const setActive = (active: HTMLButtonElement) => {
-    filterButtons.forEach((btn) => {
-      const isActive = btn === active;
-      btn.classList.toggle('is-active', isActive);
-      btn.style.background = isActive ? 'var(--text)' : 'transparent';
-      btn.style.color = isActive ? 'var(--bg)' : 'var(--text-mid)';
-    });
-  };
-
-  filterButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      setActive(btn);
-      const filter = btn.dataset.filter || 'All';
-      rows.forEach((row) => {
-        const type = row.dataset.type || '';
-        row.style.display = filter === 'All' || filter === type ? '' : 'none';
-      });
-    });
-  });
-</script>

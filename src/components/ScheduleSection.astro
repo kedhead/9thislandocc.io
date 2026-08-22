@@ -6,6 +6,8 @@
  * upstream) so the schedule stays current without a rebuild. Events are
  * read-only here — they're edited in the ImuaTrak app.
  */
+import { IMUATRAK_CALENDAR } from '../lib/imuatrak';
+
 interface Props {
   /** JSON feed URL. */
   feedUrl?: string;
@@ -27,8 +29,7 @@ interface Props {
   padding?: string;
 }
 
-const CLUB_FEED =
-  'https://us-central1-imuatrak.cloudfunctions.net/clubCalendar?club=Tfdc1aX0u0eYc1xHnvrU';
+const CLUB_FEED = IMUATRAK_CALENDAR;
 
 const {
   feedUrl = `${CLUB_FEED}&format=json`,

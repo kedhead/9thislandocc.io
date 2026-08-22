@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { IMUATRAK_JOIN } from '../lib/imuatrak';
 
 interface Props {
   title?: string;
@@ -13,13 +14,21 @@ const {
   active,
 } = Astro.props;
 
-const navLinks: { label: string; href: string; id: NonNullable<Props['active']> }[] = [
+// The members area now lives in ImuaTrak — the club's app handles rosters,
+// RSVPs, and scheduling, so this link leaves the site. On a phone with the
+// app installed, ImuaTrak's universal/app links open it directly.
+const navLinks: {
+  label: string;
+  href: string;
+  id: NonNullable<Props['active']>;
+  external?: boolean;
+}[] = [
   { label: 'Home',       href: '/',           id: 'home' },
   { label: 'About',      href: '/about',      id: 'about' },
   { label: 'Events',     href: '/events',     id: 'events' },
   { label: 'Gallery',    href: '/gallery',    id: 'gallery' },
   { label: 'Membership', href: '/membership', id: 'membership' },
-  { label: 'Members',    href: '/members',    id: 'members' },
+  { label: 'Members',    href: IMUATRAK_JOIN,  id: 'members', external: true },
   { label: 'Contact',    href: '/contact',    id: 'contact' },
 ];
 ---
@@ -76,6 +85,8 @@ const navLinks: { label: string; href: string; id: NonNullable<Props['active']> 
           {navLinks.map((link) => (
             <a
               href={link.href}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener noreferrer' : undefined}
               style={`background: none; border: none; cursor: pointer; font-family: var(--ff-sans); font-size: 14px; font-weight: ${active === link.id ? 600 : 400}; color: ${active === link.id ? 'var(--lava)' : 'var(--text-mid)'}; padding: 6px 13px; border-radius: 3px; text-decoration: none; border-bottom: ${active === link.id ? '2px solid var(--lava)' : '2px solid transparent'};`}
             >
               {link.label}
@@ -118,6 +129,8 @@ const navLinks: { label: string; href: string; id: NonNullable<Props['active']> 
         {navLinks.map((link) => (
           <a
             href={link.href}
+            target={link.external ? '_blank' : undefined}
+            rel={link.external ? 'noopener noreferrer' : undefined}
             style={`display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-family: var(--ff-sans); font-size: 16px; font-weight: ${active === link.id ? 600 : 400}; color: ${active === link.id ? 'var(--lava)' : 'var(--text)'}; padding: 13px 0; border-bottom: 1px solid var(--border); text-decoration: none;`}
           >
             {link.label}
@@ -172,6 +185,8 @@ const navLinks: { label: string; href: string; id: NonNullable<Props['active']> 
             {navLinks.map((link) => (
               <a
                 href={link.href}
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener noreferrer' : undefined}
                 style="display: block; font-family: var(--ff-sans); font-size: 14px; color: #9B9590; padding: 5px 0; text-decoration: none;"
               >
                 {link.label}
