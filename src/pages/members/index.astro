@@ -1,32 +1,16 @@
 ---
 import MembersLayout from '../../layouts/MembersLayout.astro';
-import SheetSection from '../../components/SheetSection.astro';
-import RaceFinderSection from '../../components/RaceFinderSection.astro';
+import ScheduleSection from '../../components/ScheduleSection.astro';
 
 // AUTH CHECK FIRST
 if (!Astro.cookies.has('members_auth')) {
   return Astro.redirect('/members/login');
 }
-
-// Config
-const SCHEDULE_SHEET_ID = '16RYQ7ssTJJ3K7sBMtfhHnftrDr8NU_ilUc1ES3vHOW8'; 
-const SCHEDULE_SHEET_URL = "https://docs.google.com/spreadsheets/d/16RYQ7ssTJJ3K7sBMtfhHnftrDr8NU_ilUc1ES3vHOW8/edit";
-
-const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
-const isMock = !import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 ---
 
 <MembersLayout title="Dashboard">
-  
-  {isMock && (
-    <div class="bg-yellow-50 border-b border-yellow-200 p-4 text-center text-yellow-800 text-sm">
-      <strong>Demo Mode:</strong> Displaying example data. To see real data, configure Google Sheets credentials.
-    </div>
-  )}
-
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    
-    <div class="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+    <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
         <h1 class="text-4xl font-bold text-gray-900 mb-2">Welcome, Ohana!</h1>
         <p class="text-gray-600">Here is the latest schedule and club updates.</p>
@@ -35,30 +19,15 @@ const isMock = !import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
         <a href="/members/schedule" class="btn-lava px-6 py-3 rounded-lg font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition">
           Manage Schedule
         </a>
-        <a href={SCHEDULE_SHEET_URL} target="_blank" rel="noopener noreferrer" class="btn-outline px-6 py-3 rounded-lg font-bold flex items-center gap-2 transition" style="border: 2px solid var(--border);">
-          Google Sheet ↗
-        </a>
       </div>
     </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-      
-      <SheetSection
-        spreadsheetId={SCHEDULE_SHEET_ID}
-        tabName={currentMonth} 
-        title={`${currentMonth} Schedule`}
-        color="bg-[var(--color-ocean-blue)]"
-        viewLink={SCHEDULE_SHEET_URL}
-        iconPath="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-
-      <RaceFinderSection
-        spreadsheetId={SCHEDULE_SHEET_ID}
-        viewLink={SCHEDULE_SHEET_URL}
-      />
-
-    </div>
-
   </div>
-</MembersLayout>
 
+  <!-- Live club calendar, same feed the public site shows -->
+  <ScheduleSection
+    eyebrow="Live from ImuaTrak"
+    heading="Club Calendar"
+    background="var(--bg)"
+    padding="24px 24px 72px"
+  />
+</MembersLayout>

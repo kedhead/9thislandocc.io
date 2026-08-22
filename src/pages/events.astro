@@ -2,28 +2,12 @@
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import practiceData from '../../public/data/practice.json';
-import { getRaceEvents } from '../lib/google-sheets';
-import { getEnrichedRaces } from '../lib/race-enrichment';
 import { getEvents } from '../lib/events';
 import ScheduleSection from '../components/ScheduleSection.astro';
 
-const MONTH_ABBREVS: Record<string, string> = {
-  January: 'Jan', February: 'Feb', March: 'Mar',  April: 'Apr',
-  May: 'May',     June: 'Jun',     July: 'Jul',    August: 'Aug',
-  September: 'Sep', October: 'Oct', November: 'Nov', December: 'Dec',
-};
-const MONTH_INDEX: Record<string, number> = {
-  January: 0,  February: 1,  March: 2,   April: 3,
-  May: 4,      June: 5,      July: 6,    August: 7,
-  September: 8, October: 9, November: 10, December: 11,
-};
-
 const now = new Date();
 const currentYear = now.getFullYear();
-const currentMonthIndex = now.getMonth();
 const today = now.toISOString().slice(0, 10);
-
-const SHEET_ID = '16RYQ7ssTJJ3K7sBMtfhHnftrDr8NU_ilUc1ES3vHOW8';
 
 type EventItem = {
   date: string; year: string; name: string;
@@ -34,34 +18,9 @@ type EventItem = {
   _sortKey: number;
 };
 
-let allEvents: EventItem[] = [];
+const allEvents: EventItem[] = [];
 
-// ── Google Sheets races ───────────────────────────────────────────────────
-try {
-  const sheetRaces = await getRaceEvents(SHEET_ID);
-  if (sheetRaces.length > 0) {
-    const enriched = await getEnrichedRaces(sheetRaces);
-    allEvents = enriched.map((race) => {
-      const dayNumMatch  = race.day.match(/\d+/);
-      const dayNumber    = dayNumMatch ? dayNumMatch[0] : '';
-      const monthAbbrev  = MONTH_ABBREVS[race.month] ?? race.month.slice(0, 3);
-      const raceMonthIdx = MONTH_INDEX[race.month] ?? currentMonthIndex;
-      return {
-        date:     dayNumber ? `${monthAbbrev} ${dayNumber}` : monthAbbrev,
-        year:     String(raceMonthIdx < currentMonthIndex ? currentYear + 1 : currentYear),
-        name:     race.activity,
-        location: race.location?.trim() || '',
-        type:     'Race' as const,
-        desc:     race.description || (race.time && race.time !== 'TBD' ? `Race time: ${race.time}` : ''),
-        _sortKey: raceMonthIdx * 100 + (dayNumber ? parseInt(dayNumber, 10) : 0),
-      };
-    });
-  }
-} catch {
-  // Sheet unavailable — continue with club events only
-}
-
-// ── Club events (from scheduling system) ─────────────────────────────────
+// ── Club events (from the members-area scheduler) ────────────────────────
 try {
   const clubEvts = await getEvents();
   const typeLabel: Record<string, EventItem['type']> = {
@@ -86,7 +45,7 @@ try {
     });
   }
 } catch {
-  // Redis unavailable — show Google Sheets races only
+  // Event store unavailable — the live club calendar above still renders
 }
 
 allEvents.sort((a, b) => a._sortKey - b._sortKey);
@@ -124,7 +83,8 @@ function typeBadgeStyle(type: EventItem['type']) {
     background="var(--bg)"
   />
 
-  <!-- Events list -->
+  <!-- Club events from the members-area scheduler (hidden when empty) -->
+  {allEvents.length > 0 && (
   <section style="background: var(--bg-alt); padding: 80px 24px;">
     <div style="max-width: 900px; margin: 0 auto;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-wrap: wrap; gap: 16px;">
@@ -177,6 +137,7 @@ function typeBadgeStyle(type: EventItem['type']) {
       </div>
     </div>
   </section>
+  )}
 </Layout>
 
 <script>

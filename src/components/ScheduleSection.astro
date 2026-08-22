@@ -23,6 +23,8 @@ interface Props {
   moreHref?: string;
   moreLabel?: string;
   background?: string;
+  /** Section padding — tighten it when the section sits inside another page header. */
+  padding?: string;
 }
 
 const CLUB_FEED =
@@ -39,10 +41,11 @@ const {
   moreHref,
   moreLabel = 'Full Schedule →',
   background = 'var(--bg-alt)',
+  padding = '96px 24px',
 } = Astro.props;
 ---
 
-<section class="schedule-section" style={`background: ${background}; padding: 96px 24px;`}>
+<section class="schedule-section" style={`background: ${background}; padding: ${padding};`}>
   <div
     class="schedule"
     data-schedule
