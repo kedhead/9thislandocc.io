@@ -194,7 +194,7 @@ const inquiryTypes = [
       const response = await fetch('https://formsubmit.co/ajax/admin@9thislandoutrigger.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ _cc: 'hannah.9thisland@gmail.com', ...data }),
       });
       if (!response.ok) throw new Error('Form submission failed');
 

@@ -9,7 +9,8 @@
         "Race participation",
         "Training resources",
         "Club events access"
-      ]
+      ],
+      "priceNote": "$275 after February 27, 2026"
     },
     {
       "name": "Kids under 18",
@@ -44,17 +45,21 @@
       },
       {
         "name": "9th Island OCC Membership Application",
-        "detail": "Our club application and waiver.",
-        "url": "",
-        "linkLabel": "Download the application"
+        "detail": "Our club application and waiver for the 2026 season (January 31 – December 31, 2026). Print it, fill it in, and hand it to a coach or officer.",
+        "url": "/forms/9th-island-occ-2026-application-waiver.pdf",
+        "linkLabel": "Download the 2026 application (PDF)"
       }
     ],
     "duesTitle": "Annual Dues",
-    "duesIntro": "9th Island OCC offers two ways to pay your annual dues:",
+    "duesIntro": "9th Island OCC offers three ways to pay your annual dues:",
     "duesOptions": [
       {
         "method": "Check",
-        "detail": "Payable to 9th Island Outrigger. Please provide your check(s) to Hannah Murphy."
+        "detail": "Payable to 9th Island Outrigger Canoe Club. Please provide your check(s) to Hannah Murphy."
+      },
+      {
+        "method": "Cash",
+        "detail": "Hand cash to Hannah Murphy or an officer at practice."
       },
       {
         "method": "Zelle",
@@ -62,6 +67,7 @@
       }
     ],
     "questionsEmail": "hannah.9thisland@gmail.com",
-    "questionsNote": "If you have any questions, please email Hannah."
+    "questionsNote": "If you have any questions, please email Hannah.",
+    "feeNote": "Membership fee is $250.00 through February 27, 2026, and $275.00 after that. Racing fees are additional, depending on SCORA race availability."
   }
 }

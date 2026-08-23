@@ -93,7 +93,12 @@ const tiers = membershipData.tiers.map((t, i) => {
       <div class="two-col" style="display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; align-items: start;">
         <div>
           <h3 style="font-family: var(--ff-serif); font-size: 24px; font-weight: 700; color: var(--text); margin: 0 0 12px;">{joining.duesTitle}</h3>
-          <p style="font-family: var(--ff-sans); font-size: 15px; color: var(--text-mid); line-height: 1.75; margin: 0;">{joining.duesIntro}</p>
+          <p style="font-family: var(--ff-sans); font-size: 15px; color: var(--text-mid); line-height: 1.75; margin: 0 0 16px;">{joining.duesIntro}</p>
+          {joining.feeNote && (
+            <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text); line-height: 1.7; margin: 0; padding: 14px 16px; background: var(--bg-alt); border-left: 3px solid var(--teal);">
+              {joining.feeNote}
+            </p>
+          )}
         </div>
         <div style="display: grid; gap: 1px;">
           {joining.duesOptions.map((opt) => (
@@ -131,6 +136,9 @@ const tiers = membershipData.tiers.map((t, i) => {
             <div style={`font-family: var(--ff-serif); font-size: 50px; font-weight: 700; color: ${tier.color}; line-height: 1; margin-bottom: 4px;`}>
               {tier.priceAmount}<span style="font-size: 18px; font-weight: 400; color: var(--text-mid);">{tier.pricePeriod}</span>
             </div>
+            {tier.priceNote && (
+              <div style="font-family: var(--ff-sans); font-size: 12px; font-weight: 600; color: var(--lava); margin-top: 6px;">{tier.priceNote}</div>
+            )}
             <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); margin: 12px 0 24px;">{tier.description}</p>
             <ul style="list-style: none; padding: 0; margin: 0 0 32px; display: grid; gap: 10px;">
               {tier.benefits.map((b) => (
@@ -340,6 +348,7 @@ const tiers = membershipData.tiers.map((t, i) => {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           _subject: `New Membership Application: ${data.firstName} ${data.lastName}`,
+          _cc: 'hannah.9thisland@gmail.com',
           ...data,
         }),
       });
