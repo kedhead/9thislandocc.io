@@ -9,14 +9,7 @@
   },
   "mission": {
     "title": "Our Mission",
-    "description": "We strive to:",
-    "items": [
-      "Promote the sport of outrigger canoe paddling",
-      "Build a strong ohana (family) of paddlers",
-      "Share Hawaiian culture and traditions",
-      "Compete in regional and national races",
-      "Welcome paddlers of all skill levels"
-    ]
+    "statement": "To provide educational, recreational and racing paddling programs for all skill levels. It is the goal of 9th Island OCC to expose people from all walks of life to the ancient Cultural Traditions and Aloha Spirit which embodies the sport of Outrigger Canoe Paddling. We encourage members of our Ohana to grow and develop the skills necessary to become racers if they so desire."
   },
   "activities": {
     "title": "What We Do",
@@ -43,18 +36,48 @@
     "title": "Our Coaching Staff",
     "staff": [
       {
-        "name": "Head Coach",
-        "title": "Coming Soon",
+        "name": "Keola Soon",
+        "title": "Head Coach",
         "photo": "",
-        "bio": "Contact us to learn more about our experienced coaching team."
+        "bio": ""
       },
       {
-        "name": "Assistant Coach",
-        "title": "Coming Soon",
+        "name": "Hannah Murphy",
+        "title": "Assistant Coach",
         "photo": "",
-        "bio": "Our coaches bring years of paddling experience and aloha spirit."
+        "bio": ""
       }
     ]
+  },
+  "leadership": {
+    "title": "Officers & Board",
+    "officers": [
+      {
+        "role": "President",
+        "name": "Hannah Murphy"
+      },
+      {
+        "role": "Vice President",
+        "name": "Marvin Barque"
+      },
+      {
+        "role": "Secretary",
+        "name": "Shanna Turner"
+      },
+      {
+        "role": "Treasurer",
+        "name": "Frank Brokate"
+      }
+    ],
+    "board": {
+      "title": "Board of Directors",
+      "executiveDirector": "Jim Taylor",
+      "members": [
+        "Hannah Murphy",
+        "Kaiea Peralto",
+        "Dan Sakamoto"
+      ]
+    }
   },
   "joinUs": {
     "title": "Join Us",

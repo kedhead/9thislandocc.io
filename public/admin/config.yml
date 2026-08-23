@@ -65,6 +65,9 @@ collections:
               - {label: "Time", name: "time", widget: "string"}
           - {label: "Location", name: "location", widget: "string"}
           - {label: "Location Details", name: "locationDetails", widget: "text"}
+          - {label: "Street Address", name: "address", widget: "string"}
+          - {label: "Directions Heading", name: "directionsFrom", widget: "string"}
+          - {label: "Driving Directions", name: "directions", widget: "text"}
           - {label: "Seasonal Note", name: "seasonalNote", widget: "text", required: false}
 
       - label: "Membership Pricing"
@@ -82,6 +85,34 @@ collections:
                 name: "benefits"
                 widget: "list"
                 field: {label: "Benefit", name: "benefit", widget: "string"}
+
+          - label: "How to Join"
+            name: "joining"
+            widget: "object"
+            fields:
+              - {label: "Section Title", name: "title", widget: "string"}
+              - {label: "Visitor Heading", name: "visitorTitle", widget: "string"}
+              - {label: "Visitor Note", name: "visitorNote", widget: "text"}
+              - {label: "SCORA SmartWaiver URL", name: "smartwaiverUrl", widget: "string"}
+              - {label: "Steps Heading", name: "stepsTitle", widget: "string"}
+              - label: "Required Steps"
+                name: "steps"
+                widget: "list"
+                fields:
+                  - {label: "Step Name", name: "name", widget: "string"}
+                  - {label: "Detail", name: "detail", widget: "text"}
+                  - {label: "Link URL", name: "url", widget: "string", required: false}
+                  - {label: "Link Label", name: "linkLabel", widget: "string", required: false}
+              - {label: "Dues Heading", name: "duesTitle", widget: "string"}
+              - {label: "Dues Intro", name: "duesIntro", widget: "text"}
+              - label: "Payment Options"
+                name: "duesOptions"
+                widget: "list"
+                fields:
+                  - {label: "Method", name: "method", widget: "string"}
+                  - {label: "Detail", name: "detail", widget: "text"}
+              - {label: "Questions Note", name: "questionsNote", widget: "string"}
+              - {label: "Questions Email", name: "questionsEmail", widget: "string"}
 
       - label: "Homepage"
         name: "homepage"
@@ -167,11 +198,7 @@ collections:
             widget: "object"
             fields:
               - {label: "Title", name: "title", widget: "string"}
-              - {label: "Description", name: "description", widget: "string"}
-              - label: "Mission Items"
-                name: "items"
-                widget: "list"
-                field: {label: "Item", name: "item", widget: "string"}
+              - {label: "Mission Statement", name: "statement", widget: "text"}
 
           - label: "What We Do"
             name: "activities"
@@ -198,6 +225,28 @@ collections:
                   - {label: "Title/Position", name: "title", widget: "string"}
                   - {label: "Photo", name: "photo", widget: "image", required: false}
                   - {label: "Bio", name: "bio", widget: "text"}
+
+          - label: "Officers & Board"
+            name: "leadership"
+            widget: "object"
+            fields:
+              - {label: "Section Title", name: "title", widget: "string"}
+              - label: "Officers"
+                name: "officers"
+                widget: "list"
+                fields:
+                  - {label: "Role", name: "role", widget: "string"}
+                  - {label: "Name", name: "name", widget: "string"}
+              - label: "Board of Directors"
+                name: "board"
+                widget: "object"
+                fields:
+                  - {label: "Title", name: "title", widget: "string"}
+                  - {label: "Executive Director", name: "executiveDirector", widget: "string"}
+                  - label: "Board Members"
+                    name: "members"
+                    widget: "list"
+                    field: {label: "Name", name: "name", widget: "string"}
 
           - label: "Join Us Section"
             name: "joinUs"
@@ -228,3 +277,40 @@ collections:
               - {label: "Footnote", name: "footnote", widget: "text", required: false}
               - {label: "Button Text", name: "ctaText", widget: "string"}
               - {label: "Button Link", name: "ctaLink", widget: "string"}
+
+      - label: "Programs Page"
+        name: "programs"
+        file: "public/data/programs.json"
+        fields:
+          - label: "Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Heading", name: "heading", widget: "string"}
+              - {label: "Tagline", name: "tagline", widget: "string"}
+          - {label: "Intro", name: "intro", widget: "text"}
+          - label: "Paddling Groups"
+            name: "groups"
+            widget: "list"
+            fields:
+              - {label: "Name", name: "name", widget: "string"}
+              - {label: "Label", name: "label", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+          - label: "Where We Race"
+            name: "racing"
+            widget: "object"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Intro", name: "intro", widget: "string"}
+              - label: "Races"
+                name: "races"
+                widget: "list"
+                fields:
+                  - {label: "Race Name", name: "name", widget: "string"}
+                  - {label: "Location", name: "location", widget: "string"}
+          - label: "What You'll Learn"
+            name: "learning"
+            widget: "object"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Content", name: "content", widget: "text"}

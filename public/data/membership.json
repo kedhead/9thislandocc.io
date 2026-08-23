@@ -22,5 +22,46 @@
         "Family event discounts"
       ]
     }
-  ]
+  ],
+  "joining": {
+    "title": "How to Join",
+    "visitorTitle": "Visiting or New to the Club",
+    "visitorNote": "You can paddle with the club up to 3 times before submitting the 9th Island OCC Membership Application and registering with SCORA. The SCORA waiver must be filled out as soon as possible.",
+    "smartwaiverUrl": "https://www.scora.org/resources/smartwaiver/",
+    "stepsTitle": "All new and returning members must complete:",
+    "steps": [
+      {
+        "name": "Register with SCORA",
+        "detail": "New paddlers only. If you registered with SCORA in previous years, reuse your existing SCORA number.",
+        "url": "https://www.scora.org/resources/smartwaiver/",
+        "linkLabel": "Register with SCORA"
+      },
+      {
+        "name": "SCORA Liability Waiver (SmartWaiver)",
+        "detail": "Required every season, for members and visitors alike.",
+        "url": "https://www.scora.org/resources/smartwaiver/",
+        "linkLabel": "Complete the SmartWaiver"
+      },
+      {
+        "name": "9th Island OCC Membership Application",
+        "detail": "Our club application and waiver.",
+        "url": "",
+        "linkLabel": "Download the application"
+      }
+    ],
+    "duesTitle": "Annual Dues",
+    "duesIntro": "9th Island OCC offers two ways to pay your annual dues:",
+    "duesOptions": [
+      {
+        "method": "Check",
+        "detail": "Payable to 9th Island Outrigger. Please provide your check(s) to Hannah Murphy."
+      },
+      {
+        "method": "Zelle",
+        "detail": "Send to 702-994-3651. It will show as Jim Taylor, 9th Island Outrigger."
+      }
+    ],
+    "questionsEmail": "hannah.9thisland@gmail.com",
+    "questionsNote": "If you have any questions, please email Hannah."
+  }
 }

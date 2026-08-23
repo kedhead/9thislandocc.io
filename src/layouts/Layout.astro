@@ -5,7 +5,7 @@ import { IMUATRAK_JOIN } from '../lib/imuatrak';
 interface Props {
   title?: string;
   description?: string;
-  active?: 'home' | 'about' | 'events' | 'gallery' | 'membership' | 'members' | 'contact';
+  active?: 'home' | 'about' | 'programs' | 'calendar' | 'gallery' | 'membership' | 'members' | 'contact';
 }
 
 const {
@@ -25,7 +25,8 @@ const navLinks: {
 }[] = [
   { label: 'Home',       href: '/',           id: 'home' },
   { label: 'About',      href: '/about',      id: 'about' },
-  { label: 'Events',     href: '/events',     id: 'events' },
+  { label: 'Programs',   href: '/programs',   id: 'programs' },
+  { label: 'Calendar',   href: '/calendar',   id: 'calendar' },
   { label: 'Gallery',    href: '/gallery',    id: 'gallery' },
   { label: 'Membership', href: '/membership', id: 'membership' },
   { label: 'Members',    href: IMUATRAK_JOIN,  id: 'members', external: true },

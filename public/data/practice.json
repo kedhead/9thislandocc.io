@@ -11,7 +11,10 @@
       "time": "8:00 AM - 10:00 AM"
     }
   ],
-  "location": "Lake Mead - Horsepower Cove",
-  "locationDetails": "Primary practice location at Lake Mead National Recreation Area. Address: 490 Horsepower Cove, Boulder City, NV 89005",
-  "seasonalNote": "Practice times may vary seasonally. Check our social media for updates!"
+  "location": "Lake Mead — Horsepower Cove",
+  "locationDetails": "Primary practice location at Lake Mead National Recreation Area. Meet at the far end of the dock, by The Boat House Restaurant.",
+  "seasonalNote": "Practice times may vary seasonally. Check our social media for updates!",
+  "address": "490 Horsepower Cove Rd, Boulder City, NV 89005",
+  "directions": "From Boulder City Pkwy, turn left onto US-93 BUS/Boulder City Pkwy for approximately 3.8 miles, then turn left onto Lakeshore Rd. Once through the National Park Entrance Fee Station, turn right onto Hemenway Rd. Turn right onto Horsepower Cove Rd and, at the 3-way stop, go straight to the very last dirt parking lot — the one closest to the mountain where the Railroad Hike is. Park in any available spot and walk to the other end of the dock, where The Boat House Restaurant is.",
+  "directionsFrom": "From Boulder City"
 }

@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import aboutData from '../../public/data/about.json';
 
-const { hero, introduction, mission, activities, coaches, sponsorship } = aboutData;
+const { hero, introduction, mission, activities, coaches, leadership, sponsorship } = aboutData;
 
 const activityIcons = ['🚣', '🏆', '🤝', '🌊'];
 
@@ -34,13 +34,10 @@ const tierAccents = ['#C9A227', '#9AA3A8', '#A9714B', 'var(--teal)'];
         <div class="eyebrow" style="margin-bottom: 16px;">Purpose</div>
         <h2 style="font-family: var(--ff-serif); font-size: clamp(26px, 3vw, 38px); font-weight: 700; color: var(--text); line-height: 1.15; margin: 0;">{mission.title}</h2>
       </div>
-      <div style="display: grid; gap: 1px;">
-        {mission.items.map((item, i) => (
-          <div style="background: var(--bg-alt); padding: 16px 20px; display: flex; align-items: center; gap: 18px; border-left: 3px solid var(--lava);">
-            <span style="font-family: var(--ff-sans); font-size: 12px; font-weight: 700; color: var(--lava); min-width: 22px; opacity: 0.7;">{(i + 1).toString().padStart(2, '0')}</span>
-            <span style="font-family: var(--ff-sans); font-size: 15px; color: var(--text);">{item}</span>
-          </div>
-        ))}
+      <div style="border-left: 3px solid var(--lava); padding-left: 28px;">
+        <p style="font-family: var(--ff-sans); font-size: 16px; color: var(--text-mid); line-height: 1.9; margin: 0;">
+          {mission.statement}
+        </p>
       </div>
     </div>
   </section>
@@ -79,9 +76,41 @@ const tierAccents = ['#C9A227', '#9AA3A8', '#A9714B', 'var(--teal)'];
             )}
             <h3 style="font-family: var(--ff-serif); font-size: 20px; font-weight: 600; color: var(--text); margin: 0 0 6px;">{c.name}</h3>
             <p style="font-family: var(--ff-sans); font-size: 11px; color: var(--teal); letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 14px;">{c.title}</p>
-            <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); line-height: 1.75; margin: 0;">{c.bio}</p>
+            {c.bio && <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); line-height: 1.75; margin: 0;">{c.bio}</p>}
           </div>
         ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Officers & Board -->
+  <section style="background: var(--bg-alt); padding: 80px 24px;">
+    <div class="two-col" style="max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 16px;">Club Officers</div>
+        <h2 style="font-family: var(--ff-serif); font-size: clamp(24px, 2.6vw, 32px); font-weight: 700; color: var(--text); margin: 0 0 28px;">{leadership.title}</h2>
+        <div style="display: grid; gap: 1px;">
+          {leadership.officers.map((o) => (
+            <div style="background: var(--bg); padding: 16px 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; border-left: 3px solid var(--teal);">
+              <span style="font-family: var(--ff-sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light);">{o.role}</span>
+              <span style="font-family: var(--ff-serif); font-size: 17px; font-weight: 600; color: var(--text);">{o.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom: 16px;">Governance</div>
+        <h2 style="font-family: var(--ff-serif); font-size: clamp(24px, 2.6vw, 32px); font-weight: 700; color: var(--text); margin: 0 0 28px;">{leadership.board.title}</h2>
+        <div style="background: var(--bg); padding: 24px 26px; border-left: 3px solid var(--lava);">
+          <div style="font-family: var(--ff-sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); margin-bottom: 6px;">Executive Director</div>
+          <div style="font-family: var(--ff-serif); font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 22px;">{leadership.board.executiveDirector}</div>
+          <div style="font-family: var(--ff-sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); margin-bottom: 10px;">Members</div>
+          <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 8px;">
+            {leadership.board.members.map((m) => (
+              <li style="font-family: var(--ff-sans); font-size: 15px; color: var(--text);">{m}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   </section>

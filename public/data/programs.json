@@ -1,0 +1,51 @@
+{
+  "hero": {
+    "heading": "Programs",
+    "tagline": "Paddling for every age, every level"
+  },
+  "intro": "We offer a variety of programs for paddlers of all ages — youth/keiki, men/kane, women/wahine — and of all levels of fitness and experience, from first-time paddlers to experienced racers.",
+  "groups": [
+    {
+      "name": "Keiki",
+      "label": "Youth",
+      "description": "Young paddlers learning the sport from the water up."
+    },
+    {
+      "name": "Kane",
+      "label": "Men",
+      "description": "Men’s crews training together through the season."
+    },
+    {
+      "name": "Wahine",
+      "label": "Women",
+      "description": "Women’s crews training together through the season."
+    },
+    {
+      "name": "Hui",
+      "label": "All Levels",
+      "description": "First-time paddlers and experienced racers alike — everyone starts in the canoe."
+    }
+  ],
+  "racing": {
+    "title": "Where We Race",
+    "intro": "We compete at:",
+    "races": [
+      {
+        "name": "Havasu Heat Race",
+        "location": "Lake Havasu"
+      },
+      {
+        "name": "Select SCORA-sanctioned races",
+        "location": "Throughout Southern California"
+      },
+      {
+        "name": "Another Dam Race",
+        "location": "Parker, Arizona"
+      }
+    ]
+  },
+  "learning": {
+    "title": "What You’ll Learn",
+    "content": "Our program offers the opportunity to learn and enjoy the sport of Outrigger Canoe Paddling. We encourage our team/hui to learn the history, terminology, technique, and canoe/wa’a care. Our hui will learn the different phases of the outrigger stroke, power application, and proper body positioning while blending and synchronizing as a team."
+  }
+}

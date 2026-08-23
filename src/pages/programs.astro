@@ -1,0 +1,82 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import programsData from '../../public/data/programs.json';
+
+const { hero, intro, groups, racing, learning } = programsData;
+
+const groupAccents = ['var(--lava)', 'var(--teal)', '#6B419E', 'var(--teal-light)'];
+---
+
+<Layout title="Programs — 9th Island OCC" active="programs">
+  <PageHero title={hero.heading} subtitle={hero.tagline} />
+
+  <!-- Intro -->
+  <section style="background: var(--bg-alt); padding: 80px 24px;">
+    <div style="max-width: 720px; margin: 0 auto;">
+      <div class="eyebrow" style="margin-bottom: 16px;">Who We Paddle With</div>
+      <p style="font-family: var(--ff-sans); font-size: 17px; color: var(--text-mid); line-height: 1.88; margin: 0;">
+        {intro}
+      </p>
+    </div>
+  </section>
+
+  <!-- Groups -->
+  <section style="background: var(--bg); padding: 80px 24px;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 2px;">
+        {groups.map((g, i) => (
+          <div style={`background: var(--bg-alt); padding: 36px 28px; border-top: 3px solid ${groupAccents[i % groupAccents.length]};`}>
+            <h3 style="font-family: var(--ff-serif); font-size: 22px; font-weight: 700; color: var(--text); margin: 0 0 4px;">{g.name}</h3>
+            <div style="font-family: var(--ff-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-light); margin-bottom: 14px;">{g.label}</div>
+            <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); line-height: 1.75; margin: 0;">{g.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Racing -->
+  <section style="background: var(--bg-alt); padding: 80px 24px;">
+    <div class="two-col" style="max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.6fr; gap: 64px; align-items: start;">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 16px;">Competition</div>
+        <h2 style="font-family: var(--ff-serif); font-size: clamp(26px, 3vw, 36px); font-weight: 700; color: var(--text); line-height: 1.15; margin: 0 0 14px;">{racing.title}</h2>
+        <p style="font-family: var(--ff-sans); font-size: 15px; color: var(--text-mid); margin: 0;">{racing.intro}</p>
+      </div>
+      <div style="display: grid; gap: 1px;">
+        {racing.races.map((r) => (
+          <div style="background: var(--bg); padding: 22px 26px; display: flex; justify-content: space-between; align-items: baseline; gap: 20px; flex-wrap: wrap; border-left: 3px solid var(--lava);">
+            <span style="font-family: var(--ff-serif); font-size: 18px; font-weight: 600; color: var(--text);">{r.name}</span>
+            <span style="font-family: var(--ff-sans); font-size: 13px; color: var(--teal); font-weight: 500;">{r.location}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- What you'll learn -->
+  <section style="background: var(--bg); padding: 80px 24px;">
+    <div style="max-width: 720px; margin: 0 auto;">
+      <div class="eyebrow" style="margin-bottom: 16px;">In the Canoe</div>
+      <h2 style="font-family: var(--ff-serif); font-size: clamp(26px, 3vw, 36px); font-weight: 700; color: var(--text); margin: 0 0 24px;">{learning.title}</h2>
+      <p style="font-family: var(--ff-sans); font-size: 16px; color: var(--text-mid); line-height: 1.9; margin: 0;">
+        {learning.content}
+      </p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="background: var(--bg-alt); padding: 64px 24px; text-align: center; border-top: 1px solid var(--border);">
+    <div style="max-width: 560px; margin: 0 auto;">
+      <h2 style="font-family: var(--ff-serif); font-size: clamp(24px, 3vw, 32px); font-weight: 700; color: var(--text); margin: 0 0 18px;">Come Paddle With Us</h2>
+      <p style="font-family: var(--ff-sans); font-size: 16px; color: var(--text-mid); line-height: 1.75; margin: 0 0 32px;">
+        First-timers are welcome — you can paddle with the club up to three times before joining.
+      </p>
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <a href="/membership" class="btn-primary">How to Join</a>
+        <a href="/calendar" class="btn-outline">See the Calendar</a>
+      </div>
+    </div>
+  </section>
+</Layout>
