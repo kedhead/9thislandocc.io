@@ -68,6 +68,8 @@ collections:
           - {label: "Street Address", name: "address", widget: "string"}
           - {label: "Directions Heading", name: "directionsFrom", widget: "string"}
           - {label: "Driving Directions", name: "directions", widget: "text"}
+          - {label: "Map Search Query (address or lat,long)", name: "mapQuery", widget: "string", required: false}
+          - {label: "Map Zoom Level", name: "mapZoom", widget: "number", required: false, value_type: "int", min: 8, max: 20}
           - {label: "Seasonal Note", name: "seasonalNote", widget: "text", required: false}
 
       - label: "Membership Pricing"
