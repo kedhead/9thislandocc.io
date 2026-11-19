@@ -105,6 +105,22 @@ const tiers = membershipData.tiers.map((t, i) => {
             <div style="background: var(--bg-alt); padding: 22px 26px; border-left: 3px solid var(--lava);">
               <div style="font-family: var(--ff-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--lava); margin-bottom: 8px;">{opt.method}</div>
               <p style="font-family: var(--ff-sans); font-size: 15px; color: var(--text); line-height: 1.7; margin: 0;">{opt.detail}</p>
+              {opt.image && (
+                <div style="margin-top: 18px; text-align: center;">
+                  {opt.imageHref ? (
+                    <a href={opt.imageHref} target="_blank" rel="noopener noreferrer" style="display: inline-block; line-height: 0; background: #fff; border: 1px solid var(--border); padding: 10px;">
+                      <img src={opt.image} alt={opt.imageAlt} width="176" height="176" loading="lazy" style="display: block; width: 176px; height: 176px;" />
+                    </a>
+                  ) : (
+                    <span style="display: inline-block; line-height: 0; background: #fff; border: 1px solid var(--border); padding: 10px;">
+                      <img src={opt.image} alt={opt.imageAlt} width="176" height="176" loading="lazy" style="display: block; width: 176px; height: 176px;" />
+                    </span>
+                  )}
+                  {opt.imageCaption && (
+                    <div style="font-family: var(--ff-sans); font-size: 12px; color: var(--text-light); margin-top: 10px;">{opt.imageCaption}</div>
+                  )}
+                </div>
+              )}
             </div>
           ))}
           <p style="font-family: var(--ff-sans); font-size: 14px; color: var(--text-mid); margin: 18px 0 0;">

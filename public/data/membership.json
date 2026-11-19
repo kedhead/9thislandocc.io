@@ -63,7 +63,11 @@
       },
       {
         "method": "Zelle",
-        "detail": "Send to 702-994-3651. It will show as Jim Taylor, 9th Island Outrigger."
+        "detail": "Scan the QR code with your banking app to pay 9th Island Outrigger Canoe Club.",
+        "image": "/uploads/zelle-qr.png",
+        "imageAlt": "Zelle QR code for 9th Island Outrigger Canoe Club",
+        "imageHref": "https://enroll.zellepay.com/qr-codes?data=eyJuYW1lIjoiOVRIIElTTEFORCBPVVRSSUdHRVIgQ0FOT0UgQ0xVQiBBY2NvdW50cyIsInRva2VuIjoiNzAyOTk0MzY1MSJ9",
+        "imageCaption": "Scan or tap to open in Zelle"
       }
     ],
     "questionsEmail": "hannah.9thisland@gmail.com",

@@ -115,6 +115,10 @@ collections:
                 fields:
                   - {label: "Method", name: "method", widget: "string"}
                   - {label: "Detail", name: "detail", widget: "text"}
+                  - {label: "QR Code Image", name: "image", widget: "image", required: false}
+                  - {label: "QR Image Alt Text", name: "imageAlt", widget: "string", required: false}
+                  - {label: "QR Link URL", name: "imageHref", widget: "string", required: false}
+                  - {label: "QR Caption", name: "imageCaption", widget: "string", required: false}
               - {label: "Questions Note", name: "questionsNote", widget: "string"}
               - {label: "Questions Email", name: "questionsEmail", widget: "string"}
 
