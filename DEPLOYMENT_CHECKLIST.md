@@ -34,21 +34,18 @@
 5. [ ] Click "Deploy site"
 6. [ ] Your site will auto-deploy on every GitHub push!
 
-## Setting Up TinaCMS (Optional but Recommended)
+## Setting Up the Admin Panel
 
-This allows you to edit content through a visual admin panel:
+The site uses Sveltia CMS at `/admin`, which commits straight to the
+repository through GitHub OAuth:
 
-1. [ ] Go to [tina.io](https://tina.io) and create account
-2. [ ] Create a new project
-3. [ ] Connect to your GitHub repository
-4. [ ] Get your Client ID and Token from Tina dashboard
-5. [ ] In Netlify:
-   - Go to Site Settings > Environment Variables
-   - Add `TINA_CLIENT_ID` with your client ID
-   - Add `TINA_TOKEN` with your token
-6. [ ] Update build command in Netlify to: `npm run build:cms`
-7. [ ] Redeploy your site
-8. [ ] Access admin at: `yoursite.netlify.app/admin`
+1. [ ] Create a GitHub OAuth app (callback: `https://yoursite.com/api/oauth/callback`)
+2. [ ] In your host's Environment Variables, add:
+   - `OAUTH_CLIENT_ID` with the OAuth app's client ID
+   - `OAUTH_CLIENT_SECRET` with its client secret
+3. [ ] Redeploy your site
+4. [ ] Access the admin at: `yoursite.com/admin`
+5. [ ] Editable fields are defined in `public/admin/config.yml`
 
 ## Contact Form Setup
 
@@ -97,7 +94,7 @@ If you have a custom domain like `9thislandocc.com`:
 
 ### Adding Content
 
-**Easy Way (with TinaCMS):**
+**Easy Way (through the admin panel):**
 - [ ] Go to `yoursite.com/admin`
 - [ ] Log in with GitHub
 - [ ] Create/edit content
@@ -127,16 +124,16 @@ If you have a custom domain like `9thislandocc.com`:
 - [ ] Check Netlify deploy log
 
 ### Admin Panel Not Working
-- [ ] Verify TinaCMS credentials are set in Netlify
+- [ ] Verify `OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET` are set on the host
 - [ ] Check browser console for errors
-- [ ] Make sure you're using `npm run build:cms` as build command
+- [ ] Confirm the GitHub OAuth app's callback URL matches your domain
 
 ## Need Help?
 
 - Check README.md for detailed documentation
 - Check QUICK_START.md for beginner instructions
 - Netlify support: [docs.netlify.com](https://docs.netlify.com)
-- TinaCMS support: [tina.io/docs](https://tina.io/docs)
+- Sveltia CMS support: [github.com/sveltia/sveltia-cms](https://github.com/sveltia/sveltia-cms)
 - Astro support: [docs.astro.build](https://docs.astro.build)
 
 ## Success!

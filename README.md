@@ -1,11 +1,11 @@
 # 9th Island Outrigger Canoe Club Website
 
-A modern, easy-to-maintain website for 9th Island OCC built with Astro and TinaCMS.
+A modern, easy-to-maintain website for 9th Island OCC built with Astro and Sveltia CMS.
 
 ## Features
 
 - **Modern, Clean Design** - Beautiful ocean-themed design with Tailwind CSS
-- **Easy Content Management** - TinaCMS provides a visual editor for updating content without coding
+- **Easy Content Management** - Sveltia CMS at `/admin` provides a visual editor for updating content without coding
 - **Blog/Events System** - Post updates about practices, races, and club events
 - **Contact Form** - Allow potential members to inquire about joining
 - **Social Media Integration** - Links to Facebook and Instagram
@@ -43,13 +43,14 @@ You should see your website running locally!
 
 ## How to Edit Content (The Easy Way!)
 
-### Using TinaCMS Visual Editor
+### Using the Visual Editor
 
-1. Start the development server: `npm run dev`
-2. Navigate to `http://localhost:4321/admin`
-3. You'll see the TinaCMS admin interface
-4. Click on any content to edit it visually
-5. Changes are saved directly to your content files
+1. Go to `https://9thislandoutrigger.com/admin` (or `http://localhost:4321/admin` when running locally)
+2. Sign in with GitHub — the CMS commits straight to the repo
+3. Click any section to edit it visually
+4. Save, and the site rebuilds automatically
+
+The editable fields live in `public/admin/config.yml`.
 
 ### What You Can Edit
 
@@ -104,7 +105,7 @@ Edit files in `src/content/pages/` using Markdown format.
 
 1. Upload images to the `public/uploads/` folder
 2. Reference them in your posts as `/uploads/filename.jpg`
-3. Through TinaCMS, you can upload images directly through the admin interface
+3. Through the CMS at `/admin`, you can upload images directly from the browser
 
 ## Building for Production
 
@@ -131,18 +132,16 @@ This creates a `dist/` folder with your production-ready website.
 
 Your site will be live in minutes! Netlify will automatically redeploy whenever you push changes to GitHub.
 
-#### Setting up TinaCMS with Netlify
+#### CMS sign-in
 
-1. Go to [tina.io](https://tina.io) and create a free account
-2. Create a new project and connect it to your GitHub repo
-3. Get your Client ID and Token from the TinaCMS dashboard
-4. In Netlify, go to Site Settings > Environment Variables
-5. Add:
-   - `TINA_CLIENT_ID` = your client ID
-   - `TINA_TOKEN` = your token
-6. Redeploy your site
+The admin at `/admin` authenticates through GitHub OAuth, handled by
+`/api/oauth/*`. It needs two environment variables on the host:
 
-Now you can edit your live site at `yoursite.netlify.app/admin`!
+- `OAUTH_CLIENT_ID` — the GitHub OAuth app's client ID
+- `OAUTH_CLIENT_SECRET` — its client secret
+
+Anyone with write access to the repo can then edit the site at
+`9thislandoutrigger.com/admin`.
 
 ### Option 2: Vercel
 
@@ -258,7 +257,7 @@ body {
 ├── public/              # Static assets (images, favicon)
 │   └── uploads/        # User-uploaded images
 ├── src/
-│   ├── content/        # Content files (editable through TinaCMS)
+│   ├── content/        # Content files (editable through the CMS)
 │   │   ├── pages/      # Static pages (About, etc.)
 │   │   ├── posts/      # Blog posts and events
 │   │   └── settings/   # Site configuration
@@ -270,15 +269,14 @@ body {
 │   │   ├── events.astro     # Events listing
 │   │   └── contact.astro    # Contact form
 │   └── styles/         # Global styles
-├── tina/               # TinaCMS configuration
-│   └── config.ts
+├── public/admin/       # Sveltia CMS (config.yml defines every editable field)
 └── package.json
 ```
 
 ## Troubleshooting
 
 ### Development server won't start
-- Make sure you have Node.js 18+ installed
+- Make sure you have Node.js 20+ installed
 - Delete `node_modules` folder and run `npm install` again
 - Check if port 4321 is already in use
 
@@ -286,15 +284,15 @@ body {
 - Make sure images are in the `public/` folder
 - Reference images without 'public' in the path (e.g., `/uploads/photo.jpg` not `/public/uploads/photo.jpg`)
 
-### TinaCMS admin not loading
-- Make sure you've run `npm run dev` (not just `astro dev`)
+### CMS admin not loading
+- Check that `OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET` are set on the host
 - Clear your browser cache
 - Check the browser console for errors
 
 ## Support
 
 - Astro Documentation: [docs.astro.build](https://docs.astro.build)
-- TinaCMS Documentation: [tina.io/docs](https://tina.io/docs)
+- Sveltia CMS Documentation: [github.com/sveltia/sveltia-cms](https://github.com/sveltia/sveltia-cms)
 - Tailwind CSS Documentation: [tailwindcss.com/docs](https://tailwindcss.com/docs)
 
 ## License

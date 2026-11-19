@@ -67,15 +67,15 @@ You should see your website!
 
 ## How to Edit Content
 
-### The EASY Way - Using TinaCMS
+### The EASY Way - Using the Admin Panel
 
-1. Make sure your website is running (`npm run dev`)
-2. Go to: `http://localhost:4321/admin`
+1. Go to: `https://9thislandoutrigger.com/admin`
+2. Sign in with GitHub
 3. Click on what you want to edit
 4. Make your changes
 5. Click Save
 
-That's it! Your changes are saved to files automatically.
+That's it! Saving commits the change and the site rebuilds itself.
 
 ### The Manual Way - Editing Files
 
